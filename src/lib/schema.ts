@@ -7,6 +7,11 @@ import { pgTable, uuid, varchar, text, timestamp, date, boolean, integer, decima
 export const organizaciones = pgTable("organizaciones", {
   id: uuid("id").primaryKey().defaultRandom(),
   nombre: varchar("nombre", { length: 255 }).notNull(),
+  lema: varchar("lema", { length: 255 }),
+  logo_url: text("logo_url"),
+  telefono_contacto: varchar("telefono_contacto", { length: 50 }),
+  correo_contacto: varchar("correo_contacto", { length: 255 }),
+  ubicacion_url: text("ubicacion_url"),
   dominio_tenant: varchar("dominio_tenant", { length: 255 }),
   creado_en: timestamp("creado_en").defaultNow(),
 });
@@ -165,6 +170,12 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   esposo_a_celular: varchar("esposo_a_celular", { length: 50 }),
   fecha_boda: date("fecha_boda"),
   casados_por_iglesia: boolean("casados_por_iglesia").default(false),
+  
+  // Campos Especiales para Diplomados u Otros Eventos
+  pais_ciudad: varchar("pais_ciudad", { length: 255 }),
+  ministerio_actual: varchar("ministerio_actual", { length: 255 }),
+  compromiso_pago_99usd: boolean("compromiso_pago_99usd").default(false),
+  
   nombre_edades_hijos: text("nombre_edades_hijos"),
   
   quien_invito: varchar("quien_invito", { length: 255 }),
