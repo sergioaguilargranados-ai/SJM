@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -32,6 +32,11 @@ export function RegistroForm({ eventoId }: { eventoId: string }) {
   const [success, setSuccess] = useState(false);
   const [esMatrimonial, setEsMatrimonial] = useState(false);
   const [cargando, setCargando] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
@@ -67,8 +72,10 @@ export function RegistroForm({ eventoId }: { eventoId: string }) {
     );
   }
 
+  if (!mounted) return null;
+
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+    <div className="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100" suppressHydrationWarning>
       
       {/* Header Visual Moderno */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-10 pb-8 border-b border-slate-100">
