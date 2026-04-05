@@ -1,8 +1,8 @@
 "use client";
 
 export function AppFooter() {
-  const buildTime = process.env.NEXT_PUBLIC_BUILD_TIME || "Tiempo Local";
-  const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || "v1.0Dev";
+  const buildTime = "05-04-2026 11:45 AM";
+  const appVersion = "v1.026 - Master Production";
 
   return (
     <footer className="w-full h-10 border-t border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#151621] mt-auto flex items-center justify-between px-6 text-[11px] text-slate-500 font-medium">
