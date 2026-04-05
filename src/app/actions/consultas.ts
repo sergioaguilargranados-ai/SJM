@@ -157,3 +157,12 @@ export async function getServidorById(id: string) {
     return { success: false, data: null };
   }
 }
+
+export async function getEventoById(id: string) {
+  try {
+    const [resultado] = await db.select().from(eventos).where(eq(eventos.id, id)).limit(1);
+    return { success: true, data: resultado };
+  } catch (error) {
+    return { success: false, data: null };
+  }
+}

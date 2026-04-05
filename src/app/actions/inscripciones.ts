@@ -7,6 +7,13 @@ import { eq } from "drizzle-orm";
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
   try {
+    // 0. Validar Formato UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    // Si es un ID corto de prueba o no cumple el formato, detenemos antes de ir a Neon
+    if (!datos.eventoId || datos.eventoId.length < 30) {
+       return { success: false, error: "ID de Evento Inválido (No es un UUID válido). Por favor usa un link oficial." };
+     }
+
     // 1. Insertar el registro usando Drizzle ORM
     const inscData = {
       evento_id: datos.eventoId,
