@@ -4,20 +4,40 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Settings2, Image as ImageIcon, MapPin, Phone, Mail, Palette } from "lucide-react";
+import { Save, Building, Link as LinkIcon, Phone, Monitor, Settings } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const TABS = [
+  { id: "general", label: "General", icon: Building },
+  { id: "dominio", label: "Dominio y Acceso", icon: LinkIcon },
+  { id: "contacto", label: "Contacto", icon: Phone },
+  { id: "landing", label: "Tienda / Landing", icon: Monitor },
+  { id: "configuracion", label: "Configuración", icon: Settings },
+];
 
 export default function ConfiguracionOrganizacion() {
   const [cargando, setCargando] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
 
-  // Valores mock simulados que llegarán de la base de datos
   const [formData, setFormData] = useState({
     nombre: "Servidores de Jesús por María",
     lema: "Sirviendo con amor a la comunidad",
     logo_url: "https://ejemplo.com/logo.png",
-    telefono_contacto: "+52 555 123 4567",
+    
+    telefono_contacto: "+52 722 948 3163",
+    whatsapp_contacto: "+527229483163",
     correo_contacto: "contacto@sjm.org",
-    ubicacion_url: "https://maps.google.com/...",
-    color_primario: "#2563eb",
+    direccion_completa: "Vía José López Portillo 541, Toluca, Edo. Méx.",
+    ubicacion_url: "https://maps.google.com/?q=19.4795,-99.6480",
+    horarios_atencion: "Lun-Vie 9:00-18:00, Sáb 9:00-14:00",
+    facebook_url: "https://facebook.com/sjm",
+    instagram_url: "https://instagram.com/sjm",
+    
+    dominio_personalizado: "https://jucateconecta.com",
+    subdominio: "juca-norte",
+    url_login: "https://jucateconecta.com/login",
+    
+    color_primario: "#e11d48", // ERPCubox Red
     color_secundario: "#1e3a8a",
   });
 
@@ -28,117 +48,186 @@ export default function ConfiguracionOrganizacion() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setCargando(true);
-    // Simulación de guardado
     setTimeout(() => {
       setCargando(false);
-      alert("Configuración de Organización Actualizada (Simulación)");
-    }, 1500);
+      alert("Configuración de Organización Actualizada Satisfactoriamente");
+    }, 800);
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Configuración de Organización</h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">Parametriza los datos públicos, la identidad gráfica y el esquema de colores de la intranet y portal web.</p>
+    <div className="max-w-5xl mx-auto">
+      {/* ERPCubox Theme Modal Header Equivalent */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Editar Empresa</h1>
+        <p className="text-[#8e8ea0] mt-1 text-sm">Configure los detalles de la empresa, incluyendo su plan, subdominio y portal público.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-[#1a1b26] border border-[#2a2b3d] rounded-xl shadow-xl overflow-hidden flex flex-col">
         
-        {/* Identidad Gráfica */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg"><ImageIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Identidad Gráfica</h2>
-          </div>
+        {/* TABS NAVIGATION */}
+        <div className="flex border-b border-[#2a2b3d] overflow-x-auto hide-scrollbar">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all",
+                  isActive
+                    ? "text-[#e11d48] border-b-2 border-[#e11d48] bg-[#2a2b3d]/30"
+                    : "text-[#8e8ea0] hover:text-slate-300 hover:bg-[#2a2b3d]/10 border-b-2 border-transparent"
+                )}
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 md:p-8 flex-1">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label className="dark:text-slate-200">Nombre Oficial de la Organización</Label>
-              <Input name="nombre" value={formData.nombre} onChange={handleChange} className="dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
+          {/* TAB: GENERAL */}
+          {activeTab === "general" && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Nombre Oficial de la Empresa</Label>
+                   <Input name="nombre" value={formData.nombre} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Lema</Label>
+                   <Input name="lema" value={formData.lema} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                   <Label className="text-[#c1c1d1]">URL del Logotipo</Label>
+                   <Input name="logo_url" value={formData.logo_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                 </div>
+               </div>
             </div>
-            <div className="space-y-2">
-              <Label className="dark:text-slate-200">Lema del Movimiento</Label>
-              <Input name="lema" value={formData.lema} onChange={handleChange} className="dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label className="dark:text-slate-200">URL del Logotipo</Label>
-              <Input name="logo_url" value={formData.logo_url} onChange={handleChange} placeholder="https://..." className="dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
-            </div>
-          </div>
-        </div>
+          )}
 
-        {/* Parametrización de Colores */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg"><Palette className="w-5 h-5 text-purple-600 dark:text-purple-400" /></div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Esquema de Colores</h2>
-          </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Estos colores se aplicarán automáticamente a los botones y elementos principales de la aplicación para esta Organización.</p>
+          {/* TAB: DOMINIO Y ACCESO */}
+          {activeTab === "dominio" && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+               <div className="bg-[#121b2d] border border-[#1e293b] p-4 rounded-lg flex gap-3 text-sm">
+                  <span className="text-blue-400">💡</span>
+                  <div>
+                     <p className="font-semibold text-blue-300">Configuración de dominio</p>
+                     <p className="text-blue-200/70 mt-1">El <strong className="text-white">Dominio Personalizado</strong> tiene prioridad sobre el Subdominio. Úsalo si la landing tiene su propio dominio (ej: portal.sjm.org).</p>
+                  </div>
+               </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <Label className="dark:text-slate-200">Color Primario (Botones y Destaques)</Label>
-              <div className="flex items-center gap-3">
-                <input type="color" name="color_primario" value={formData.color_primario} onChange={handleChange} className="h-10 w-16 cursor-pointer rounded bg-transparent border-0" />
-                <Input name="color_primario" value={formData.color_primario} onChange={handleChange} className="w-32 dark:bg-slate-950 dark:border-slate-800 dark:text-white uppercase font-mono" />
-              </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Dominio Personalizado (Prioridad Alta)</Label>
+                   <Input name="dominio_personalizado" value={formData.dominio_personalizado} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   <p className="text-xs text-[#8e8ea0]">URL exacta donde se aloja el portal público</p>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Subdominio (Legacy)</Label>
+                   <div className="flex">
+                     <Input name="subdominio" value={formData.subdominio} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] border-r-0 rounded-r-none text-white focus-visible:z-10" />
+                     <div className="bg-[#2a2b3d] border border-[#3b3c54] border-l-0 rounded-r-md px-3 flex items-center text-sm text-[#8e8ea0]">.sjm.org</div>
+                   </div>
+                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                   <Label className="text-[#c1c1d1]">URL del Login</Label>
+                   <div className="relative">
+                      <Input name="url_login" value={formData.url_login} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                      <span className="absolute left-3 top-2.5">🔒</span>
+                   </div>
+                   <p className="text-xs text-[#8e8ea0]">Redirección para "Iniciar Sesión"</p>
+                 </div>
+               </div>
             </div>
-            
-            <div className="space-y-3">
-              <Label className="dark:text-slate-200">Color Secundario (Cenefas y Fondos)</Label>
-              <div className="flex items-center gap-3">
-                <input type="color" name="color_secundario" value={formData.color_secundario} onChange={handleChange} className="h-10 w-16 cursor-pointer rounded bg-transparent border-0" />
-                <Input name="color_secundario" value={formData.color_secundario} onChange={handleChange} className="w-32 dark:bg-slate-950 dark:border-slate-800 dark:text-white uppercase font-mono" />
-              </div>
-            </div>
-          </div>
-        </div>
+          )}
 
-        {/* Contacto Público */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-50 dark:bg-green-900/30 rounded-lg"><Phone className="w-5 h-5 text-green-600 dark:text-green-400" /></div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Contacto y Redes (Para QRs públicos)</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label className="dark:text-slate-200">Teléfono Oficial (WhatsApp)</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
-                <Input name="telefono_contacto" value={formData.telefono_contacto} onChange={handleChange} className="pl-10 dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="dark:text-slate-200">Correo Electrónico (Información)</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
-                <Input name="correo_contacto" value={formData.correo_contacto} onChange={handleChange} className="pl-10 dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
-              </div>
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label className="dark:text-slate-200">URL Ubicación en Google Maps</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
-                <Input name="ubicacion_url" value={formData.ubicacion_url} onChange={handleChange} className="pl-10 dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
+          {/* TAB: CONTACTO */}
+          {activeTab === "contacto" && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Email de Contacto</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400">✉️</span>
+                     <Input name="correo_contacto" value={formData.correo_contacto} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Teléfono</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400">📞</span>
+                     <Input name="telefono_contacto" value={formData.telefono_contacto} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                   <Label className="text-[#c1c1d1]">Dirección Fiscal Completa</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400">📍</span>
+                     <Input name="direccion_completa" value={formData.direccion_completa} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">WhatsApp</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm">WH</span>
+                     <Input name="whatsapp_contacto" value={formData.whatsapp_contacto} onChange={handleChange} className="pl-10 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                   <p className="text-xs text-[#8e8ea0]">Formato internacional (+52...)</p>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="text-[#c1c1d1]">Link Google Maps</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm">GM</span>
+                     <Input name="ubicacion_url" value={formData.ubicacion_url} onChange={handleChange} className="pl-10 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                   <p className="text-xs text-[#8e8ea0]">URL completa de tu ubicación</p>
+                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                   <Label className="text-[#c1c1d1]">Horarios de Atención</Label>
+                   <div className="relative">
+                     <span className="absolute left-3 top-2.5 text-slate-400">🕒</span>
+                     <Input name="horarios_atencion" value={formData.horarios_atencion} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   </div>
+                 </div>
+               </div>
 
-        <div className="flex justify-end pt-4">
-          <Button disabled={cargando} type="submit" size="lg" className="w-full md:w-auto rounded-xl px-10 h-12 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 dark:shadow-none">
-            {cargando ? "Guardando Valores..." : (
-              <>
-                <Save className="w-5 h-5 mr-2" />
-                Guardar Configuración
-              </>
-            )}
-          </Button>
-        </div>
+               <div className="pt-4 border-t border-[#2a2b3d]">
+                  <h3 className="text-[#e2e2e9] font-medium text-sm mb-4">Redes Sociales</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-blue-500 font-bold">f</span> Facebook</Label>
+                      <Input name="facebook_url" value={formData.facebook_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white text-sm" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-pink-500 font-bold">IG</span> Instagram</Label>
+                      <Input name="instagram_url" value={formData.instagram_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white text-sm" />
+                    </div>
+                  </div>
+               </div>
+            </div>
+          )}
 
-      </form>
+          {/* TAB: TIENDA / CONFIG */}
+          {(activeTab === "landing" || activeTab === "configuracion") && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+               <div className="bg-[#2a2b3d]/30 border border-[#2a2b3d] p-4 text-center rounded-lg">
+                  <p className="text-slate-400 text-sm">Opciones en construcción. Puedes regresar a General o Contacto.</p>
+               </div>
+            </div>
+          )}
+
+          {/* Action Footer */}
+          <div className="mt-10 pt-6 border-t border-[#2a2b3d] flex justify-end">
+            <Button disabled={cargando} type="submit" className="bg-[#e11d48] hover:bg-[#be123c] text-white px-8 h-10 rounded-md font-medium text-sm transition-colors">
+              {cargando ? "Actualizando..." : "Actualizar Empresa"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

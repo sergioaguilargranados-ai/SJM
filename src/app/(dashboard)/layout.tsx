@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { AppTopbar } from "@/components/layout/AppTopbar";
 
 export default function DashboardLayout({
   children,
@@ -6,10 +7,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
+    <div className="min-h-screen bg-[#0f1015] transition-colors">
       <AppSidebar />
-      <div className="lg:pl-72 flex flex-col min-h-screen">
-        <main className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 w-full max-w-7xl mx-auto">
+      <AppTopbar />
+      <div className="lg:pl-64 flex flex-col min-h-screen">
+        <main className="flex-1 p-6 lg:p-8 pt-24 lg:pt-24 w-full mx-auto">
           {children}
         </main>
       </div>

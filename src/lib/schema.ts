@@ -9,9 +9,18 @@ export const organizaciones = pgTable("organizaciones", {
   nombre: varchar("nombre", { length: 255 }).notNull(),
   lema: varchar("lema", { length: 255 }),
   logo_url: text("logo_url"),
+  // Contacto Expandido
   telefono_contacto: varchar("telefono_contacto", { length: 50 }),
+  whatsapp_contacto: varchar("whatsapp_contacto", { length: 50 }),
   correo_contacto: varchar("correo_contacto", { length: 255 }),
+  direccion_completa: text("direccion_completa"),
   ubicacion_url: text("ubicacion_url"),
+  horarios_atencion: varchar("horarios_atencion", { length: 255 }),
+
+  // Redes Sociales
+  facebook_url: varchar("facebook_url", { length: 255 }),
+  instagram_url: varchar("instagram_url", { length: 255 }),
+  youtube_url: varchar("youtube_url", { length: 255 }),
   color_primario: varchar("color_primario", { length: 7 }).default("#2563eb"),
   color_secundario: varchar("color_secundario", { length: 7 }).default("#1e40af"),
   dominio_tenant: varchar("dominio_tenant", { length: 255 }),
