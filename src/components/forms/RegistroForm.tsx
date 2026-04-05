@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Church, CheckCircle2, User, Phone, MapPin, Heart } from "lucide-react";
 
+import { registrarSolicitudAction } from "@/app/actions/inscripciones";
+
+// Define el schema arriba de la misma forma que estaba...
 const formSchema = z.object({
   nombre_asistente: z.string().min(3, "Obligatorio (min 3 caracteres)"),
   edad: z.coerce.number().min(18, "Debes ser mayor de 18 años").max(99),
@@ -21,7 +24,6 @@ const formSchema = z.object({
   parroquia_procedencia: z.string().min(3, "Obligatorio"),
   medicinas_requeridas: z.string().optional(),
   
-  // Condicionales en caso de matrimonio (se validan lógicamente después)
   esposo_a_nombre: z.string().optional(),
   fecha_boda: z.string().optional(),
 });
@@ -29,6 +31,7 @@ const formSchema = z.object({
 export function RegistroForm({ eventoId }: { eventoId: string }) {
   const [success, setSuccess] = useState(false);
   const [esMatrimonial, setEsMatrimonial] = useState(false);
+  const [cargando, setCargando] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
@@ -39,9 +42,16 @@ export function RegistroForm({ eventoId }: { eventoId: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Valores enviados:", { ...values, eventoId });
-    // TODO: Enviar por Server Action a la BD en la nube (Neon).
-    setSuccess(true);
+    setCargando(true);
+    // Disparamos Backend
+    const respuesta = await registrarSolicitudAction({ ...values, eventoId });
+    setCargando(false);
+
+    if (respuesta.success) {
+      setSuccess(true);
+    } else {
+      alert("Error: " + respuesta.error);
+    }
   }
 
   if (success) {
@@ -177,8 +187,8 @@ export function RegistroForm({ eventoId }: { eventoId: string }) {
 
         {/* Submit area */}
         <div className="pt-6 flex justify-end">
-          <Button type="submit" size="lg" className="w-full md:w-auto px-12 rounded-xl text-base h-12 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
-            Completar Registro
+          <Button disabled={cargando} type="submit" size="lg" className="w-full md:w-auto px-12 rounded-xl text-base h-12 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
+            {cargando ? "Guardando..." : "Completar Registro"}
           </Button>
         </div>
       </form>
