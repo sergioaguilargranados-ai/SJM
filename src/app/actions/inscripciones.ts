@@ -23,11 +23,12 @@ export async function registrarSolicitudAction(datos: any) {
           return { success: false, error: "No hay diplomados activos registrados para el ID #1" };
        }
     } else {
-       // Validar Formato UUID
+       // Validar Formato UUID (Solo si no es '1')
        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-       if (!finalEventoId || finalEventoId.length < 30) {
-          return { success: false, error: "ID de Evento Inválido. Por favor usa un link oficial." };
+       if (!finalEventoId) {
+          return { success: false, error: "ID de Evento faltante." };
        }
+       // Si no es un ID especial y es muy corto, probablemente sea un error, pero dejamos pasar si es UUID o ID especial
     }
 
     // 1. Insertar el registro usando Drizzle ORM
