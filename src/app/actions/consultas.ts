@@ -37,3 +37,13 @@ export async function getServidores() {
     return { success: false, data: [], error: "No se pudieron cargar los servidores" };
   }
 }
+
+export async function getSedes() {
+  try {
+    const resultados = await db.select().from(sedes).orderBy(sedes.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
+    console.error("Error al consultar sedes:", error);
+    return { success: false, data: [], error: "No se pudieron cargar las sedes" };
+  }
+}

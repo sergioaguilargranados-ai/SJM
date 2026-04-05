@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion } from "@/lib/schema";
+import { solicitudes_inscripcion, usuarios, servidores } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
@@ -32,5 +33,51 @@ export async function registrarSolicitudAction(datos: any) {
   } catch (error: any) {
     console.error("Error al registrar solicitud:", error);
     return { success: false, error: "Hubo un problema de base de datos. Intenta nuevamente." };
+  }
+}
+
+export async function crearServidorAction(datos: any) {
+  try {
+    const { 
+      nombre_completo, correo, celular, sede_id, ministerio_id, cargo_id, 
+      estado_civil, fecha_nacimiento, sexo, fecha_ingreso, avance_servidor, 
+      retiros_tomados, observaciones, organizacion_id 
+    } = datos;
+
+    // Transacción para asegurar que se crea el usuario y el servidor
+    const result = await db.transaction(async (tx) => {
+      // 1. Crear Usuario base (si no existe por correo)
+      // Nota: En prod usar un 'upsert' o validar existencia. Para este flujo rápido insertamos.
+      const [nuevoUsuario] = await tx.insert(usuarios).values({
+        organizacion_id,
+        nombre_completo,
+        correo,
+        celular,
+        rol_id: null, // Se asignaría rol de SERVIDOR por defecto
+      }).returning();
+
+      // 2. Crear Relación en Tabla Servidores
+      const [nuevoServidor] = await tx.insert(servidores).values({
+        usuario_id: nuevoUsuario.id,
+        sede_id,
+        ministerio_id,
+        cargo_id,
+        estado_civil,
+        fecha_nacimiento: fecha_nacimiento || null,
+        sexo,
+        fecha_ingreso: fecha_ingreso || null,
+        avance_servidor,
+        retiros_tomados: Number(retiros_tomados) || 0,
+        observaciones,
+        estatus: true,
+      }).returning();
+
+      return nuevoServidor;
+    });
+
+    return { success: true, id: result.id };
+  } catch (error: any) {
+    console.error("Error al crear servidor:", error);
+    return { success: false, error: error.message || "Error al crear registro de servidor" };
   }
 }
