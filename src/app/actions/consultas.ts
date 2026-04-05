@@ -61,6 +61,20 @@ export async function getCasasRetiro() {
 export async function getTiposEventos() {
   try {
     const resultados = await db.select().from(tipos_eventos).orderBy(tipos_eventos.nombre);
+    
+    // TEMPORAL: Autoregistrar tipo Diplomado si no existe
+    const existeDiplomado = resultados.find(t => t.nombre === "Diplomados y Talleres on-line");
+    if (!existeDiplomado) {
+       const [primerSede] = await db.select().from(sedes).limit(1);
+       if (primerSede) {
+          await db.insert(tipos_eventos).values({
+            nombre: "Diplomados y Talleres on-line",
+            organizacion_id: primerSede.organizacion_id,
+            es_matrimonial: false
+          });
+       }
+    }
+
     return { success: true, data: resultados };
   } catch (error) {
     console.error("Error al consultar tipos de eventos:", error);
