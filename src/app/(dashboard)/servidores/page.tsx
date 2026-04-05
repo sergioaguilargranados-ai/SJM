@@ -1,9 +1,9 @@
-import { getServidores } from "@/app/actions/consultas";
+import { getServidores, getSedes } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Download, Search, Plus, UserCircle, ShieldCheck } from "lucide-react";
+import { Search, UserCircle, ShieldCheck } from "lucide-react";
 import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
-import { getSedes } from "@/app/actions/consultas";
+import { ModalImportarServidores } from "@/components/forms/ModalImportarServidores";
 
 // Forzamos la consulta dinámica (SSR) 
 export const dynamic = 'force-dynamic';
@@ -17,6 +17,10 @@ export default async function CatalogoServidores() {
   const servidores = servRes.data;
   const success = servRes.success;
   const sedes = sedesRes.data || [];
+
+  // IDs para Multi-Tenant (En prod vendrían de la sesión del Admin logueado)
+  const sedeIdActual = sedes[0]?.id; 
+  const organizacionIdActual = sedes[0]?.organizacion_id;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -50,10 +54,7 @@ export default async function CatalogoServidores() {
            </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 dark:bg-[#2a2b3d]/50 dark:hover:bg-[#2a2b3d] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-[#3b3c54] px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
-            <Download className="w-4 h-4" />
-            Excel
-          </button>
+          <ModalImportarServidores sedeId={sedeIdActual} organizacionId={organizacionIdActual} />
           <ModalCrearServidor sedes={sedes} />
         </div>
       </div>
