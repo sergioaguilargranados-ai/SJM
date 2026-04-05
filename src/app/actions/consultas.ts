@@ -179,3 +179,17 @@ export async function getEventoById(id: string) {
     return { success: false, data: null };
   }
 }
+
+export async function getInscripcionesByEvento(eventoId: string) {
+  try {
+    const resultados = await db
+      .select()
+      .from(solicitudes_inscripcion)
+      .where(eq(solicitudes_inscripcion.evento_id, eventoId))
+      .orderBy(desc(solicitudes_inscripcion.creado_en));
+    return { success: true, data: resultados };
+  } catch (error) {
+    console.error("Error al consultar inscritos por evento:", error);
+    return { success: false, data: [] };
+  }
+}

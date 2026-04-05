@@ -1,12 +1,14 @@
-import { getEventoById } from "@/app/actions/consultas";
+import { getEventoById, getInscripcionesByEvento } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Copy, ExternalLink, ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default async function DetalleEventoPage({ params }: { params: { eventoId: string } }) {
-  const { data: evento } = await getEventoById(params.eventoId);
+export default async function DetalleEventoPage({ params }: { params: Promise<{ eventoId: string }> }) {
+  const { eventoId } = await params;
+  const { data: evento } = await getEventoById(eventoId);
+  const { data: inscritos = [] } = await getInscripcionesByEvento(eventoId);
 
   if (!evento) {
     return (
@@ -93,10 +95,42 @@ export default async function DetalleEventoPage({ params }: { params: { eventoId
                    </div>
                    <div className="p-4 bg-slate-50 dark:bg-[#151621] rounded-2xl border border-slate-100 dark:border-[#2a2b3d]">
                       <p className="text-[10px] font-bold text-slate-400 uppercase">Confirmados</p>
-                      <p className="text-2xl font-black text-emerald-600 leading-none mt-1">0</p>
+                      <p className="text-2xl font-black text-emerald-600 leading-none mt-1">{inscritos.length}</p>
                    </div>
                 </div>
              </div>
+          </div>
+          {/* LISTA DE INSCRITOS */}
+          <div className="space-y-6">
+             <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-[#2a2b3d] pb-2">Asistentes Registrados</h4>
+             {inscritos.length === 0 ? (
+                <div className="py-12 text-center bg-slate-50 dark:bg-black/10 rounded-2xl border border-dashed border-slate-200 dark:border-[#2a2b3d]">
+                   <p className="text-sm text-slate-500">Aún no hay inscripciones para este evento.</p>
+                </div>
+             ) : (
+                <div className="overflow-x-auto">
+                   <table className="w-full text-left text-sm">
+                      <thead>
+                         <tr className="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-[#2a2b3d]">
+                            <th className="py-3 px-2">Nombre</th>
+                            <th className="py-3 px-2">WhatsApp</th>
+                            <th className="py-3 px-2">Localidad</th>
+                            <th className="py-3 px-2">Ministerio</th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
+                         {inscritos.map((ins: any) => (
+                            <tr key={ins.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                               <td className="py-3 px-2 font-bold text-slate-700 dark:text-slate-200">{ins.nombre_asistente}</td>
+                               <td className="py-3 px-2 text-slate-500">{ins.telefono_celular}</td>
+                               <td className="py-3 px-2 text-slate-500">{ins.pais_ciudad || "N/A"}</td>
+                               <td className="py-3 px-2 text-slate-500">{ins.ministerio_actual || "N/A"}</td>
+                            </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+             )}
           </div>
         </div>
       </div>
