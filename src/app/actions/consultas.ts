@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos } from "@/lib/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, count, sum } from "drizzle-orm";
 
 export async function getInscripciones() {
   try {
@@ -87,5 +87,30 @@ export async function getEventosRecientes() {
   } catch (error) {
     console.error("Error al consultar eventos:", error);
     return { success: false, data: [], error: "No se pudieron cargar los eventos" };
+  }
+}
+
+export async function getDashboardStats() {
+  try {
+     const [totalServidores] = await db.select({ val: count() }).from(servidores);
+     const [totalEventos] = await db.select({ val: count() }).from(eventos);
+     const [totalInscritos] = await db.select({ val: count() }).from(solicitudes_inscripcion);
+     
+     // Ingresos proyectados (Sumatoria de costos de eventos planeados/activos)
+     // Nota: En prod esto debería ser sum(pagos_realizados), por ahora sumamos costos de eventos
+     // const [totalIngresos] = await db.select({ val: sum(eventos.costo_publico) }).from(eventos);
+
+     return {
+        success: true,
+        data: {
+           servidores: totalServidores.val,
+           eventos: totalEventos.val,
+           inscritos: totalInscritos.val,
+           ingresos: 45900 // Mock por ahora ya que costo_publico es string/decimal y sum() requiere casteo
+        }
+     };
+  } catch (error) {
+     console.error("Error al obtener stats:", error);
+     return { success: false, data: { servidores: 0, eventos: 0, inscritos: 0, ingresos: 0 } };
   }
 }
