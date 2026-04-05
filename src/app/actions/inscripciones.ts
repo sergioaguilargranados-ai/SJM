@@ -25,6 +25,11 @@ export async function registrarSolicitudAction(datos: any) {
       esposo_a_nombre: datos.esposo_a_nombre || null,
       fecha_boda: datos.fecha_boda || null,
       
+      // Campos Especiales para Diplomados u Otros Eventos
+      pais_ciudad: datos.pais_ciudad || null,
+      ministerio_actual: datos.ministerio_actual || null,
+      compromiso_pago_99usd: datos.compromiso_pago_99usd === true,
+      
       // Control por defecto
       estatus_solicitud: "PENDIENTE_PAGO",
     }).returning(); // Nos devuelve el registro insertado
