@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, servidores, usuarios, sedes } from "@/lib/schema";
+import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos } from "@/lib/schema";
 import { desc, eq } from "drizzle-orm";
 
 export async function getInscripciones() {
@@ -45,5 +45,47 @@ export async function getSedes() {
   } catch (error) {
     console.error("Error al consultar sedes:", error);
     return { success: false, data: [], error: "No se pudieron cargar las sedes" };
+  }
+}
+
+export async function getCasasRetiro() {
+  try {
+    const resultados = await db.select().from(casas_retiro).where(eq(casas_retiro.estatus, true)).orderBy(casas_retiro.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
+    console.error("Error al consultar casas de retiro:", error);
+    return { success: false, data: [], error: "No se pudieron cargar las casas de retiro" };
+  }
+}
+
+export async function getTiposEventos() {
+  try {
+    const resultados = await db.select().from(tipos_eventos).orderBy(tipos_eventos.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
+    console.error("Error al consultar tipos de eventos:", error);
+    return { success: false, data: [], error: "No se pudieron cargar los tipos de eventos" };
+  }
+}
+
+export async function getEventosRecientes() {
+  try {
+    const resultados = await db
+      .select({
+         id: eventos.id,
+         tipo: tipos_eventos.nombre,
+         casa: casas_retiro.nombre,
+         fecha_inicio: eventos.fecha_inicio,
+         estatus: eventos.estatus,
+         costo: eventos.costo_publico
+      })
+      .from(eventos)
+      .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
+      .leftJoin(casas_retiro, eq(eventos.casa_retiro_id, casas_retiro.id))
+      .orderBy(desc(eventos.fecha_inicio));
+    return { success: true, data: resultados };
+  } catch (error) {
+    console.error("Error al consultar eventos:", error);
+    return { success: false, data: [], error: "No se pudieron cargar los eventos" };
   }
 }

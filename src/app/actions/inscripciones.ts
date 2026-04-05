@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, usuarios, servidores } from "@/lib/schema";
+import { solicitudes_inscripcion, usuarios, servidores, eventos } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
 // Formato genérico para parsear todo lo que venga del cliente
@@ -79,5 +79,31 @@ export async function crearServidorAction(datos: any) {
   } catch (error: any) {
     console.error("Error al crear servidor:", error);
     return { success: false, error: error.message || "Error al crear registro de servidor" };
+  }
+}
+
+export async function crearEventoAction(datos: any) {
+  try {
+    const { 
+       sede_id, tipo_evento_id, casa_retiro_id, fecha_inicio, fecha_fin, 
+       costo_publico, cupo_maximo, recomendaciones 
+    } = datos;
+
+    const [nuevoEvento] = await db.insert(eventos).values({
+      sede_id,
+      tipo_evento_id,
+      casa_retiro_id,
+      fecha_inicio: new Date(fecha_inicio),
+      fecha_fin: new Date(fecha_fin),
+      costo_publico: String(costo_publico),
+      cupo_maximo: Number(cupo_maximo),
+      recomendaciones,
+      estatus: 'PLANEACION'
+    }).returning();
+
+    return { success: true, id: nuevoEvento.id };
+  } catch (error: any) {
+    console.error("Error al crear evento:", error);
+    return { success: false, error: error.message || "Error al crear evento" };
   }
 }
