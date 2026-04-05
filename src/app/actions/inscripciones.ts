@@ -112,3 +112,39 @@ export async function crearEventoAction(datos: any) {
     return { success: false, error: error.message || "Error al crear evento" };
   }
 }
+
+export async function actualizarServidorAction(id: string, datos: any) {
+  try {
+    const { 
+       nombre_completo, celular, ministerio_id, cargo_id, 
+       estado_civil, avance_servidor, estatus 
+    } = datos;
+
+    // 1. Obtener registro actual para sacar el usuario_id
+    const [servActual] = await db.select().from(servidores).where(eq(servidores.id, id));
+    if (!servActual) throw new Error("Servidor no encontrado");
+
+    await db.transaction(async (tx) => {
+      // 2. Actualizar Usuario (Nombre y Celular)
+      await tx.update(usuarios)
+        .set({ nombre_completo, celular })
+        .where(eq(usuarios.id, servActual.usuario_id));
+
+      // 3. Actualizar Relación Servidor
+      await tx.update(servidores)
+        .set({ 
+           ministerio_id: ministerio_id || null, 
+           cargo_id: cargo_id || null,
+           estado_civil,
+           avance_servidor,
+           estatus: estatus === true
+        })
+        .where(eq(servidores.id, id));
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al actualizar servidor:", error);
+    return { success: false, error: error.message || "Error al actualizar registro" };
+  }
+}

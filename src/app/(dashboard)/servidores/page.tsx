@@ -4,6 +4,7 @@ import { es } from "date-fns/locale";
 import { Search, UserCircle, ShieldCheck } from "lucide-react";
 import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
 import { ModalImportarServidores } from "@/components/forms/ModalImportarServidores";
+import { ModalEditarServidor } from "@/components/forms/ModalEditarServidor";
 
 // Forzamos la consulta dinámica (SSR) 
 export const dynamic = 'force-dynamic';

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos } from "@/lib/schema";
+import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos, ministerios, cargos } from "@/lib/schema";
 import { desc, eq, count, sum } from "drizzle-orm";
 
 export async function getInscripciones() {
@@ -112,5 +112,48 @@ export async function getDashboardStats() {
   } catch (error) {
      console.error("Error al obtener stats:", error);
      return { success: false, data: { servidores: 0, eventos: 0, inscritos: 0, ingresos: 0 } };
+  }
+}
+
+export async function getMinisterios() {
+  try {
+    const resultados = await db.select().from(ministerios).orderBy(ministerios.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
+    return { success: false, data: [] };
+  }
+}
+
+export async function getCargos() {
+  try {
+    const resultados = await db.select().from(cargos).orderBy(cargos.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
+    return { success: false, data: [] };
+  }
+}
+
+export async function getServidorById(id: string) {
+  try {
+    const [resultado] = await db
+      .select({
+         id: servidores.id,
+         estatus: servidores.estatus,
+         nombre_completo: usuarios.nombre_completo,
+         correo: usuarios.correo,
+         celular: usuarios.celular,
+         ministerio_id: servidores.ministerio_id,
+         cargo_id: servidores.cargo_id,
+         estado_civil: servidores.estado_civil,
+         avance_servidor: servidores.avance_servidor
+      })
+      .from(servidores)
+      .leftJoin(usuarios, eq(servidores.usuario_id, usuarios.id))
+      .where(eq(servidores.id, id))
+      .limit(1);
+      
+    return { success: true, data: resultado };
+  } catch (error) {
+    return { success: false, data: null };
   }
 }
