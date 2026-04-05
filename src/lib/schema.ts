@@ -12,6 +12,8 @@ export const organizaciones = pgTable("organizaciones", {
   telefono_contacto: varchar("telefono_contacto", { length: 50 }),
   correo_contacto: varchar("correo_contacto", { length: 255 }),
   ubicacion_url: text("ubicacion_url"),
+  color_primario: varchar("color_primario", { length: 7 }).default("#2563eb"),
+  color_secundario: varchar("color_secundario", { length: 7 }).default("#1e40af"),
   dominio_tenant: varchar("dominio_tenant", { length: 255 }),
   creado_en: timestamp("creado_en").defaultNow(),
 });
