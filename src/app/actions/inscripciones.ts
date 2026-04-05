@@ -8,17 +8,16 @@ import { eq } from "drizzle-orm";
 export async function registrarSolicitudAction(datos: any) {
   try {
     // 1. Insertar el registro usando Drizzle ORM
-    const nuevaInscripcion = await db.insert(solicitudes_inscripcion).values({
+    const inscData = {
       evento_id: datos.eventoId,
-      // Se asume que el evento existe. En producción cruzar contra eventos.
       nombre_asistente: datos.nombre_asistente,
-      edad: Number(datos.edad),
-      sexo: datos.sexo,
-      estado_civil: datos.estado_civil,
-      telefono_celular: datos.telefono_celular,
-      correo: datos.correo,
-      parroquia_procedencia: datos.parroquia_procedencia,
-      es_primera_vez: datos.es_primera_vez,
+      edad: datos.edad ? Number(datos.edad) : null,
+      sexo: datos.sexo || null,
+      estado_civil: datos.estado_civil || null,
+      telefono_celular: datos.telefono_celular || null,
+      correo: datos.correo || null,
+      parroquia_procedencia: datos.parroquia_procedencia || null,
+      es_primera_vez: datos.es_primera_vez === true,
       medicinas_requeridas: datos.medicinas_requeridas || null,
       
       // Datos de cónyuge
@@ -32,12 +31,19 @@ export async function registrarSolicitudAction(datos: any) {
       
       // Control por defecto
       estatus_solicitud: "PENDIENTE_PAGO",
-    }).returning(); // Nos devuelve el registro insertado
+    };
+
+    const nuevaInscripcion = await db.insert(solicitudes_inscripcion)
+      .values(inscData)
+      .returning(); 
 
     return { success: true, id: nuevaInscripcion[0].id };
   } catch (error: any) {
     console.error("Error al registrar solicitud:", error);
-    return { success: false, error: "Hubo un problema de base de datos. Intenta nuevamente." };
+    return { 
+      success: false, 
+      error: error.message || "Error interno de base de datos" 
+    };
   }
 }
 
