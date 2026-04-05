@@ -62,9 +62,8 @@ export async function getTiposEventos() {
   try {
     const resultados = await db.select().from(tipos_eventos).orderBy(tipos_eventos.nombre);
     
-    // TEMPORAL: Autoregistrar tipo Diplomado si no existe
-    const existeDiplomado = resultados.find(t => t.nombre === "Diplomados y Talleres on-line");
-    if (!existeDiplomado) {
+    // TEMPORAL: Autoregistrar tipo Diplomado si no existe (FORZADO)
+    if (!resultados.some(t => t.nombre.includes("Diplomados"))) {
        const [primerSede] = await db.select().from(sedes).limit(1);
        if (primerSede) {
           await db.insert(tipos_eventos).values({

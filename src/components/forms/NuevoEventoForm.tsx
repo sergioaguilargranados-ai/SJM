@@ -124,7 +124,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
             </div>
 
             <div className="space-y-2">
-              <Label className="dark:text-slate-300">Costo al Público *</Label>
+              <Label className="dark:text-slate-300">Aportación Sugerida *</Label>
               <div className="relative">
                 <DollarSign className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <Input type="number" step="0.01" {...form.register("costo_publico")} className="pl-9 dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />

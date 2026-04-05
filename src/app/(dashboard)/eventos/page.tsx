@@ -82,7 +82,7 @@ export default async function ReporteRetiros() {
                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{evt.fecha_inicio ? format(new Date(evt.fecha_inicio), "dd MMM, yy", { locale: es }) : "TBD"}</p>
                      </div>
                      <div>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Costo Público</p>
+                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Aportación Sugerida</p>
                         <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">${evt.costo || "0"}</p>
                      </div>
                   </div>
