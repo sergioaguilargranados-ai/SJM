@@ -47,19 +47,19 @@ export function AppSidebar() {
 
       {/* Sidebar ERPCubox Style */}
       <aside className={cn(
-        "fixed top-0 left-0 z-50 w-64 h-screen transition-transform bg-[#1a1b26] border-r border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
+        "fixed top-0 left-0 z-50 w-64 h-screen transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         {/* Brand Header */}
-        <div className="h-16 flex items-center px-6 border-b border-[#2a2b3d]">
+        <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-[#2a2b3d]">
           <div className="flex items-center gap-3">
              <div className="w-8 h-8 rounded-sm bg-blue-600 flex items-center justify-center text-white font-extrabold text-xs shadow-sm">
                 SJM
              </div>
-             <h2 className="font-bold text-white text-sm tracking-wide leading-tight truncate">{currentOrg.nombre}</h2>
+             <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate">{currentOrg.nombre}</h2>
           </div>
           {/* Close button for mobile */}
-          <button onClick={() => setMobileMenuOpen(false)} className="ml-auto lg:hidden text-slate-400 hover:text-white">
+          <button onClick={() => setMobileMenuOpen(false)} className="ml-auto lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -77,13 +77,13 @@ export function AppSidebar() {
                     className={cn(
                       "flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group",
                       isActive
-                        ? "bg-[#e11d48] text-white shadow-md" // El rojo vibrante estilo ERPCubox
-                        : "text-slate-400 hover:bg-[#2a2b3d] hover:text-white"
+                        ? "bg-blue-600 dark:bg-[#e11d48] text-white shadow-md font-bold" 
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
                     )}
                   >
                     <item.icon className={cn(
                       "w-4 h-4 mr-3 transition-colors", 
-                      isActive ? "text-white" : "text-slate-500 group-hover:text-slate-300"
+                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-slate-300"
                     )} />
                     {item.name}
                   </Link>
@@ -94,8 +94,8 @@ export function AppSidebar() {
         </div>
 
         {/* Bottom Menu / Logout */}
-        <div className="p-4 border-t border-[#2a2b3d]">
-           <button className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-[#e11d48] hover:bg-[#2a2b3d] rounded-lg transition-colors">
+        <div className="p-4 border-t border-slate-200 dark:border-[#2a2b3d]">
+           <button className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-[#e11d48] hover:bg-red-50 dark:hover:bg-[#2a2b3d] rounded-lg transition-colors">
               <LogOut className="w-4 h-4 mr-3" />
               Cerrar Sesión
            </button>

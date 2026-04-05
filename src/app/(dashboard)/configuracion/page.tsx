@@ -58,14 +58,14 @@ export default function ConfiguracionOrganizacion() {
     <div className="max-w-5xl mx-auto">
       {/* ERPCubox Theme Modal Header Equivalent */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white tracking-tight">Editar Empresa</h1>
-        <p className="text-[#8e8ea0] mt-1 text-sm">Configure los detalles de la empresa, incluyendo su plan, subdominio y portal público.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Editar Empresa</h1>
+        <p className="text-slate-500 dark:text-[#8e8ea0] mt-1 text-sm">Configure los detalles de la empresa, incluyendo su plan, subdominio y portal público.</p>
       </div>
 
-      <div className="bg-[#1a1b26] border border-[#2a2b3d] rounded-xl shadow-xl overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-xl shadow-sm dark:shadow-xl overflow-hidden flex flex-col">
         
         {/* TABS NAVIGATION */}
-        <div className="flex border-b border-[#2a2b3d] overflow-x-auto hide-scrollbar">
+        <div className="flex border-b border-slate-200 dark:border-[#2a2b3d] overflow-x-auto hide-scrollbar">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -75,8 +75,8 @@ export default function ConfiguracionOrganizacion() {
                 className={cn(
                   "flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all",
                   isActive
-                    ? "text-[#e11d48] border-b-2 border-[#e11d48] bg-[#2a2b3d]/30"
-                    : "text-[#8e8ea0] hover:text-slate-300 hover:bg-[#2a2b3d]/10 border-b-2 border-transparent"
+                    ? "text-blue-600 dark:text-[#e11d48] border-b-2 border-blue-600 dark:border-[#e11d48] bg-slate-50 dark:bg-[#2a2b3d]/30"
+                    : "text-slate-500 dark:text-[#8e8ea0] hover:text-slate-900 dark:hover:text-slate-300 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/10 border-b-2 border-transparent"
                 )}
               >
                 <tab.icon className="w-4 h-4" />
@@ -93,16 +93,16 @@ export default function ConfiguracionOrganizacion() {
             <div className="space-y-6 animate-in fade-in duration-300">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Nombre Oficial de la Empresa</Label>
-                   <Input name="nombre" value={formData.nombre} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Nombre Oficial de la Empresa</Label>
+                   <Input name="nombre" value={formData.nombre} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                  </div>
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Lema</Label>
-                   <Input name="lema" value={formData.lema} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Lema</Label>
+                   <Input name="lema" value={formData.lema} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                  </div>
                  <div className="space-y-2 md:col-span-2">
-                   <Label className="text-[#c1c1d1]">URL del Logotipo</Label>
-                   <Input name="logo_url" value={formData.logo_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">URL del Logotipo</Label>
+                   <Input name="logo_url" value={formData.logo_url} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                  </div>
                </div>
             </div>
@@ -111,34 +111,34 @@ export default function ConfiguracionOrganizacion() {
           {/* TAB: DOMINIO Y ACCESO */}
           {activeTab === "dominio" && (
             <div className="space-y-6 animate-in fade-in duration-300">
-               <div className="bg-[#121b2d] border border-[#1e293b] p-4 rounded-lg flex gap-3 text-sm">
-                  <span className="text-blue-400">💡</span>
+               <div className="bg-blue-50 dark:bg-[#121b2d] border border-blue-100 dark:border-[#1e293b] p-4 rounded-lg flex gap-3 text-sm">
+                  <span className="text-blue-500 dark:text-blue-400">💡</span>
                   <div>
-                     <p className="font-semibold text-blue-300">Configuración de dominio</p>
-                     <p className="text-blue-200/70 mt-1">El <strong className="text-white">Dominio Personalizado</strong> tiene prioridad sobre el Subdominio. Úsalo si la landing tiene su propio dominio (ej: portal.sjm.org).</p>
+                     <p className="font-semibold text-blue-800 dark:text-blue-300">Configuración de dominio</p>
+                     <p className="text-blue-600 dark:text-blue-200/70 mt-1">El <strong className="text-blue-900 dark:text-white">Dominio Personalizado</strong> tiene prioridad sobre el Subdominio. Úsalo si la landing tiene su propio dominio (ej: portal.sjm.org).</p>
                   </div>
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Dominio Personalizado (Prioridad Alta)</Label>
-                   <Input name="dominio_personalizado" value={formData.dominio_personalizado} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white" />
-                   <p className="text-xs text-[#8e8ea0]">URL exacta donde se aloja el portal público</p>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Dominio Personalizado (Prioridad Alta)</Label>
+                   <Input name="dominio_personalizado" value={formData.dominio_personalizado} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
+                   <p className="text-xs text-slate-500 dark:text-[#8e8ea0]">URL exacta donde se aloja el portal público</p>
                  </div>
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Subdominio (Legacy)</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Subdominio (Legacy)</Label>
                    <div className="flex">
-                     <Input name="subdominio" value={formData.subdominio} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] border-r-0 rounded-r-none text-white focus-visible:z-10" />
-                     <div className="bg-[#2a2b3d] border border-[#3b3c54] border-l-0 rounded-r-md px-3 flex items-center text-sm text-[#8e8ea0]">.sjm.org</div>
+                     <Input name="subdominio" value={formData.subdominio} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] border-r-0 rounded-r-none text-slate-900 dark:text-white focus-visible:z-10" />
+                     <div className="bg-slate-100 dark:bg-[#2a2b3d] border border-slate-300 dark:border-[#3b3c54] border-l-0 rounded-r-md px-3 flex items-center text-sm text-slate-500 dark:text-[#8e8ea0]">.sjm.org</div>
                    </div>
                  </div>
                  <div className="space-y-2 md:col-span-2">
-                   <Label className="text-[#c1c1d1]">URL del Login</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">URL del Login</Label>
                    <div className="relative">
-                      <Input name="url_login" value={formData.url_login} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                      <Input name="url_login" value={formData.url_login} onChange={handleChange} className="pl-9 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                       <span className="absolute left-3 top-2.5">🔒</span>
                    </div>
-                   <p className="text-xs text-[#8e8ea0]">Redirección para "Iniciar Sesión"</p>
+                   <p className="text-xs text-slate-500 dark:text-[#8e8ea0]">Redirección para "Iniciar Sesión"</p>
                  </div>
                </div>
             </div>
@@ -149,62 +149,62 @@ export default function ConfiguracionOrganizacion() {
             <div className="space-y-6 animate-in fade-in duration-300">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Email de Contacto</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Email de Contacto</Label>
                    <div className="relative">
                      <span className="absolute left-3 top-2.5 text-slate-400">✉️</span>
-                     <Input name="correo_contacto" value={formData.correo_contacto} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <Input name="correo_contacto" value={formData.correo_contacto} onChange={handleChange} className="pl-9 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
                  </div>
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Teléfono</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Teléfono</Label>
                    <div className="relative">
                      <span className="absolute left-3 top-2.5 text-slate-400">📞</span>
-                     <Input name="telefono_contacto" value={formData.telefono_contacto} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <Input name="telefono_contacto" value={formData.telefono_contacto} onChange={handleChange} className="pl-9 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
                  </div>
                  <div className="space-y-2 md:col-span-2">
-                   <Label className="text-[#c1c1d1]">Dirección Fiscal Completa</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Dirección Fiscal Completa</Label>
                    <div className="relative">
                      <span className="absolute left-3 top-2.5 text-slate-400">📍</span>
-                     <Input name="direccion_completa" value={formData.direccion_completa} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <Input name="direccion_completa" value={formData.direccion_completa} onChange={handleChange} className="pl-9 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
                  </div>
                  
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">WhatsApp</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">WhatsApp</Label>
                    <div className="relative">
-                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm">WH</span>
-                     <Input name="whatsapp_contacto" value={formData.whatsapp_contacto} onChange={handleChange} className="pl-10 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-bold">WH</span>
+                     <Input name="whatsapp_contacto" value={formData.whatsapp_contacto} onChange={handleChange} className="pl-10 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
-                   <p className="text-xs text-[#8e8ea0]">Formato internacional (+52...)</p>
+                   <p className="text-xs text-slate-500 dark:text-[#8e8ea0]">Formato internacional (+52...)</p>
                  </div>
                  <div className="space-y-2">
-                   <Label className="text-[#c1c1d1]">Link Google Maps</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Link Google Maps</Label>
                    <div className="relative">
-                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm">GM</span>
-                     <Input name="ubicacion_url" value={formData.ubicacion_url} onChange={handleChange} className="pl-10 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-bold">GM</span>
+                     <Input name="ubicacion_url" value={formData.ubicacion_url} onChange={handleChange} className="pl-10 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
-                   <p className="text-xs text-[#8e8ea0]">URL completa de tu ubicación</p>
+                   <p className="text-xs text-slate-500 dark:text-[#8e8ea0]">URL completa de tu ubicación</p>
                  </div>
                  <div className="space-y-2 md:col-span-2">
-                   <Label className="text-[#c1c1d1]">Horarios de Atención</Label>
+                   <Label className="text-slate-700 dark:text-[#c1c1d1]">Horarios de Atención</Label>
                    <div className="relative">
                      <span className="absolute left-3 top-2.5 text-slate-400">🕒</span>
-                     <Input name="horarios_atencion" value={formData.horarios_atencion} onChange={handleChange} className="pl-9 bg-[#0f1015] border-[#2a2b3d] text-white" />
+                     <Input name="horarios_atencion" value={formData.horarios_atencion} onChange={handleChange} className="pl-9 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white" />
                    </div>
                  </div>
                </div>
 
-               <div className="pt-4 border-t border-[#2a2b3d]">
-                  <h3 className="text-[#e2e2e9] font-medium text-sm mb-4">Redes Sociales</h3>
+               <div className="pt-6 mt-6 border-t border-slate-200 dark:border-[#2a2b3d]">
+                  <h3 className="text-slate-900 dark:text-[#e2e2e9] font-semibold text-sm mb-4">Redes Sociales</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label className="text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-blue-500 font-bold">f</span> Facebook</Label>
-                      <Input name="facebook_url" value={formData.facebook_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white text-sm" />
+                      <Label className="text-slate-700 dark:text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-blue-600 dark:text-blue-500 font-bold">f</span> Facebook</Label>
+                      <Input name="facebook_url" value={formData.facebook_url} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white text-sm" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-pink-500 font-bold">IG</span> Instagram</Label>
-                      <Input name="instagram_url" value={formData.instagram_url} onChange={handleChange} className="bg-[#0f1015] border-[#2a2b3d] text-white text-sm" />
+                      <Label className="text-slate-700 dark:text-[#c1c1d1] flex items-center gap-2 text-xs"><span className="text-pink-600 dark:text-pink-500 font-bold">IG</span> Instagram</Label>
+                      <Input name="instagram_url" value={formData.instagram_url} onChange={handleChange} className="bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d] text-slate-900 dark:text-white text-sm" />
                     </div>
                   </div>
                </div>
@@ -214,15 +214,15 @@ export default function ConfiguracionOrganizacion() {
           {/* TAB: TIENDA / CONFIG */}
           {(activeTab === "landing" || activeTab === "configuracion") && (
             <div className="space-y-6 animate-in fade-in duration-300">
-               <div className="bg-[#2a2b3d]/30 border border-[#2a2b3d] p-4 text-center rounded-lg">
-                  <p className="text-slate-400 text-sm">Opciones en construcción. Puedes regresar a General o Contacto.</p>
+               <div className="bg-slate-50 dark:bg-[#2a2b3d]/30 border border-slate-200 dark:border-[#2a2b3d] p-4 text-center rounded-lg">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Opciones en construcción. Puedes regresar a General o Contacto.</p>
                </div>
             </div>
           )}
 
           {/* Action Footer */}
-          <div className="mt-10 pt-6 border-t border-[#2a2b3d] flex justify-end">
-            <Button disabled={cargando} type="submit" className="bg-[#e11d48] hover:bg-[#be123c] text-white px-8 h-10 rounded-md font-medium text-sm transition-colors">
+          <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#2a2b3d] flex justify-end">
+            <Button disabled={cargando} type="submit" className="bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white px-8 h-10 rounded-md font-medium text-sm transition-colors shadow-sm">
               {cargando ? "Actualizando..." : "Actualizar Empresa"}
             </Button>
           </div>
