@@ -31,7 +31,7 @@ export function RegistroForm({ eventoId }: { eventoId: string }) {
   const [esMatrimonial, setEsMatrimonial] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       es_primera_vez: true,
       sexo: "M",
