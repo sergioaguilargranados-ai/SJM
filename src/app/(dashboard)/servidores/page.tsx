@@ -2,13 +2,21 @@ import { getServidores } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Download, Search, Plus, UserCircle, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
+import { getSedes } from "@/app/actions/consultas";
 
 // Forzamos la consulta dinámica (SSR) 
 export const dynamic = 'force-dynamic';
 
 export default async function CatalogoServidores() {
-  const { data: servidores, success } = await getServidores();
+  const [servRes, sedesRes] = await Promise.all([
+    getServidores(),
+    getSedes()
+  ]);
+  
+  const servidores = servRes.data;
+  const success = servRes.success;
+  const sedes = sedesRes.data || [];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -46,10 +54,7 @@ export default async function CatalogoServidores() {
             <Download className="w-4 h-4" />
             Excel
           </button>
-          <Link href="/servidores/nuevo" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
-            <Plus className="w-4 h-4" />
-            Añadir Servidor
-          </Link>
+          <ModalCrearServidor sedes={sedes} />
         </div>
       </div>
 

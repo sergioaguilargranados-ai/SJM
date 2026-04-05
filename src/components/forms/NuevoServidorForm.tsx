@@ -26,7 +26,7 @@ const formSchema = z.object({
   observaciones: z.string().optional(),
 });
 
-export default function NuevoServidorForm({ sedes }: { sedes: any[] }) {
+export default function NuevoServidorForm({ sedes, onSuccess, isModal }: { sedes: any[], onSuccess?: () => void, isModal?: boolean }) {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
 
@@ -47,26 +47,32 @@ export default function NuevoServidorForm({ sedes }: { sedes: any[] }) {
     setCargando(false);
 
     if (res.success) {
-      router.push("/servidores");
-      router.refresh();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.push("/servidores");
+        router.refresh();
+      }
     } else {
       alert("Error: " + res.error);
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/servidores" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-          <ChevronLeft className="w-5 h-5 text-slate-500" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nuevo Registro de Servidor</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Captura la información base para integrar al nuevo miembro a la comunidad.</p>
+    <div className={cn("max-w-4xl mx-auto space-y-6", isModal && "max-w-full")}>
+      {!isModal && (
+        <div className="flex items-center gap-4">
+          <Link href="/servidores" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <ChevronLeft className="w-5 h-5 text-slate-500" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nuevo Registro de Servidor</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Captura la información base para integrar al nuevo miembro a la comunidad.</p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-20">
+      <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-6", !isModal && "pb-20")}>
         
         {/* BLOQUE 1: Identidad Core */}
         <div className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-xl shadow-sm p-6 md:p-8">
@@ -167,12 +173,17 @@ export default function NuevoServidorForm({ sedes }: { sedes: any[] }) {
           </div>
         </div>
 
-        {/* Footer con acciones flotantes para guardado rápido */}
-        <div className="fixed bottom-0 left-0 lg:left-64 right-0 h-16 bg-white dark:bg-[#1a1b26] border-t border-slate-200 dark:border-[#2a2b3d] flex items-center justify-end px-8 z-40">
+        {/* Footer con acciones - Flotante solo si NO es modal */}
+        <div className={cn(
+          "flex items-center justify-end px-8 z-40",
+          !isModal ? "fixed bottom-0 left-0 lg:left-64 right-0 h-16 bg-white dark:bg-[#1a1b26] border-t border-slate-200 dark:border-[#2a2b3d]" : "pt-6"
+        )}>
            <div className="flex gap-4">
-              <Link href="/servidores" className="h-10 px-6 flex items-center justify-center text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors">
-                Cancelar
-              </Link>
+              {!isModal && (
+                <Link href="/servidores" className="h-10 px-6 flex items-center justify-center text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors">
+                  Cancelar
+                </Link>
+              )}
               <Button disabled={cargando} type="submit" className="bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white px-8 h-10 rounded-md font-bold shadow-lg shadow-blue-100 dark:shadow-none">
                  <Save className="w-4 h-4 mr-2" />
                  {cargando ? "Guardando..." : "Crear Servidor"}
@@ -182,4 +193,8 @@ export default function NuevoServidorForm({ sedes }: { sedes: any[] }) {
       </form>
     </div>
   );
+}
+
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(" ");
 }
