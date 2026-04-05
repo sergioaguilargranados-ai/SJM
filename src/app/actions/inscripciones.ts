@@ -1,22 +1,38 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, usuarios, servidores, eventos } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos } from "@/lib/schema";
+import { eq, desc } from "drizzle-orm";
 
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
   try {
-    // 0. Validar Formato UUID
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    // Si es un ID corto de prueba o no cumple el formato, detenemos antes de ir a Neon
-    if (!datos.eventoId || datos.eventoId.length < 30) {
-       return { success: false, error: "ID de Evento Inválido (No es un UUID válido). Por favor usa un link oficial." };
-     }
+    // 0. Soporte para Link Legacy "1" (Diplomado ya publicado)
+    let finalEventoId = datos.eventoId;
+    if (finalEventoId === "1") {
+       const [ultimoEvento] = await db.select()
+          .from(eventos)
+          .innerJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
+          .where(eq(tipos_eventos.nombre, "Diplomados y Talleres on-line"))
+          .orderBy(desc(eventos.fecha_inicio))
+          .limit(1);
+       
+       if (ultimoEvento) {
+          finalEventoId = ultimoEvento.eventos.id;
+       } else {
+          return { success: false, error: "No hay diplomados activos registrados para el ID #1" };
+       }
+    } else {
+       // Validar Formato UUID
+       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+       if (!finalEventoId || finalEventoId.length < 30) {
+          return { success: false, error: "ID de Evento Inválido. Por favor usa un link oficial." };
+       }
+    }
 
     // 1. Insertar el registro usando Drizzle ORM
     const inscData = {
-      evento_id: datos.eventoId,
+      evento_id: finalEventoId,
       nombre_asistente: datos.nombre_asistente,
       edad: datos.edad ? Number(datos.edad) : null,
       sexo: datos.sexo || null,
