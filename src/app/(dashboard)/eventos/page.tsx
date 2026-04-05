@@ -1,13 +1,26 @@
-import { getEventosRecientes } from "@/app/actions/consultas";
+import { getEventosRecientes, getSedes, getCasasRetiro, getTiposEventos } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Download, Search, Plus, CalendarDays, MapPin, Target, DollarSign, Users, ChevronRight } from "lucide-react";
+import { Download, Search, CalendarDays, MapPin, Target, DollarSign, Users, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { ModalCrearEvento } from "@/components/forms/ModalCrearEvento";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ReporteRetiros() {
-  const { data: eventos, success } = await getEventosRecientes();
+  const [evtRes, sedesRes, casasRes, tiposRes] = await Promise.all([
+    getEventosRecientes(),
+    getSedes(),
+    getCasasRetiro(),
+    getTiposEventos()
+  ]);
+
+  const eventos = evtRes.data;
+  const success = evtRes.success;
+  
+  const sedes = sedesRes.data || [];
+  const casas = casasRes.data || [];
+  const tipos = tiposRes.data || [];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -25,10 +38,7 @@ export default async function ReporteRetiros() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Link href="/eventos/nuevo" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-blue-100 dark:shadow-none">
-            <Plus className="w-4 h-4" />
-            Programar Retiro
-          </Link>
+          <ModalCrearEvento sedes={sedes} casas={casas} tipos={tipos} />
         </div>
       </div>
 
