@@ -44,7 +44,7 @@ export default function RootLayout({
                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">SJM Core Infrastructure</p>
              </div>
              <p className="text-[10px] font-mono text-slate-400 dark:text-slate-600 bg-slate-50 dark:bg-black/20 p-1 px-2 rounded">
-                Build: v1.026 - Master Production (CDMX: 05-04-26 11:26)
+                Build: v1.060 - Master Production (CDMX: 07-04-26 16:40)
              </p>
           </footer>
         </ThemeProvider>

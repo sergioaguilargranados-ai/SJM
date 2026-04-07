@@ -1,22 +1,52 @@
 @import "tailwindcss";
 
+/* ============================================ */
+/* SISTEMA DE TEMA CLARO/OSCURO - SJM Platform  */
+/* Usa selector .dark (next-themes class mode)  */
+/* NUNCA usar @media (prefers-color-scheme)     */
+/* ============================================ */
+
+/* --- Tema Claro (por defecto) --- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --sidebar: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --muted: #64748b;
+  --muted-soft: #94a3b8;
+  --accent-primary: #2563eb;
+  --accent-secondary: #1e40af;
+  --accent-tertiary: #10b981;
+}
+
+/* --- Tema Oscuro (activado por next-themes) --- */
+.dark {
+  --background: #0f1015;
+  --foreground: #ededed;
+  --surface: #151621;
+  --card: #1a1b26;
+  --card-border: #2a2b3d;
+  --sidebar: #1a1b26;
+  --sidebar-border: #2a2b3d;
+  --muted: #8e8ea0;
+  --muted-soft: #5e5e72;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #2563eb;
+  --accent-tertiary: #34d399;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

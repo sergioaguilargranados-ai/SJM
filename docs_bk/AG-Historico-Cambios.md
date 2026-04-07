@@ -1,33 +1,7 @@
 # 📜 Histórico de Cambios - SJM Platform
 
-**Última actualización:** 07 de Abril de 2026 - 16:40 CST
+**Última actualización:** 06 de Abril de 2026 - 02:35 CST
 **Responsable:** AntiGravity AI Assistant
-
----
-
-### v1.060 - 07 de Abril de 2026 - 16:40 CST
-
-#### Herramientas de Desarrollo (Fase 1)
-- **Workflows automatizados:** Creación de 4 workflows en `.agents/workflows/`:
-  - `/build` — Compilación y verificación TypeScript
-  - `/version` — Actualización de versión en 4 archivos (layout, landing, login, histórico)
-  - `/deploy` — Commit y push a GitHub con auto-deploy a Vercel
-  - `/database` — Migraciones Drizzle ORM a Neon PostgreSQL
-- **AGENTS.md actualizado:** Referencia rápida completa del proyecto con credenciales, convenciones, checklist pre-commit y listado de workflows.
-- **AG-Contexto-Proyecto.md enriquecido:** Secciones nuevas de Herramientas de Desarrollo y Estándar de Tema Claro/Oscuro.
-
-#### Fix Tema Claro/Oscuro (Fase 4)
-- **Bug Crítico resuelto:** El toggle Sol/Luna no funcionaba porque `globals.css` usaba `@media (prefers-color-scheme: dark)` en lugar del selector `.dark` que usa `next-themes`. **Corregido.**
-- **Sistema de CSS Variables completo:** 12 variables de diseño (background, foreground, surface, card, muted, accents) con valores para tema claro y oscuro.
-- **Componentes UI corregidos:**
-  - `button.tsx` — Variantes `outline`, `secondary`, `ghost` y `link` ahora tienen `dark:` classes
-  - `label.tsx` — Texto visible en dark mode (`dark:text-slate-200`)
-  - `dialog.tsx` — Fondo y bordes explícitos para dark mode (`dark:bg-[#1a1b26]`, `dark:border-[#2a2b3d]`)
-- **Paleta Dark Mode documentada:** Tokens estandarizados para que todo componente futuro use los mismos colores.
-
-#### Infraestructura
-- **Build:** ✅ TypeScript sin errores, 28 rutas funcionales
-- **Versión sincronizada** en layout.tsx, page.tsx, login/page.tsx
 
 ---
 

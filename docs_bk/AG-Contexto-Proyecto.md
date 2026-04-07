@@ -13,7 +13,7 @@
 **Plataforma SJM - "Servidores de Jesús por María"**
 
 ### Objetivo General
-Sistema integral SaaS Multi-Organización para gestión de un movimiento católico con alcance nacional/internacional. Contará con sitio web público y marca blanca (Landing Page, Blog, Tienda, Donativos, etc ) y una intranet/portal de control (Servidores, Eventos, Finanzas, Documentos, etc.) con accesos granulares por funciones en roles.
+Sistema integral SaaS Multi-Organización para gestión de un movimiento católico con alcance nacional/internacional. Contará con sitio web público (Landing Page, Blog, Tienda, Donativos) y una intranet/portal de control (Servidores, Eventos, Finanzas, Documentos) con accesos granulares por roles.
 
 ### Repositorios y Despliegue
 - **Dominio actual:** www.serjema.com.mx (migrando a serjema.com)
@@ -58,7 +58,7 @@ Al igual que en otros proyectos (ej. AS Operadora), **se exige el uso del idioma
 
 ---
 
-## 🏗️ ARQUITECTURA MULTI-TENANT, MARCA BLANCA Y ROLES Granulares
+## 🏗️ ARQUITECTURA MULTI-TENANT Y ROLES
 
 El sistema es Multi-Organización desde su núcleo. Todas las tablas principales estarán unidas lógicamente por `organizacion_id`.  
 A nivel de cada organización, los datos se separan por **Sedes**.
@@ -68,66 +68,6 @@ A nivel de cada organización, los datos se separan por **Sedes**.
 - **Administrador de Organización:** Acceso a toda la info de un movimiento (SJM).
 - **Operativo de Sede:** Acceso a una sede local.
 - **Servidor / Usuario final:** Puede inscribirse, ver su historial en retiros y sus donativos.
-
----
-
-## 🔧 HERRAMIENTAS DE DESARROLLO Y WORKFLOWS
-
-### Workflows Automatizados
-Los siguientes workflows están disponibles en `.agents/workflows/` para ejecutar procesos recurrentes:
-
-| Workflow | Comando | Descripción |
-|---|---|---|
-| `/build` | `npm run build` | Compilar y verificar TypeScript |
-| `/version` | Manual (4 archivos) | Actualizar versión en código y docs |
-| `/deploy` | `git push origin main` | Commit + Push → Vercel auto-deploy |
-| `/database` | `npx drizzle-kit push` | Migraciones de esquema a Neon |
-
-### Repositorio Git
-- **Remote:** `origin` → `https://github.com/sergioaguilargranados-ai/SJM.git`
-- **Branch:** `main`
-- **Usuario:** `sergioaguilargranados-ai`
-- **Deploy:** Vercel (auto-deploy desde push a main)
-
-### Archivos de Versión (TODOS deben actualizarse)
-1. `docs/AG-Historico-Cambios.md` — Entrada nueva al inicio
-2. `src/app/layout.tsx` — Footer `Build: vX.XXX`
-3. `src/app/page.tsx` — Footer `Plataforma SJM vX.XXX`
-4. `src/app/login/page.tsx` — Footer `© 2026 Admin SJM Nacional vX.XXX`
-
----
-
-## 🌓 ESTÁNDAR DE TEMA CLARO/OSCURO (¡MANDATORIO!)
-
-### Mecanismo
-- **Librería:** `next-themes` con `attribute="class"`
-- **Cómo funciona:** Agrega/remueve clase `dark` en `<html>`
-- **Toggle:** Botón Sol/Luna en `TopbarClient.tsx`
-
-### Reglas de CSS
-- ✅ SIEMPRE usar el prefix `dark:` de Tailwind para variantes oscuras
-- ❌ NUNCA usar `@media (prefers-color-scheme: dark)` en CSS
-- ✅ Usar `.dark` como selector si se necesitan variables CSS
-
-### Paleta Dark Mode Estándar
-| Token | Color | Uso |
-|---|---|---|
-| `bg-[#0f1015]` | Negro profundo | Background principal |
-| `bg-[#1a1b26]` | Gris oscuro | Cards, sidebar, modals |
-| `bg-[#151621]` | Gris medio | Secciones alternas |
-| `border-[#2a2b3d]` | Gris borde | Bordes y separadores |
-| `text-white` | Blanco | Títulos principales |
-| `text-slate-400` | Gris texto | Texto secundario |
-| `text-[#8e8ea0]` | Gris sutil | Texto terciario, hints |
-| `text-[#5e5e72]` | Gris muy sutil | Labels, section headers |
-
-### Checklist de Dark Mode para CADA componente
-- ☐ Background tiene variantes `dark:bg-*`
-- ☐ Textos tienen variantes `dark:text-*`
-- ☐ Bordes tienen variantes `dark:border-*`
-- ☐ Hover states tienen variantes `dark:hover:*`
-- ☐ Focus rings tienen variantes `dark:focus:*`
-- ☐ Inputs/selects son legibles en oscuro
 
 ---
 

@@ -68,7 +68,7 @@ export default function LoginPage() {
                 <Lock className="w-3 h-3" />
                 Cifrado Fin a Fin
              </div>
-             <p className="text-[10px] text-slate-400">© 2026 Admin SJM Nacional v1.016</p>
+             <p className="text-[10px] text-slate-400">© 2026 Admin SJM Nacional v1.060</p>
           </div>
 
         </div>
