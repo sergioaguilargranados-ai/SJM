@@ -21,9 +21,16 @@ export const organizaciones = pgTable("organizaciones", {
   facebook_url: varchar("facebook_url", { length: 255 }),
   instagram_url: varchar("instagram_url", { length: 255 }),
   youtube_url: varchar("youtube_url", { length: 255 }),
-  color_primario: varchar("color_primario", { length: 7 }).default("#2563eb"),
-  color_secundario: varchar("color_secundario", { length: 7 }).default("#1e40af"),
+
+  // Marca Blanca — Colores de la organización (hex #RRGGBB)
+  color_primario: varchar("color_primario", { length: 7 }).default("#00A69C"),
+  color_secundario: varchar("color_secundario", { length: 7 }).default("#1E3A5F"),
+  color_terciario: varchar("color_terciario", { length: 7 }).default("#FFFFFF"),
+
+  // Multi-Dominio / Marca Blanca
   dominio_tenant: varchar("dominio_tenant", { length: 255 }),
+  dominio_aliases: text("dominio_aliases"), // JSON array de strings: ["alias1.com","alias2.com"]
+
   creado_en: timestamp("creado_en").defaultNow(),
 });
 

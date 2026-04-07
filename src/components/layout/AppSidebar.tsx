@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, CalendarDays, Receipt, Settings, FileText, Menu, X,
@@ -9,12 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
-const currentOrg = {
-  nombre: "SJM Nacional",
-  lema: "Sirviendo con amor a la comunidad",
-  logo_url: "",
-};
+import { useTenant } from "@/components/TenantProvider";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -39,6 +35,7 @@ const catalogos = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const tenant = useTenant();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [catalogosOpen, setCatalogosOpen] = useState(pathname.startsWith("/catalogos"));
 
@@ -47,8 +44,12 @@ export function AppSidebar() {
       {/* Botón Móvil */}
       <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">SJM</div>
-          <span className="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{currentOrg.nombre}</span>
+          {tenant.logo_url ? (
+            <Image src={tenant.logo_url} alt={tenant.nombre} width={32} height={32} className="rounded-sm" />
+          ) : (
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: tenant.color_primario }}>SJM</div>
+          )}
+          <span className="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{tenant.nombre}</span>
         </div>
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -65,13 +66,17 @@ export function AppSidebar() {
         "fixed top-0 left-0 z-50 w-64 h-screen transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        {/* Brand Header */}
+        {/* Brand Header — Marca dinámica del tenant */}
         <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-[#2a2b3d]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-sm bg-blue-600 flex items-center justify-center text-white font-extrabold text-xs shadow-sm">
-              SJM
-            </div>
-            <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate">{currentOrg.nombre}</h2>
+            {tenant.logo_url ? (
+              <Image src={tenant.logo_url} alt={tenant.nombre} width={32} height={32} className="rounded-sm" />
+            ) : (
+              <div className="w-8 h-8 rounded-sm flex items-center justify-center text-white font-extrabold text-xs shadow-sm" style={{ backgroundColor: tenant.color_primario }}>
+                SJM
+              </div>
+            )}
+            <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate">{tenant.nombre}</h2>
           </div>
           <button onClick={() => setMobileMenuOpen(false)} className="ml-auto lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
             <X className="w-5 h-5" />
@@ -95,13 +100,14 @@ export function AppSidebar() {
                     className={cn(
                       "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
                       isActive
-                        ? "bg-blue-600 dark:bg-[#e11d48] text-white shadow-md font-bold"
+                        ? "text-white shadow-md font-bold"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
                     )}
+                    style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
                   >
                     <item.icon className={cn(
                       "w-4 h-4 mr-3 transition-colors",
-                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-slate-300"
+                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
                     )} />
                     {item.name}
                   </Link>
@@ -143,7 +149,7 @@ export function AppSidebar() {
                         className={cn(
                           "flex items-center px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200",
                           isActive
-                            ? "text-blue-600 dark:text-[#e11d48] bg-blue-50 dark:bg-[#e11d48]/10 font-bold"
+                            ? "font-bold"
                             : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#2a2b3d]"
                         )}
                       >
@@ -169,13 +175,14 @@ export function AppSidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
                   pathname.startsWith("/configuracion")
-                    ? "bg-blue-600 dark:bg-[#e11d48] text-white shadow-md font-bold"
+                    ? "text-white shadow-md font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
                 )}
+                style={pathname.startsWith("/configuracion") ? { backgroundColor: tenant.color_primario } : undefined}
               >
                 <Settings className={cn(
                   "w-4 h-4 mr-3 transition-colors",
-                  pathname.startsWith("/configuracion") ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-slate-300"
+                  pathname.startsWith("/configuracion") ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
                 )} />
                 Configuración
               </Link>
