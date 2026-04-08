@@ -1,15 +1,34 @@
 @import "tailwindcss";
 
 /* ============================================ */
-/* SISTEMA DE TEMA CLARO/OSCURO - SJM Platform  */
-/* Usa selector .dark (next-themes class mode)  */
-/* NUNCA usar @media (prefers-color-scheme)     */
+/* CONFIGURACIÓN TAILWIND v4 - SJM Platform     */
 /* ============================================ */
 
-/* --- Tema Claro (por defecto) --- */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-muted-text: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Habilitar selector .dark para variantes dark: en Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================ */
+/* VARIABLES DE TEMA                            */
+/* ============================================ */
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* slate-900 */
   --surface: #f8fafc;
   --card: #ffffff;
   --card-border: #e2e8f0;
@@ -17,40 +36,32 @@
   --sidebar-border: #e2e8f0;
   --muted: #64748b;
   --muted-soft: #94a3b8;
-  --accent-primary: #2563eb;
-  --accent-secondary: #1e40af;
-  --accent-tertiary: #10b981;
 }
 
-/* --- Tema Oscuro (activado por next-themes) --- */
 .dark {
   --background: #0f1015;
-  --foreground: #ededed;
+  --foreground: #f8fafc; /* slate-50 */
   --surface: #151621;
   --card: #1a1b26;
   --card-border: #2a2b3d;
   --sidebar: #1a1b26;
   --sidebar-border: #2a2b3d;
-  --muted: #8e8ea0;
-  --muted-soft: #5e5e72;
-  --accent-primary: #3b82f6;
-  --accent-secondary: #2563eb;
-  --accent-tertiary: #34d399;
+  --muted: #94a3b8;
+  --muted-soft: #475569;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-card: var(--card);
-  --color-card-border: var(--card-border);
-  --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================ */
+/* ESTILOS BASE                                 */
+/* ============================================ */
+
+@layer base {
+  * {
+    @apply border-secondary;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased transition-colors duration-300;
+    font-family: var(--font-geist-sans), Arial, sans-serif;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}

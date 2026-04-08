@@ -21,7 +21,7 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-[#0f1015] p-6 rounded-3xl inline-block shadow-inner">
                <Image
-                 src="/icon.png"
+                 src="/logo-sjm-oficial.png"
                  alt="SJM Logo"
                  width={100}
                  height={100}
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 <Lock className="w-3 h-3" />
                 Cifrado Fin a Fin
              </div>
-             <p className="text-[10px] text-slate-400">© 2026 Admin SJM Nacional v1.065</p>
+             <p className="text-[10px] text-slate-400">© 2026 Admin SJM Nacional v1.066</p>
           </div>
 
         </div>
