@@ -1,12 +1,18 @@
 import { getDocumentosInstitucionales } from "@/app/actions/catalogos";
-import { getUsuarioSesion } from "@/lib/sesion";
+import { validarAccesoPlan } from "@/lib/permisos";
 import DocumentosClientView from "./DocumentosClientView";
 
 export const dynamic = "force-dynamic";
 
 export default async function DocumentosPage() {
-  const usuario = await getUsuarioSesion();
-  const docsRes = await getDocumentosInstitucionales();
+  // 1. Validar acceso (Solo Premium)
+  const { orgId } = await validarAccesoPlan("documentos");
 
-  return <DocumentosClientView datos={docsRes.data || []} organizacionId={usuario.organizacion_id} />;
+  const docsRes = await getDocumentosInstitucionales();
+  
+  // Filtrar documentos por organización
+  const docs = (docsRes.data || []).filter((d: any) => d.organizacion_id === orgId);
+
+  return <DocumentosClientView datos={docs} organizacionId={orgId} />;
 }
+

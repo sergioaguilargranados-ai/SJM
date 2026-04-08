@@ -1,17 +1,18 @@
 import { getSedesCompleto } from "@/app/actions/catalogos";
-import { getUsuarioSesion } from "@/lib/sesion";
+import { validarAccesoPlan } from "@/lib/permisos";
 import { SedesClientView } from "./SedesClientView";
 
 export const dynamic = "force-dynamic";
 
 export default async function SedesPage() {
-  const usuario = await getUsuarioSesion();
+  const { orgId } = await validarAccesoPlan("sedes");
   const sedesRes = await getSedesCompleto();
   
-  // Filtrar sedes por organización del usuario logueado
+  // Filtrar sedes por organización
   const sedes = (sedesRes.data || []).filter(
-    (s: any) => s.organizacion_id === usuario.organizacion_id
+    (s: any) => s.organizacion_id === orgId
   );
 
-  return <SedesClientView datos={sedes} organizacionId={usuario.organizacion_id} />;
+  return <SedesClientView datos={sedes} organizacionId={orgId} />;
 }
+

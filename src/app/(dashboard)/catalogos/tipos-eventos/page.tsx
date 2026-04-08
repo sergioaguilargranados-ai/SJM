@@ -1,16 +1,17 @@
 import { getTiposEventosCompleto } from "@/app/actions/catalogos";
-import { getUsuarioSesion } from "@/lib/sesion";
+import { validarAccesoPlan } from "@/lib/permisos";
 import TiposEventosClientView from "./TiposEventosClientView";
 
 export const dynamic = "force-dynamic";
 
 export default async function TiposEventosPage() {
-  const usuario = await getUsuarioSesion();
+  const { orgId } = await validarAccesoPlan("tipos-eventos");
   const res = await getTiposEventosCompleto();
   
   const datos = (res.data || []).filter(
-    (t: any) => t.organizacion_id === usuario.organizacion_id
+    (t: any) => t.organizacion_id === orgId
   );
 
-  return <TiposEventosClientView datos={datos} organizacionId={usuario.organizacion_id} />;
+  return <TiposEventosClientView datos={datos} organizacionId={orgId} />;
 }
+
