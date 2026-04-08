@@ -24,7 +24,14 @@ export interface TenantData {
   facebook_url: string | null;
   instagram_url: string | null;
   youtube_url: string | null;
+  // Plan de contratación
+  plan: {
+    id: string;
+    nombre: string;
+    clave: string; // landing, admin, premium
+  } | null;
 }
+
 
 // Datos por defecto para SJM Nacional (cuando no hay tenant resuelto)
 const TENANT_DEFAULT: TenantData = {

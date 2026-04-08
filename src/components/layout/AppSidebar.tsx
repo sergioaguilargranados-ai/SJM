@@ -13,24 +13,24 @@ import { cn } from "@/lib/utils";
 import { useTenant } from "@/components/TenantProvider";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Servidores", href: "/servidores", icon: Users },
-  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays },
-  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList },
-  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound },
-  { name: "Finanzas", href: "/finanzas", icon: Receipt },
-  { name: "Documentos", href: "/documentos", icon: FileText },
-  { name: "Evaluaciones", href: "/evaluaciones", icon: Star },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, planes: ["landing", "admin", "premium"] },
+  { name: "Servidores", href: "/servidores", icon: Users, planes: ["admin", "premium"] },
+  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays, planes: ["admin", "premium"] },
+  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList, planes: ["admin", "premium"] },
+  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound, planes: ["admin", "premium"] },
+  { name: "Finanzas", href: "/finanzas", icon: Receipt, planes: ["premium"] },
+  { name: "Documentos", href: "/documentos", icon: FileText, planes: ["premium"] },
+  { name: "Evaluaciones", href: "/evaluaciones", icon: Star, planes: ["premium"] },
 ];
 
 const catalogos = [
-  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark },
-  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music },
-  { name: "Cargos", href: "/catalogos/cargos", icon: Award },
-  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag },
-  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home },
-  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet },
-  { name: "Estados", href: "/catalogos/estados", icon: MapPin },
+  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark, planes: ["admin", "premium"] },
+  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music, planes: ["admin", "premium"] },
+  { name: "Cargos", href: "/catalogos/cargos", icon: Award, planes: ["admin", "premium"] },
+  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag, planes: ["admin", "premium"] },
+  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home, planes: ["admin", "premium"] },
+  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet, planes: ["premium"] },
+  { name: "Estados", href: "/catalogos/estados", icon: MapPin, planes: ["admin", "premium"] },
 ];
 
 export function AppSidebar() {
@@ -38,6 +38,11 @@ export function AppSidebar() {
   const tenant = useTenant();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [catalogosOpen, setCatalogosOpen] = useState(pathname.startsWith("/catalogos"));
+
+  const planClave = tenant.plan?.clave || "landing";
+
+  const navFiltrada = navigation.filter(item => (item as any).planes.includes(planClave));
+  const catFiltrados = catalogos.filter(item => (item as any).planes.includes(planClave));
 
   return (
     <>
@@ -76,7 +81,10 @@ export function AppSidebar() {
                 SJM
               </div>
             )}
-            <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate">{tenant.nombre}</h2>
+            <div className="flex flex-col">
+              <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate max-w-[140px]">{tenant.nombre}</h2>
+              <span className="text-[9px] font-black text-[#00B4AA] uppercase tracking-tighter">Plan {tenant.plan?.nombre || "Básico"}</span>
+            </div>
           </div>
           <button onClick={() => setMobileMenuOpen(false)} className="ml-auto lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
             <X className="w-5 h-5" />
@@ -90,7 +98,7 @@ export function AppSidebar() {
             <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Operación</p>
           </div>
           <ul className="space-y-0.5">
-            {navigation.map((item) => {
+            {navFiltrada.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
               return (
                 <li key={item.name} className="px-3">
@@ -117,77 +125,104 @@ export function AppSidebar() {
           </ul>
 
           {/* Sección Catálogos */}
-          <div className="px-4 mt-5 mb-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Catálogos</p>
-          </div>
-          <div className="px-3">
-            <button
-              onClick={() => setCatalogosOpen(!catalogosOpen)}
-              className={cn(
-                "flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200",
-                catalogosOpen
-                  ? "text-slate-900 dark:text-white bg-slate-100 dark:bg-[#2a2b3d]"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
-              )}
-            >
-              <div className="flex items-center">
-                <BookOpen className="w-4 h-4 mr-3 text-slate-400 dark:text-slate-500" />
-                Catálogos
+          {catFiltrados.length > 0 && (
+            <>
+              <div className="px-4 mt-5 mb-2">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Catálogos</p>
               </div>
-              {catalogosOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            </button>
+              <div className="px-3">
+                <button
+                  onClick={() => setCatalogosOpen(!catalogosOpen)}
+                  className={cn(
+                    "flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200",
+                    catalogosOpen
+                      ? "text-slate-900 dark:text-white bg-slate-100 dark:bg-[#2a2b3d]"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                  )}
+                >
+                  <div className="flex items-center">
+                    <BookOpen className="w-4 h-4 mr-3 text-slate-400 dark:text-slate-500" />
+                    Catálogos
+                  </div>
+                  {catalogosOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </button>
 
-            {catalogosOpen && (
-              <ul className="mt-1 space-y-0.5 pl-2 border-l-2 border-slate-200 dark:border-[#2a2b3d] ml-5">
-                {catalogos.map((item) => {
-                  const isActive = pathname === item.href;
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={cn(
-                          "flex items-center px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200",
-                          isActive
-                            ? "font-bold"
-                            : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#2a2b3d]"
-                        )}
-                      >
-                        <item.icon className="w-3.5 h-3.5 mr-2" />
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
+                {catalogosOpen && (
+                  <ul className="mt-1 space-y-0.5 pl-2 border-l-2 border-slate-200 dark:border-[#2a2b3d] ml-5">
+                    {catFiltrados.map((item) => {
+                      const isActive = pathname === item.href;
+                      return (
+                        <li key={item.name}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                              "flex items-center px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200",
+                              isActive
+                                ? "font-bold"
+                                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#2a2b3d]"
+                            )}
+                          >
+                            <item.icon className="w-3.5 h-3.5 mr-2" />
+                            {item.name}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
+
 
           {/* Configuración */}
           <div className="px-4 mt-5 mb-2">
             <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sistema</p>
           </div>
-          <ul>
+          <ul className="space-y-0.5">
             <li className="px-3">
               <Link
                 href="/configuracion"
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                  pathname.startsWith("/configuracion")
+                  pathname === "/configuracion"
                     ? "text-white shadow-md font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
                 )}
-                style={pathname.startsWith("/configuracion") ? { backgroundColor: tenant.color_primario } : undefined}
+                style={pathname === "/configuracion" ? { backgroundColor: tenant.color_primario } : undefined}
               >
                 <Settings className={cn(
                   "w-4 h-4 mr-3 transition-colors",
-                  pathname.startsWith("/configuracion") ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                  pathname === "/configuracion" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
                 )} />
                 Configuración
               </Link>
             </li>
+            {planClave === "premium" && (
+              <li className="px-3">
+                <Link
+                  href="/configuracion/permisos"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                    pathname === "/configuracion/permisos"
+                      ? "text-white shadow-md font-bold"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                  )}
+                  style={pathname === "/configuracion/permisos" ? { backgroundColor: tenant.color_primario } : undefined}
+                >
+                  <ShieldCheck className={cn(
+                    "w-4 h-4 mr-3 transition-colors",
+                    pathname === "/configuracion/permisos" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                  )} />
+                  Roles y Permisos
+                </Link>
+              </li>
+            )}
           </ul>
+
         </div>
 
         {/* Bottom Menu / Logout */}
