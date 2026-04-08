@@ -1,7 +1,36 @@
 # 📜 Histórico de Cambios - SJM Platform
 
-**Última actualización:** 07 de Abril de 2026 - 16:40 CST
+**Última actualización:** 08 de Abril de 2026 - 16:55 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.090 - 08 de Abril de 2026 - 16:55 CST
+
+#### Arquitectura SaaS y Seguridad Granular (¡MANDATORIO!)
+- **Triple Filtro de Seguridad:** Implementación de capas de validación en cascada:
+  1. **Plan (SaaS):** Validación de módulos permitidos (`landing`, `admin`, `premium`).
+  2. **Rol (RBAC):** Filtrado de acciones por permiso (`view`, `create`, `edit`, `delete`, `export`).
+  3. **Organización (Multi-tenancy):** Aislamiento estricto de datos por `organizacion_id`.
+- **Sidebar Parametrizado:** El menú lateral ahora es 100% dinámico. Oculta/Muestra opciones basado en el Plan de la Org y los Permisos del Rol del usuario simultáneamente.
+- **Helper `validarAccesoPlan`:** Función centralizada para proteger Server Components y redirigir al Dashboard si el nivel de suscripción es insuficiente.
+
+#### Interfaz Premium y UX
+- **Login v1.080:** Rediseño con estética *Glassmorphism*, estados dinámicos para acceso por Correo/Celular e ícono de Google en SVG puro. Se añadió flujo de registro.
+- **Notificaciones Premium:** Sistema `SjmToast` con diseño translúcido (60% transparencia), indicadores de estado circulares y tipografía oficial.
+- **Identidad:** Configuración de Favicon oficial y metadatos SEO.
+
+#### Módulos y Persistencia
+- **Mantenimiento de Permisos:** Nueva pantalla para gestión de Roles y visualización de planes habilitada en Configuración.
+- **Módulos Maestros Activados:** Servidores, Documentos, Sedes, Ministerios y Tipos de Eventos actualizados con seguridad granular y filtrado multi-tenant.
+- **Configuración Real:** Migración de la vista de organización de prototipo a Server Action funcional con persistencia en PostgreSQL.
+
+---
+
+### v1.070 - 08 de Abril de 2026 - 12:00 CST
+- **Esquema SaaS:** Evolución del modelo de base de datos para soportar Planes -> Módulos -> Funciones -> Acciones.
+- **Seed Script:** Actualización del script de semilla para inicializar la jerarquía de permisos nacional.
+- **TenantProvider:** Inyección de información del Plan en el contexto del cliente.
 
 ---
 

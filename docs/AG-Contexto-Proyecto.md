@@ -1,9 +1,19 @@
 # 🎯 AG-Contexto-Proyecto - Plataforma SJM
 
-**Última actualización:** 04 de Abril de 2026 - 17:54 CST  
-**Versión actual:** v1.000  
+**Última actualización:** 08 de Abril de 2026 - 16:55 CST  
+**Versión actual:** v1.090  
 **Actualizado por:** AntiGravity AI Assistant  
-**Propósito:** Documento maestro del proyecto para trabajo con agentes AntiGravity. Establece las bases, reglas y estándares técnicos para el desarrollo del sistema integral de SJM.
+**Propósito:** Documento maestro del proyecto. Establece las bases, reglas y estándares técnicos para el desarrollo integral de SJM.
+
+---
+
+## 🏗️ ARQUITECTURA DE ACCESOS Y SEGURIDAD (MANDATORIO)
+
+Desde la versión **v1.090**, el sistema implementa un **Triple Filtro de Seguridad** obligatorio:
+
+1. **Capa de Negocio (SaaS - Planes):** `validarAccesoPlan("modulo")` para filtrar funciones por nivel de suscripción.
+2. **Capa Operativa (RBAC - Roles):** `getPermisosUsuario()` para filtrar el Sidebar y Server Actions por rol.
+3. **Capa de Datos (Multi-tenancy):** Filtrado obligatorio por `organizacion_id` en todas las tablas.
 
 ---
 
@@ -13,7 +23,7 @@
 **Plataforma SJM - "Servidores de Jesús por María"**
 
 ### Objetivo General
-Sistema integral SaaS Multi-Organización para gestión de un movimiento católico con alcance nacional/internacional. Contará con sitio web público y marca blanca (Landing Page, Blog, Tienda, Donativos, etc ) y una intranet/portal de control (Servidores, Eventos, Finanzas, Documentos, etc.) con accesos granulares por funciones en roles.
+Sistema integral SaaS Multi-Organización (Marca Blanca) con portal público y de administración nacional, con control de acceso por planes y roles granulares.
 
 ### Repositorios y Despliegue
 - **Dominio actual:** www.serjema.com.mx (migrando a serjema.com)
