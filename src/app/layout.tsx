@@ -36,19 +36,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
-          
-          {/* Footer de Versión e Infraestructura SJM */}
-          <footer className="w-full py-4 px-6 border-t border-slate-100 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] flex justify-between items-center mt-auto">
-             <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">SJM Core Infrastructure</p>
-             </div>
-             <p className="text-[10px] font-mono text-slate-400 dark:text-slate-600 bg-slate-50 dark:bg-black/20 p-1 px-2 rounded">
-                Build: v1.060 - Master Production (CDMX: 07-04-26 16:40)
-             </p>
-          </footer>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

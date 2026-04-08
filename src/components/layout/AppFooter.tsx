@@ -1,17 +1,21 @@
 "use client";
 
+import { useTenant } from "@/components/TenantProvider";
+
 export function AppFooter() {
-  const buildTime = "06-04-2026 02:30 AM";
-  const appVersion = "v1.055 - Master Production";
+  const tenant = useTenant();
+  // Formato: DD-MM-YYYY HH:mm
+  const buildTime = "08-04-2026 11:20 AM";
+  const appVersion = "v1.065 - Master Production";
 
   return (
-    <footer className="w-full h-10 border-t border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#151621] mt-auto flex items-center justify-between px-6 text-[11px] text-slate-500 font-medium">
+    <footer className="w-full min-h-10 py-2 border-t border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#151621] mt-auto flex flex-col md:flex-row items-center justify-between px-6 text-[11px] text-slate-500 font-medium gap-2">
       <div>
-        © 2026 <span className="font-bold text-blue-600 dark:text-[#e11d48]">SJM Platform</span>. Todos los derechos reservados.
+        © 2026 <span className="font-bold" style={{ color: tenant.color_primario }}>{tenant.nombre}</span>. Todos los derechos reservados.
       </div>
       <div className="flex items-center gap-2">
         <span>{appVersion}</span>
-        <div className="px-1.5 py-0.5 roundedbg-slate-100 dark:bg-[#2a2b3d] border border-slate-200 dark:border-[#3b3c54] flex items-center gap-1.5">
+        <div className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#2a2b3d] border border-slate-200 dark:border-[#3b3c54] flex items-center gap-1.5">
            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
            <span className="text-slate-700 dark:text-slate-300">PROD</span>
         </div>
@@ -21,3 +25,4 @@ export function AppFooter() {
     </footer>
   );
 }
+
