@@ -15,12 +15,16 @@ const geistMono = Geist_Mono({
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "SJM Platform",
+  title: "SJM Nacional | Servidores de Jesús por María",
   description: "Plataforma de gestión e intranet de Servidores de Jesús por María",
   icons: {
-    icon: '/icon.png',
+    icon: [
+      { url: '/logo-sjm-oficial.png', href: '/logo-sjm-oficial.png' }
+    ],
+    apple: '/logo-sjm-oficial.png',
   }
 };
+
 
 export default function RootLayout({
   children,
