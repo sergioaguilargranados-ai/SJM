@@ -44,13 +44,34 @@ export async function validarAccesoPlan(claveFunc: string) {
     premium: ["dashboard", "configuracion", "servidores", "eventos", "inscripciones", "sedes", "ministerios", "tipos-eventos", "finanzas", "documentos"]
   };
 
-  const modulosPermitidos = accesos[planClave] || accesos.landing;
+/**
+ * Obtiene la lista de acciones permitidas para el rol del usuario (ej: ["servidores.view", "finanzas.create"])
+ */
+export async function getPermisosUsuario() {
+  const session = await auth();
+  if (!session?.user) return [];
 
-  // Si la clave de función solicitada no está en los permitidos del plan, redirigir
-  if (!modulosPermitidos.some(m => claveFunc.startsWith(m))) {
-    console.warn(`🚫 Acceso denegado a ${claveFunc} para plan ${planClave}`);
-    redirect("/dashboard?error=plan_insuficiente");
-  }
+  const rolId = (session.user as any).rol_id;
+  if (!rolId) return [];
 
-  return { planClave, orgId };
+  // 1. Si es Admin de Sistema, tiene todo (mientras terminamos de popular la DB)
+  const [rol] = await db.select().from(roles_sistema).where(eq(roles_sistema.id, rolId));
+  if (rol?.es_admin_sistema) return ["*"]; // Comodín para acceso total
+
+  // 2. Consultar permisos específicos
+  const permisos = await db
+    .select({
+      modulo: modulos_sistema.clave,
+      funcion: funciones_sistema.clave,
+      accion: acciones_sistema.clave,
+    })
+    .from(rol_permisos)
+    .innerJoin(acciones_sistema, eq(rol_permisos.accion_id, acciones_sistema.id))
+    .innerJoin(funciones_sistema, eq(acciones_sistema.funcion_id, funciones_sistema.id))
+    .innerJoin(modulos_sistema, eq(funciones_sistema.modulo_id, modulos_sistema.id))
+    .where(eq(rol_permisos.rol_id, rolId));
+
+  // Retornar lista de strings tipo "modulo.accion" o "modulo.funcion.accion"
+  return permisos.map(p => `${p.modulo}.${p.accion}`);
 }
+

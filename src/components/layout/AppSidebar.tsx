@@ -13,27 +13,31 @@ import { cn } from "@/lib/utils";
 import { useTenant } from "@/components/TenantProvider";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, planes: ["landing", "admin", "premium"] },
-  { name: "Servidores", href: "/servidores", icon: Users, planes: ["admin", "premium"] },
-  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays, planes: ["admin", "premium"] },
-  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList, planes: ["admin", "premium"] },
-  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound, planes: ["admin", "premium"] },
-  { name: "Finanzas", href: "/finanzas", icon: Receipt, planes: ["premium"] },
-  { name: "Documentos", href: "/documentos", icon: FileText, planes: ["premium"] },
-  { name: "Evaluaciones", href: "/evaluaciones", icon: Star, planes: ["premium"] },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, planes: ["landing", "admin", "premium"], clave: "dashboard" },
+  { name: "Servidores", href: "/servidores", icon: Users, planes: ["admin", "premium"], clave: "servidores" },
+  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays, planes: ["admin", "premium"], clave: "eventos" },
+  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList, planes: ["admin", "premium"], clave: "inscripciones" },
+  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound, planes: ["admin", "premium"], clave: "equipo" },
+  { name: "Finanzas", href: "/finanzas", icon: Receipt, planes: ["premium"], clave: "finanzas" },
+  { name: "Documentos", href: "/documentos", icon: FileText, planes: ["premium"], clave: "documentos" },
+  { name: "Evaluaciones", href: "/evaluaciones", icon: Star, planes: ["premium"], clave: "evaluaciones" },
 ];
 
 const catalogos = [
-  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark, planes: ["admin", "premium"] },
-  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music, planes: ["admin", "premium"] },
-  { name: "Cargos", href: "/catalogos/cargos", icon: Award, planes: ["admin", "premium"] },
-  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag, planes: ["admin", "premium"] },
-  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home, planes: ["admin", "premium"] },
-  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet, planes: ["premium"] },
-  { name: "Estados", href: "/catalogos/estados", icon: MapPin, planes: ["admin", "premium"] },
+  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark, planes: ["admin", "premium"], clave: "sedes" },
+  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music, planes: ["admin", "premium"], clave: "ministerios" },
+  { name: "Cargos", href: "/catalogos/cargos", icon: Award, planes: ["admin", "premium"], clave: "cargos" },
+  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag, planes: ["admin", "premium"], clave: "tipos-eventos" },
+  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home, planes: ["admin", "premium"], clave: "casas-retiro" },
+  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet, planes: ["premium"], clave: "clasificaciones-gasto" },
+  { name: "Estados", href: "/catalogos/estados", icon: MapPin, planes: ["admin", "premium"], clave: "estados" },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  permisos: string[];
+}
+
+export function AppSidebar({ permisos = [] }: AppSidebarProps) {
   const pathname = usePathname();
   const tenant = useTenant();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,8 +45,20 @@ export function AppSidebar() {
 
   const planClave = tenant.plan?.clave || "landing";
 
-  const navFiltrada = navigation.filter(item => (item as any).planes.includes(planClave));
-  const catFiltrados = catalogos.filter(item => (item as any).planes.includes(planClave));
+  // Función para validar si tiene permiso (view)
+  const tienePermiso = (clave: string) => {
+    if (permisos.includes("*")) return true;
+    return permisos.includes(`${clave}.view`) || permisos.includes(clave);
+  };
+
+  const navFiltrada = navigation.filter(item => 
+    (item as any).planes.includes(planClave) && tienePermiso(item.clave)
+  );
+  
+  const catFiltrados = catalogos.filter(item => 
+    (item as any).planes.includes(planClave) && tienePermiso(item.clave)
+  );
+
 
   return (
     <>

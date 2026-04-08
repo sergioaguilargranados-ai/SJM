@@ -4,22 +4,23 @@ import { AppFooter } from "@/components/layout/AppFooter";
 import { TenantProvider } from "@/components/TenantProvider";
 import { getUsuarioSesionOpcional } from "@/lib/sesion";
 import { obtenerOrganizacionPorId } from "@/lib/tenant";
+import { getPermisosUsuario } from "@/lib/permisos";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Obtener la organización del usuario autenticado
   const usuario = await getUsuarioSesionOpcional();
-  const tenant = usuario?.organizacion_id
-    ? await obtenerOrganizacionPorId(usuario.organizacion_id)
-    : null;
+  const [tenant, permisos] = await Promise.all([
+    usuario?.organizacion_id ? obtenerOrganizacionPorId(usuario.organizacion_id) : null,
+    getPermisosUsuario()
+  ]);
 
   return (
     <TenantProvider tenant={tenant}>
       <div className="min-h-screen bg-slate-50 dark:bg-[#0f1015] transition-colors">
-        <AppSidebar />
+        <AppSidebar permisos={permisos} />
         <AppTopbar />
         <div className="lg:pl-64 flex flex-col min-h-screen">
           <main className="flex-1 p-6 lg:p-8 pt-24 lg:pt-24 w-full mx-auto">
@@ -31,4 +32,5 @@ export default async function DashboardLayout({
     </TenantProvider>
   );
 }
+
 
