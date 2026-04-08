@@ -56,7 +56,7 @@
 
 @layer base {
   * {
-    @apply border-secondary;
+    @apply border-card-border;
   }
   
   body {
@@ -64,4 +64,5 @@
     font-family: var(--font-geist-sans), Arial, sans-serif;
   }
 }
+
 
