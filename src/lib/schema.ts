@@ -1,11 +1,23 @@
 import { pgTable, uuid, varchar, text, timestamp, date, boolean, integer, decimal } from "drizzle-orm/pg-core";
 
 // -------------------------------------------------------------
-// Core y Multi-Tenant
+// Core y Multi-Tenant (Control de Acceso y Planes)
 // -------------------------------------------------------------
+
+export const planes = pgTable("planes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nombre: varchar("nombre", { length: 100 }).notNull(), // Landing, Admin, Premium
+  clave: varchar("clave", { length: 50 }).unique().notNull(), // landing, admin, premium
+  descripcion: text("descripcion"),
+  limite_servidores: integer("limite_servidores").default(0),
+  limite_eventos: integer("limite_eventos").default(0),
+  precio_mensual: decimal("precio_mensual").default("0"),
+  estatus: boolean("estatus").default(true),
+});
 
 export const organizaciones = pgTable("organizaciones", {
   id: uuid("id").primaryKey().defaultRandom(),
+  plan_id: uuid("plan_id").references(() => planes.id), // Vinculación con Plan de Contratación
   nombre: varchar("nombre", { length: 255 }).notNull(),
   lema: varchar("lema", { length: 255 }),
   logo_url: text("logo_url"),
@@ -22,16 +34,65 @@ export const organizaciones = pgTable("organizaciones", {
   instagram_url: varchar("instagram_url", { length: 255 }),
   youtube_url: varchar("youtube_url", { length: 255 }),
 
-  // Marca Blanca — Colores de la organización (hex #RRGGBB)
-  color_primario: varchar("color_primario", { length: 7 }).default("#00A69C"),
+  // Marca Blanca — Colores
+  color_primario: varchar("color_primario", { length: 7 }).default("#00B4AA"),
   color_secundario: varchar("color_secundario", { length: 7 }).default("#1E3A5F"),
   color_terciario: varchar("color_terciario", { length: 7 }).default("#FFFFFF"),
 
   // Multi-Dominio / Marca Blanca
   dominio_tenant: varchar("dominio_tenant", { length: 255 }),
-  dominio_aliases: text("dominio_aliases"), // JSON array de strings: ["alias1.com","alias2.com"]
+  dominio_aliases: text("dominio_aliases"), 
 
   creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Ramas Funcionales y Acciones (RBAC Granular)
+// -------------------------------------------------------------
+
+export const modulos_sistema = pgTable("modulos_sistema", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nombre: varchar("nombre", { length: 100 }).notNull(), // ej: "Gestión de Servidores"
+  clave: varchar("clave", { length: 50 }).unique().notNull(), // ej: "servidores"
+  icono: varchar("icono", { length: 50 }),
+});
+
+export const funciones_sistema = pgTable("funciones_sistema", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  modulo_id: uuid("modulo_id").references(() => modulos_sistema.id).notNull(),
+  nombre: varchar("nombre", { length: 150 }).notNull(), // ej: "Padron de Servidores"
+  clave: varchar("clave", { length: 100 }).unique().notNull(), // ej: "servidores.padron"
+  descripcion: text("descripcion"),
+});
+
+export const acciones_sistema = pgTable("acciones_sistema", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  funcion_id: uuid("funcion_id").references(() => funciones_sistema.id).notNull(),
+  nombre: varchar("nombre", { length: 100 }).notNull(), // ej: "Crear", "Eliminar", "Ver"
+  clave: varchar("clave", { length: 100 }).notNull(), // ej: "create", "delete", "view"
+});
+
+// -------------------------------------------------------------
+// Vinculación de Permisos (Planes y Roles)
+// -------------------------------------------------------------
+
+export const plan_permisos = pgTable("plan_permisos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  plan_id: uuid("plan_id").references(() => planes.id).notNull(),
+  funcion_id: uuid("funcion_id").references(() => funciones_sistema.id).notNull(),
+});
+
+export const roles_sistema = pgTable("roles_sistema", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre: varchar("nombre", { length: 100 }).notNull(),
+  es_admin_sistema: boolean("es_admin_sistema").default(false),
+});
+
+export const rol_permisos = pgTable("rol_permisos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  rol_id: uuid("rol_id").references(() => roles_sistema.id).notNull(),
+  accion_id: uuid("accion_id").references(() => acciones_sistema.id).notNull(),
 });
 
 export const sedes = pgTable("sedes", {
@@ -39,11 +100,6 @@ export const sedes = pgTable("sedes", {
   organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
   nombre: varchar("nombre", { length: 255 }).notNull(),
   creado_en: timestamp("creado_en").defaultNow(),
-});
-
-export const roles_sistema = pgTable("roles_sistema", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  nombre: varchar("nombre", { length: 100 }).notNull(),
 });
 
 export const usuarios = pgTable("usuarios", {
