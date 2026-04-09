@@ -51,6 +51,11 @@ const TENANT_DEFAULT: TenantData = {
   facebook_url: "https://www.facebook.com/servidoresdejesuspormariagdl",
   instagram_url: "https://www.instagram.com/servidorespormaria/",
   youtube_url: null,
+  plan: {
+    id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
+    nombre: "Plan Premium",
+    clave: "premium"
+  }
 };
 
 const TenantContext = createContext<TenantData>(TENANT_DEFAULT);
