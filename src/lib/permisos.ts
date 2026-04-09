@@ -42,6 +42,7 @@ export async function validarAccesoPlan(claveFunc: string) {
     landing: ["dashboard", "configuracion"],
     admin: ["dashboard", "configuracion", "servidores", "eventos", "inscripciones", "sedes", "ministerios", "tipos-eventos"],
     premium: ["dashboard", "configuracion", "servidores", "eventos", "inscripciones", "sedes", "ministerios", "tipos-eventos", "finanzas", "documentos"]
+  };
   const modulosPermitidos = accesos[planClave] || accesos.landing;
   if (!modulosPermitidos.includes(claveFunc)) {
     redirect("/dashboard?error=plan_insuficiente");

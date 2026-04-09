@@ -5,6 +5,14 @@
 
 ---
 
+### v1.097 - 09 de Abril de 2026 - 10:45 CST
+
+#### Build Fix: Syntax Object Close
+- **permisos.ts:** Corrección de cierre de objeto `accesos` (falta de `;}`).
+- **Versión Sincronizada:** v1.097.
+
+---
+
 ### v1.096 - 09 de Abril de 2026 - 10:40 CST
 
 #### Build Fix: Turbopack & Syntax
