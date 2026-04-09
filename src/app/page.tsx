@@ -554,7 +554,7 @@ export default function Home() {
           </div>
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
             <p>© 2026 Servidores de Jesús por María — Todos los derechos reservados</p>
-            <p className="text-slate-600">Plataforma SJM v1.101 • Para Gloria de Dios</p>
+            <p className="text-slate-600">Plataforma SJM v1.102 • Para Gloria de Dios</p>
           </div>
         </div>
       </footer>

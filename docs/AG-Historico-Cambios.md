@@ -5,6 +5,14 @@
 
 ---
 
+### v1.102 - 09 de Abril de 2026 - 12:00 CST
+
+#### Build Fix: Static Prerendering
+- **auth/error/page.tsx:** Se envolvió el contenido que usa `useSearchParams` en un boundary de `<Suspense />`. Esto es mandatorio en Next.js para permitir la generación estática de páginas que dependen de parámetros de búsqueda del lado del cliente.
+- **Versión Sincronizada:** v1.102.
+
+---
+
 ### v1.101 - 09 de Abril de 2026 - 11:55 CST
 
 #### Build Fix: Missing Assets
