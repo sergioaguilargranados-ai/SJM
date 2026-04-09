@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
 import { enviarEmail } from "@/lib/emailService";
 import { buildEmailHTML } from "@/lib/emailTemplate";
+import { enviarWhatsApp, mensajeRecuperacionWhatsApp } from "@/lib/whatsappService";
 
 const DOMINIO = process.env.NEXTAUTH_URL || "https://serjema.com";
 
@@ -24,15 +25,17 @@ export async function solicitarRecuperacionAction(identificador: string) {
 
     // Buscar usuario por correo o celular
     let usuario;
+    let busquedaPorCelular = false;
     if (valor.includes("@")) {
       [usuario] = await db
-        .select({ id: usuarios.id, correo: usuarios.correo, nombre_completo: usuarios.nombre_completo, google_id: usuarios.google_id })
+        .select({ id: usuarios.id, correo: usuarios.correo, celular: usuarios.celular, nombre_completo: usuarios.nombre_completo, google_id: usuarios.google_id })
         .from(usuarios)
         .where(eq(usuarios.correo, valor));
     } else {
+      busquedaPorCelular = true;
       const celularLimpio = valor.replace(/[\s\-\(\)]/g, "");
       [usuario] = await db
-        .select({ id: usuarios.id, correo: usuarios.correo, nombre_completo: usuarios.nombre_completo, google_id: usuarios.google_id })
+        .select({ id: usuarios.id, correo: usuarios.correo, celular: usuarios.celular, nombre_completo: usuarios.nombre_completo, google_id: usuarios.google_id })
         .from(usuarios)
         .where(eq(usuarios.celular, celularLimpio));
     }
@@ -90,11 +93,20 @@ export async function solicitarRecuperacionAction(identificador: string) {
       `,
     });
 
+    // Enviar enlace por email
     enviarEmail({
       para: usuario.correo,
       asunto: "Recuperar Contraseña — SJM",
       html,
     }).catch((err) => console.error("Error enviando email de recuperación:", err));
+
+    // Si buscaron por celular, también enviar por WhatsApp
+    if (busquedaPorCelular && usuario.celular) {
+      enviarWhatsApp(
+        usuario.celular,
+        mensajeRecuperacionWhatsApp(usuario.nombre_completo, enlace)
+      ).catch((err) => console.error("Error enviando WhatsApp de recuperación:", err));
+    }
 
     return { ok: true };
   } catch (error: any) {

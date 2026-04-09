@@ -1,7 +1,20 @@
-# 📜 Histórico de SJM PLATFORM • v1.120
+# 📜 Histórico de SJM PLATFORM • v1.125
 
-**Última actualización:** 09 de Abril de 2026 - 14:50 CST
+**Última actualización:** 09 de Abril de 2026 - 17:08 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.125 - 09 de Abril de 2026 - 17:08 CST
+
+#### Integración WhatsApp Twilio
+- **whatsappService.ts:** Servicio Twilio con inicialización lazy (mismo patrón que Resend). Soporte para código de país México automático.
+- **Bienvenida WhatsApp:** Al registrarse con celular, se envía mensaje de bienvenida por WhatsApp además del email.
+- **Recuperación por WhatsApp:** Cuando solicitan recuperación por celular, el enlace se envía tanto por email como por WhatsApp.
+- **Mensajes predefinidos:** `mensajeBienvenidaWhatsApp()` y `mensajeRecuperacionWhatsApp()` con formato markdown de WhatsApp.
+- **Dependencia:** `twilio` SDK instalado.
+- **Guía de referencia:** `docs/guia_whatsapp_correos_implementacion.md` (basada en AS Operadora).
+- **Versión Sincronizada:** v1.125.
 
 ---
 

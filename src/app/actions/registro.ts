@@ -6,6 +6,7 @@ import { eq, and, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { enviarEmail } from "@/lib/emailService";
 import { plantillaBienvenidaSJM } from "@/lib/emailTemplate";
+import { enviarWhatsApp, mensajeBienvenidaWhatsApp } from "@/lib/whatsappService";
 
 const ORG_NACIONAL_ID = "6fb191cc-a477-4632-9cb1-c30c33a9f9bd";
 
@@ -120,11 +121,17 @@ export async function registrarUsuarioAction(
       rol_id: rolGeneral.id,
     });
 
-    // 6. Enviar email de bienvenida (no bloqueante)
+    // 6. Enviar notificaciones de bienvenida (no bloqueantes)
     if (datos.correo) {
       const { asunto, html } = plantillaBienvenidaSJM(datos.nombre_completo.trim());
       enviarEmail({ para: correoFinal, asunto, html }).catch((err) =>
         console.error("Error enviando email de bienvenida:", err)
+      );
+    }
+
+    if (celularLimpio) {
+      enviarWhatsApp(celularLimpio, mensajeBienvenidaWhatsApp(datos.nombre_completo.trim())).catch((err) =>
+        console.error("Error enviando WhatsApp de bienvenida:", err)
       );
     }
 
