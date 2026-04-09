@@ -119,6 +119,19 @@ export const usuarios = pgTable("usuarios", {
 });
 
 // -------------------------------------------------------------
+// Tokens de Recuperación de Contraseña
+// -------------------------------------------------------------
+
+export const tokens_recuperacion = pgTable("tokens_recuperacion", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  usuario_id: uuid("usuario_id").references(() => usuarios.id).notNull(),
+  token: varchar("token", { length: 255 }).unique().notNull(),
+  expira_en: timestamp("expira_en").notNull(),
+  usado: boolean("usado").default(false),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
 // Catálogos auxiliares
 // -------------------------------------------------------------
 

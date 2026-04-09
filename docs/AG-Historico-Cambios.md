@@ -1,7 +1,20 @@
-# 📜 Histórico de SJM PLATFORM • v1.115
+# 📜 Histórico de SJM PLATFORM • v1.120
 
-**Última actualización:** 09 de Abril de 2026 - 14:25 CST
+**Última actualización:** 09 de Abril de 2026 - 14:50 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.120 - 09 de Abril de 2026 - 14:50 CST
+
+#### Recuperación de Contraseña Completa
+- **Tabla `tokens_recuperacion`:** Nueva tabla para tokens de recuperación con expiración (1 hora) y uso único. Sincronizada con Neon.
+- **Página `/recuperar`:** Formulario para solicitar recuperación por correo o celular. Envía email con enlace seguro vía Resend.
+- **Página `/recuperar/[token]`:** Formulario para nueva contraseña con validador de fortaleza. 4 estados: validando, inválido, formulario, éxito.
+- **Server Actions:** `solicitarRecuperacionAction`, `validarTokenAction`, `restablecerContrasenaAction` — Flujo seguro end-to-end.
+- **Seguridad:** No revela si el correo/celular existe (protección contra enumeración). Tokens single-use con bcrypt hash.
+- **Link en Login:** El "¿Olvidaste tu contraseña?" ya apunta a `/recuperar`.
+- **Versión Sincronizada:** v1.120.
 
 ---
 
