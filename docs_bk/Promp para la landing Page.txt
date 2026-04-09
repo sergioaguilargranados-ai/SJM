@@ -1,0 +1,16 @@
+Promp para la landing Page 
+
+1) Primero considerar siempre que es marca blanca, es decir considerar cada cambio si aplica para marca blanca,
+ entonces debemos completar las secciones de la pagina en la pantalla de configuración, aparte de icono, 
+ lema, tambien secciones, videos, imagenes, colores, etc, cada que pongamos algo lo mas seguro es que deba ser parametrizado. 
+2) Entonces conforme a lo que solicité es: que los diferentes dominios estaran aparcados en el hosting y al identificar estos, 
+buscaran los parametros correspondientes para que carguen los datos de la landing segun corresponda. 
+3) Toda la landing estara supeditada a el esquema de permisos (Plan contratado, modulos, funciones) que se tiene implementado. 
+Es decir cada funcion en la landing debe estar en estas funciones, a manera de secciones. Es decir la seccion de "nosotros", "Contactanos", ETC.
+4) en parametros, debe considerarse 3 colores que seleccionen (proporcionar los campos para que al seleccionar de una paleta ) 
+se guarde la clave del color para evitar confunciones. 
+5) SE puedan guardar las URLS de imagenes para el carrucel que se solicitara, las urls de los videos que se solicitaran, 
+nota al pie en cada imagen, en cada video, etc. 
+6) Me gusta mucho la cencefa que esta en blanco traslucido, la pondria a 70% de transparencia. 
+   Esta debe ser persistente en todas las paginas de la landing y tambien ponerla en la seccion de la intranet o bien volverla a poner. 
+7) 

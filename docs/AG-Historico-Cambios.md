@@ -1,7 +1,17 @@
-# 📜 Histórico de Cambios - SJM Platform
+# 📜 Histórico de SJM PLATFORM • v1.095
 
-**Última actualización:** 08 de Abril de 2026 - 16:55 CST
+**Última actualización:** 09 de Abril de 2026 - 10:15 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.095 - 09 de Abril de 2026 - 10:15 CST
+
+#### Fix Crítico Autenticación y Despliegue
+- **Página de Error NextAuth:** Creación de `src/app/auth/error/page.tsx` para manejar errores de `AccessDenied` con UI premium, eliminando el error 404.
+- **Sincronización Neon:** Ejecución de `drizzle-kit push` para homologar la existencia de `organizacion_id` en `roles_sistema`.
+- **Inyección de Administradores:** Ejecución de script de reparación para autorizar correos de Sergio Aguilar as Super Admins.
+- **Versión Sincronizada:** Actualización global a v1.095 en footers y documentación.
 
 ---
 
