@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { planes, plan_permisos, funciones_sistema, organizaciones } from "@/lib/schema";
+import { planes, plan_permisos, funciones_sistema, organizaciones, roles_sistema, modulos_sistema, acciones_sistema, rol_permisos } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
@@ -42,7 +42,11 @@ export async function validarAccesoPlan(claveFunc: string) {
     landing: ["dashboard", "configuracion"],
     admin: ["dashboard", "configuracion", "servidores", "eventos", "inscripciones", "sedes", "ministerios", "tipos-eventos"],
     premium: ["dashboard", "configuracion", "servidores", "eventos", "inscripciones", "sedes", "ministerios", "tipos-eventos", "finanzas", "documentos"]
-  };
+  const modulosPermitidos = accesos[planClave] || accesos.landing;
+  if (!modulosPermitidos.includes(claveFunc)) {
+    redirect("/dashboard?error=plan_insuficiente");
+  }
+}
 
 /**
  * Obtiene la lista de acciones permitidas para el rol del usuario (ej: ["servidores.view", "finanzas.create"])
@@ -54,24 +58,29 @@ export async function getPermisosUsuario() {
   const rolId = (session.user as any).rol_id;
   if (!rolId) return [];
 
-  // 1. Si es Admin de Sistema, tiene todo (mientras terminamos de popular la DB)
-  const [rol] = await db.select().from(roles_sistema).where(eq(roles_sistema.id, rolId));
-  if (rol?.es_admin_sistema) return ["*"]; // Comodín para acceso total
+  try {
+    // 1. Si es Admin de Sistema, tiene todo (mientras terminamos de popular la DB)
+    const [rol] = await db.select().from(roles_sistema).where(eq(roles_sistema.id, rolId));
+    if (rol?.es_admin_sistema) return ["*"]; // Comodín para acceso total
 
-  // 2. Consultar permisos específicos
-  const permisos = await db
-    .select({
-      modulo: modulos_sistema.clave,
-      funcion: funciones_sistema.clave,
-      accion: acciones_sistema.clave,
-    })
-    .from(rol_permisos)
-    .innerJoin(acciones_sistema, eq(rol_permisos.accion_id, acciones_sistema.id))
-    .innerJoin(funciones_sistema, eq(acciones_sistema.funcion_id, funciones_sistema.id))
-    .innerJoin(modulos_sistema, eq(funciones_sistema.modulo_id, modulos_sistema.id))
-    .where(eq(rol_permisos.rol_id, rolId));
+    // 2. Consultar permisos específicos
+    const permisos = await db
+      .select({
+        modulo: modulos_sistema.clave,
+        funcion: funciones_sistema.clave,
+        accion: acciones_sistema.clave,
+      })
+      .from(rol_permisos)
+      .innerJoin(acciones_sistema, eq(rol_permisos.accion_id, acciones_sistema.id))
+      .innerJoin(funciones_sistema, eq(acciones_sistema.funcion_id, funciones_sistema.id))
+      .innerJoin(modulos_sistema, eq(funciones_sistema.modulo_id, modulos_sistema.id))
+      .where(eq(rol_permisos.rol_id, rolId));
 
-  // Retornar lista de strings tipo "modulo.accion" o "modulo.funcion.accion"
-  return permisos.map(p => `${p.modulo}.${p.accion}`);
+    // Retornar lista de strings tipo "modulo.accion" o "modulo.funcion.accion"
+    return permisos.map(p => `${p.modulo}.${p.accion}`);
+  } catch (error) {
+    console.error("Error al obtener permisos:", error);
+    return [];
+  }
 }
 

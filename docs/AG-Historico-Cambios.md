@@ -5,6 +5,15 @@
 
 ---
 
+### v1.096 - 09 de Abril de 2026 - 10:40 CST
+
+#### Build Fix: Turbopack & Syntax
+- **permisos.ts:** Corrección de error de sintaxis (llave de cierre faltante en `validarAccesoPlan`) que impedía la compilación en Vercel.
+- **Importaciones:** Se añadieron las tablas de schema faltantes en el módulo de permisos para el RBAC granular.
+- **Versión Sincronizada:** v1.096.
+
+---
+
 ### v1.095 - 09 de Abril de 2026 - 10:15 CST
 
 #### Fix Crítico Autenticación y Despliegue
