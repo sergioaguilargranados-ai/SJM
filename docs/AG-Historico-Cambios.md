@@ -5,6 +5,14 @@
 
 ---
 
+### v1.099 - 09 de Abril de 2026 - 11:10 CST
+
+#### Build Fix: TypeScript & UI
+- **auth/error/page.tsx:** Eliminación de propiedad `asChild` no compatible con el componente `Button` actual. Se refactorizó la navegación usando envoltorios `Link` estándar.
+- **Versión Sincronizada:** v1.099.
+
+---
+
 ### v1.098 - 09 de Abril de 2026 - 10:55 CST
 
 #### Build Fix: TypeScript Typings

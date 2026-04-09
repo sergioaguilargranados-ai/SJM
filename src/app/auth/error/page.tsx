@@ -52,23 +52,23 @@ export default function AuthErrorPage() {
           </p>
 
           <div className="grid grid-cols-1 gap-4">
-            <Button asChild className="bg-[#1E3A5F] hover:bg-[#152944] text-white h-12 rounded-xl font-bold transition-all shadow-lg text-xs uppercase tracking-widest">
-              <Link href="/login">
+            <Link href="/login" className="w-full">
+              <Button className="w-full bg-[#1E3A5F] hover:bg-[#152944] text-white h-12 rounded-xl font-bold transition-all shadow-lg text-xs uppercase tracking-widest">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Volver al Login
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             
-            <div className="flex gap-3">
-              <Button asChild variant="outline" className="flex-1 h-12 rounded-xl border-slate-200 dark:border-[#2a2b3d] dark:text-slate-300 text-xs font-bold uppercase tracking-widest">
-                <a href="mailto:soporte@serjema.com">
+            <div className="flex gap-3 w-full">
+              <a href="mailto:soporte@serjema.com" className="flex-1">
+                <Button variant="outline" className="w-full h-12 rounded-xl border-slate-200 dark:border-[#2a2b3d] dark:text-slate-300 text-xs font-bold uppercase tracking-widest">
                   <Mail className="w-4 h-4 mr-2" /> Soporte
-                </a>
-              </Button>
-              <Button asChild variant="outline" className="flex-1 h-12 rounded-xl border-slate-200 dark:border-[#2a2b3d] dark:text-slate-300 text-xs font-bold uppercase tracking-widest">
-                <Link href="/">
+                </Button>
+              </a>
+              <Link href="/" className="flex-1">
+                <Button variant="outline" className="w-full h-12 rounded-xl border-slate-200 dark:border-[#2a2b3d] dark:text-slate-300 text-xs font-bold uppercase tracking-widest">
                   <Home className="w-4 h-4 mr-2" /> Inicio
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </div>
 
