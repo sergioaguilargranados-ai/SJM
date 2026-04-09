@@ -1,7 +1,21 @@
-# 📜 Histórico de SJM PLATFORM • v1.110
+# 📜 Histórico de SJM PLATFORM • v1.115
 
-**Última actualización:** 09 de Abril de 2026 - 13:00 CST
+**Última actualización:** 09 de Abril de 2026 - 14:25 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.115 - 09 de Abril de 2026 - 14:25 CST
+
+#### Navbar con Sesión, Perfil de Usuario y Email Resend
+- **NavbarPublica:** Nuevo componente cliente que muestra avatar y dropdown con opciones cuando el usuario está logueado (Mi Perfil, Dashboard, Cerrar Sesión). Botón "Acceso" cuando no lo está. Menú hamburguesa responsive.
+- **AuthProvider:** SessionProvider de NextAuth agregado al layout raíz para soportar `useSession()` en toda la app.
+- **Página `/perfil`:** Interfaz premium con avatar, datos personales editables, toggle "Soy Servidor SJM" con selector de sede. Al guardar se actualiza la DB.
+- **Server Action `actualizarPerfilAction`:** Backend para actualizar nombre, celular, fecha nacimiento, estatus servidor y sede.
+- **Resend Email Service:** `emailService.ts` con inicialización lazy para evitar crash en build. `emailTemplate.ts` con plantilla HTML corporativa SJM.
+- **Email de Bienvenida:** Se envía automáticamente al registrarse (Google o credenciales).
+- **Middleware:** Ruta `/perfil` protegida, `/recuperar` pública.
+- **Versión Sincronizada:** v1.115.
 
 ---
 

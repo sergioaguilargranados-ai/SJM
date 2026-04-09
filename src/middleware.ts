@@ -13,6 +13,7 @@ const RUTAS_PROTEGIDAS = [
   "/evaluaciones",
   "/catalogos",
   "/configuracion",
+  "/perfil",
 ];
 
 // Rutas públicas que NO requieren sesión
@@ -20,6 +21,7 @@ const RUTAS_PUBLICAS = [
   "/",
   "/login",
   "/registro",
+  "/recuperar",
   "/diplomado",
   "/api",
 ];

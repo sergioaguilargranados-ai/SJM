@@ -5,6 +5,7 @@ import {
   Mail, MessageCircle, ChevronDown, Star, Globe, Shield, Cross, ShieldCheck,
   Music, HelpCircle, ExternalLink, Sparkles, Church
 } from "lucide-react";
+import { NavbarPublica } from "@/components/layout/NavbarPublica";
 
 export const metadata = {
   title: "Servidores de Jesús por María | Un Don del Espíritu Santo en nuestro tiempo",
@@ -132,38 +133,9 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1015] font-sans selection:bg-blue-100 dark:selection:bg-blue-900/30">
       
       {/* ============================================ */}
-      {/* NAVBAR STICKY */}
+      {/* NAVBAR STICKY — Componente con estado de sesión */}
       {/* ============================================ */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#0f1015]/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-900">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/icon.png" alt="SJM" width={40} height={40} className="drop-shadow" />
-            <div className="hidden sm:block">
-              <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none">SJM Nacional</span>
-              <span className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-medium">Servidores de Jesús por María</span>
-            </div>
-          </Link>
-          <div className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-400">
-            <a href="#carisma" className="hover:text-slate-900 dark:hover:text-white transition-colors">Carisma</a>
-            <a href="#ministerios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Ministerios</a>
-            <a href="#programas" className="hover:text-slate-900 dark:hover:text-white transition-colors">Programas</a>
-            <a href="#retiros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Retiros</a>
-            <a href="#testimonios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Testimonios</a>
-            <a href="#centros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Centros</a>
-            <Link href="/blog" className="hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> Blog</Link>
-            <Link href="/tienda" className="hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1"><ShoppingBag className="w-3.5 h-3.5" /> Tienda</Link>
-            <Link href="/donativos" className="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> Donativos</Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/donativos" className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700 transition-colors">
-              <Heart className="w-3 h-3" /> Donar
-            </Link>
-            <Link href="/login" className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity">
-              Acceso Admin
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <NavbarPublica />
 
       {/* ============================================ */}
       {/* HERO — "Un Don del Espíritu Santo" */}
@@ -554,7 +526,7 @@ export default function Home() {
           </div>
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
             <p>© 2026 Servidores de Jesús por María — Todos los derechos reservados</p>
-            <p className="text-slate-600">Plataforma SJM v1.110 • Para Gloria de Dios</p>
+            <p className="text-slate-600">Plataforma SJM v1.115 • Para Gloria de Dios</p>
           </div>
         </div>
       </footer>
