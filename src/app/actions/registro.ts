@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { usuarios, roles_sistema } from "@/lib/schema";
 import { eq, and, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { enviarEmail } from "@/lib/emailService";
+import { plantillaBienvenidaSJM } from "@/lib/emailTemplate";
 
 const ORG_NACIONAL_ID = "6fb191cc-a477-4632-9cb1-c30c33a9f9bd";
 
@@ -117,6 +119,14 @@ export async function registrarUsuarioAction(
       fecha_nacimiento: datos.fecha_nacimiento || null,
       rol_id: rolGeneral.id,
     });
+
+    // 6. Enviar email de bienvenida (no bloqueante)
+    if (datos.correo) {
+      const { asunto, html } = plantillaBienvenidaSJM(datos.nombre_completo.trim());
+      enviarEmail({ para: correoFinal, asunto, html }).catch((err) =>
+        console.error("Error enviando email de bienvenida:", err)
+      );
+    }
 
     return { ok: true };
   } catch (error: any) {

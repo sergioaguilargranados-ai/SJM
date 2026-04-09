@@ -5,6 +5,8 @@ import { db } from "./db";
 import { usuarios, roles_sistema, organizaciones } from "./schema";
 import { eq, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { enviarEmail } from "./emailService";
+import { plantillaBienvenidaSJM } from "./emailTemplate";
 
 // Extensión del tipado de sesión para incluir datos de SJM
 declare module "next-auth" {
@@ -152,6 +154,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             user.name || "",
             user.image || null,
             account.providerAccountId || ""
+          );
+
+          // Enviar email de bienvenida (no bloqueante)
+          const { asunto, html } = plantillaBienvenidaSJM(user.name || user.email);
+          enviarEmail({ para: user.email, asunto, html }).catch((err) =>
+            console.error("Error enviando email de bienvenida (Google):", err)
           );
         } else if (!usuarioExistente.google_id && account.providerAccountId) {
           // Si el usuario existe pero no tiene google_id, vincularlo
