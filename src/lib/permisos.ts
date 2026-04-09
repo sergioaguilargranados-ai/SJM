@@ -47,6 +47,8 @@ export async function validarAccesoPlan(claveFunc: string) {
   if (!modulosPermitidos.includes(claveFunc)) {
     redirect("/dashboard?error=plan_insuficiente");
   }
+
+  return { session, orgId, planClave };
 }
 
 /**

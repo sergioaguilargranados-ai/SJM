@@ -5,6 +5,14 @@
 
 ---
 
+### v1.098 - 09 de Abril de 2026 - 10:55 CST
+
+#### Build Fix: TypeScript Typings
+- **permisos.ts:** Se añadió el retorno explícito de `{ session, orgId, planClave }` en `validarAccesoPlan` para corregir errores de tipado en páginas de consulta.
+- **Versión Sincronizada:** v1.098.
+
+---
+
 ### v1.097 - 09 de Abril de 2026 - 10:45 CST
 
 #### Build Fix: Syntax Object Close
