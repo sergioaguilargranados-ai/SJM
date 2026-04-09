@@ -5,6 +5,14 @@
 
 ---
 
+### v1.101 - 09 de Abril de 2026 - 11:55 CST
+
+#### Build Fix: Missing Assets
+- **AppSidebar.tsx:** Se añadió el import de `ShieldCheck` de `lucide-react` que causaba fallo de compilación.
+- **Versión Sincronizada:** v1.101.
+
+---
+
 ### v1.100 - 09 de Abril de 2026 - 11:50 CST (Hito 100)
 
 #### Build Fix: Tenant Identity

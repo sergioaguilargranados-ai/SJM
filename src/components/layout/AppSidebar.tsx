@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, CalendarDays, Receipt, Settings, FileText, Menu, X,
   LogOut, ChevronDown, ChevronRight, Music, Award, Tag, Home, MapPin, Wallet,
-  ClipboardList, Star, Landmark, BookOpen, UsersRound
+  ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
