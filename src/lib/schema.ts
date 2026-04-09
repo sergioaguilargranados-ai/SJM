@@ -113,6 +113,8 @@ export const usuarios = pgTable("usuarios", {
   google_id: varchar("google_id", { length: 255 }),
   nombre_completo: varchar("nombre_completo", { length: 255 }).notNull(),
   foto_perfil_url: text("foto_perfil_url"),
+  fecha_nacimiento: date("fecha_nacimiento"),
+  es_servidor: boolean("es_servidor").default(false),
   creado_en: timestamp("creado_en").defaultNow(),
 });
 

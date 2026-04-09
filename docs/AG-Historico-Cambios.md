@@ -1,7 +1,21 @@
-# 📜 Histórico de SJM PLATFORM • v1.095
+# 📜 Histórico de SJM PLATFORM • v1.110
 
-**Última actualización:** 09 de Abril de 2026 - 10:15 CST
+**Última actualización:** 09 de Abril de 2026 - 13:00 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.110 - 09 de Abril de 2026 - 13:00 CST
+
+#### Sistema de Autenticación y Registro Completo (Fase 1)
+- **Auto-creación con Google:** El callback `signIn` ahora crea automáticamente usuarios nuevos en la DB con rol "General" al acceder con Google. Ya no muestra "Acceso Denegado".
+- **Provider de Credenciales:** Nuevo provider `Credentials` en NextAuth para login por correo/contraseña y celular/contraseña con verificación bcrypt.
+- **Página `/registro`:** Interfaz Glassmorphism con 3 modos de registro (Google, Correo, Celular). Incluye validador visual de fortaleza de contraseña en tiempo real.
+- **Server Action `registrarUsuarioAction`:** Backend de registro con validación, hash bcrypt, detección de duplicados y asignación automática de rol.
+- **Rol "General":** Nuevo rol auto-creado para usuarios que se registran por su cuenta, con acceso a portal público, inscripciones y perfil.
+- **Esquema DB:** Campos `fecha_nacimiento` y `es_servidor` agregados a tabla `usuarios`. Sincronizado con Neon.
+- **Dependencia:** `bcryptjs` instalado para hash de contraseñas.
+- **Versión Sincronizada:** v1.110.
 
 ---
 

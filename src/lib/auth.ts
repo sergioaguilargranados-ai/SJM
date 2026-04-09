@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { db } from "./db";
-import { usuarios, roles_sistema } from "./schema";
-import { eq } from "drizzle-orm";
+import { usuarios, roles_sistema, organizaciones } from "./schema";
+import { eq, and } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 // Extensión del tipado de sesión para incluir datos de SJM
 declare module "next-auth" {
@@ -23,31 +25,151 @@ declare module "next-auth" {
   }
 }
 
+// ID de la Organización Nacional de SJM (fijo para el tenant principal)
+const ORG_NACIONAL_ID = "6fb191cc-a477-4632-9cb1-c30c33a9f9bd";
+
+/**
+ * Obtiene o crea el rol "General" para la organización nacional.
+ * Este rol se asigna a todos los usuarios nuevos que se registran por su cuenta.
+ */
+async function obtenerRolGeneral(): Promise<string> {
+  const [rolExistente] = await db
+    .select({ id: roles_sistema.id })
+    .from(roles_sistema)
+    .where(
+      and(
+        eq(roles_sistema.organizacion_id, ORG_NACIONAL_ID),
+        eq(roles_sistema.nombre, "General")
+      )
+    );
+
+  if (rolExistente) return rolExistente.id;
+
+  // Crear el rol General si no existe
+  const [nuevoRol] = await db
+    .insert(roles_sistema)
+    .values({
+      organizacion_id: ORG_NACIONAL_ID,
+      nombre: "General",
+      es_admin_sistema: false,
+    })
+    .returning({ id: roles_sistema.id });
+
+  return nuevoRol.id;
+}
+
+/**
+ * Crea un nuevo usuario en la base de datos con rol General.
+ */
+async function crearUsuarioDesdeGoogle(
+  email: string,
+  nombre: string,
+  imagen: string | null,
+  googleId: string
+) {
+  const rolGeneralId = await obtenerRolGeneral();
+
+  const [nuevoUsuario] = await db
+    .insert(usuarios)
+    .values({
+      organizacion_id: ORG_NACIONAL_ID,
+      correo: email,
+      nombre_completo: nombre || email.split("@")[0],
+      google_id: googleId,
+      foto_perfil_url: imagen,
+      rol_id: rolGeneralId,
+    })
+    .returning({ id: usuarios.id });
+
+  return nuevoUsuario;
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Correo o Celular", type: "text" },
+        password: { label: "Contraseña", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const identificador = credentials.email as string;
+        const password = credentials.password as string;
+
+        // Buscar por correo o celular
+        let usuario;
+        if (identificador.includes("@")) {
+          [usuario] = await db
+            .select()
+            .from(usuarios)
+            .where(eq(usuarios.correo, identificador));
+        } else {
+          // Limpiar número de celular (quitar espacios/guiones)
+          const celularLimpio = identificador.replace(/[\s\-\(\)]/g, "");
+          [usuario] = await db
+            .select()
+            .from(usuarios)
+            .where(eq(usuarios.celular, celularLimpio));
+        }
+
+        if (!usuario) return null;
+        if (!usuario.contrasena_hash) return null;
+
+        // Verificar contraseña
+        const esValida = await bcrypt.compare(password, usuario.contrasena_hash);
+        if (!esValida) return null;
+
+        return {
+          id: usuario.id,
+          email: usuario.correo,
+          name: usuario.nombre_completo,
+          image: usuario.foto_perfil_url,
+        };
+      },
+    }),
   ],
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, account }) {
       if (!user.email) return false;
 
-      // Solo permitimos el acceso si el usuario existe en nuestra DB de SJM
-      const [usuarioExistente] = await db
-        .select()
-        .from(usuarios)
-        .where(eq(usuarios.correo, user.email));
+      // Para Google: auto-crear si no existe
+      if (account?.provider === "google") {
+        const [usuarioExistente] = await db
+          .select()
+          .from(usuarios)
+          .where(eq(usuarios.correo, user.email));
 
-      if (usuarioExistente) {
-        return true;
+        if (!usuarioExistente) {
+          // Auto-crear el usuario con rol General
+          await crearUsuarioDesdeGoogle(
+            user.email,
+            user.name || "",
+            user.image || null,
+            account.providerAccountId || ""
+          );
+        } else if (!usuarioExistente.google_id && account.providerAccountId) {
+          // Si el usuario existe pero no tiene google_id, vincularlo
+          await db
+            .update(usuarios)
+            .set({
+              google_id: account.providerAccountId,
+              foto_perfil_url: usuarioExistente.foto_perfil_url || user.image,
+            })
+            .where(eq(usuarios.correo, user.email));
+        }
       }
 
-      return "/auth/error?error=AccessDenied";
+      // Para credenciales: ya se validó en authorize()
+      return true;
     },
 
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, account }) {
       // En el primer login o cuando se refresca el token
       if (user?.email || trigger === "signIn") {
         const correo = user?.email || token.email;
