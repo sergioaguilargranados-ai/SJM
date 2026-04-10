@@ -216,6 +216,25 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
                 Configuración
               </Link>
             </li>
+            <li className="px-3">
+              <Link
+                href="/configuracion/usuarios"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                  pathname === "/configuracion/usuarios"
+                    ? "text-white shadow-md font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                )}
+                style={pathname === "/configuracion/usuarios" ? { backgroundColor: tenant.color_primario } : undefined}
+              >
+                <Users className={cn(
+                  "w-4 h-4 mr-3 transition-colors",
+                  pathname === "/configuracion/usuarios" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                )} />
+                Equipo y Usuarios
+              </Link>
+            </li>
             {planClave === "premium" && (
               <li className="px-3">
                 <Link

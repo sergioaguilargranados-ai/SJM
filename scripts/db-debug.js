@@ -10,9 +10,9 @@ async function run() {
   try {
     await client.connect();
     
-    // 1. Datos del usuario Sergio
-    const resUser = await client.query("SELECT id, nombre_completo, correo, rol_id FROM usuarios WHERE correo = 'sergio.aguilar.granados@gmail.com'");
-    console.log('USER:', resUser.rows[0]);
+    // 1. Datos del usuario Sergio (Búsqueda amplia)
+    const resUser = await client.query("SELECT id, nombre_completo, correo, rol_id, organizacion_id FROM usuarios WHERE correo ILIKE '%sergio%'");
+    console.log('USERS FOUND:', resUser.rows);
 
     // 2. Roles existentes para SJM
     const resRoles = await client.query("SELECT id, nombre, es_admin_sistema FROM roles_sistema WHERE organizacion_id = '6fb191cc-a477-4632-9cb1-c30c33a9f9bd'");

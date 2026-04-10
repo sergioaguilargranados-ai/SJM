@@ -1,7 +1,19 @@
-# 📜 Histórico de SJM PLATFORM • v1.125
+# 📜 Histórico de SJM PLATFORM • v1.140
 
-**Última actualización:** 09 de Abril de 2026 - 17:08 CST
+**Última actualización:** 10 de Abril de 2026 - 00:55 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.140 - 10 de Abril de 2026 - 00:55 CST
+
+#### Módulo Completo de Gestión de Accesos (RBAC)
+- **Matriz de Permisos:** Nueva interfaz en `/configuracion/permisos` que permite activar/desactivar permisos (Ver, Crear, Editar, Eliminar) por cada módulo del sistema de forma granular.
+- **Gestión de Usuarios:** Nuevo módulo en `/configuracion/usuarios` para listar el equipo y asignar roles dinámicamente mediante un diálogo de gestión.
+- **Estructura de Sistema (Seed):** Se pobló la base de datos con la jerarquía completa de Módulos (Dashboard, Servidores, Eventos, Finanzas, etc.) para habilitar el control granular.
+- **Acciones Flexibles:** Implementación de `upsertRolAction`, `actualizarPermisosRolAction` y `asignarRolUsuarioAction` para una gestión reactiva.
+- **UI Components:** Integración de componentes Radix (`Checkbox`, `Select`) estilizados con la identidad visual SJM (#00B4AA).
+- **Consistencia:** Actualización de Sidebar para incluir "Equipo y Usuarios" y sincronización de versiones.
 
 ---
 
