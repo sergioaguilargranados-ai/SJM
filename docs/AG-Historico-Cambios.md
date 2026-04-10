@@ -12,9 +12,8 @@
 - **Bienvenida WhatsApp:** Al registrarse con celular, se envía mensaje de bienvenida por WhatsApp además del email.
 - **Recuperación por WhatsApp:** Cuando solicitan recuperación por celular, el enlace se envía tanto por email como por WhatsApp.
 - **Mensajes predefinidos:** `mensajeBienvenidaWhatsApp()` y `mensajeRecuperacionWhatsApp()` con formato markdown de WhatsApp.
-- **Dependencia:** `twilio` SDK instalado.
-- **Guía de referencia:** `docs/guia_whatsapp_correos_implementacion.md` (basada en AS Operadora).
-- **Versión Sincronizada:** v1.125.
+- **Fix Menú Intranet:** Se corrigió la visibilidad del menú para el tenant principal (SJM), promoviendo al usuario administrador a "Super Administrador" y activando el flag `es_admin_sistema` en los roles de gestión. Esto restaura las opciones de navegación que se ocultaron tras la implementación del sistema RBAC granular.
+- **Versión Sincronizada:** v1.125 en Landing, Login, Registro e Intranet.
 
 ---
 

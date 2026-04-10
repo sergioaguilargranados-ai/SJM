@@ -13,4 +13,74 @@ se guarde la clave del color para evitar confunciones.
 nota al pie en cada imagen, en cada video, etc. 
 6) Me gusta mucho la cencefa que esta en blanco traslucido, la pondria a 70% de transparencia. 
    Esta debe ser persistente en todas las paginas de la landing y tambien ponerla en la seccion de la intranet o bien volverla a poner. 
-7) 
+7) El footer: me gusta lo alto y el acomodo en la landing, como quedo en la intranet tambien me gusta el alto y el contenido. 
+pero el color me gustaria negro degradado a gris por favor...
+
+
+8) SECCIONES Y contenido
+Tengamos una pagina de "NOSOTROS" 
+1- En esta meter la información que tenemos en la pagina principal, como: Instituto Secular, Movimiento Nacional, Nuestra Misión, Nuestro Carisma,
+ Medios de Evangelización, Programas y apostolados, Nuestro Fundador, Nuestra Historia. 
+2- Que maneje foto en cada sección con toque artistico el acomodo, 
+3- Que al principio de la pagina aparezca una tarjeta con el nombre de la sección y un pequeño lema que se presentara con letra mas chiquita 
+  debajo del titulo y foto pequeña artistica con letra Diferente a manera de menu, y al darle en esas tarjetas tengan un movimiento suave premium 
+  y les dirija a la seccion que seleccionaron. 
+4- Sin olvidar que es marca blanca este sitio, necesitamos crear un modulo de manejo de contenido, este debe estar acoplado al de modulos y 
+ funciones que se acaba de crear en la pagina, pero este sera mas completo porque tendra la catura del Text de la sección y la captura del contenido, 
+ poner el URL de las foto que llevara. Esto para el menu de inicio que antes mencione y de manera parecida ya el contenido de las secciones mismas, 
+ titulo, sub-titulo, contenido, un un campo para indicar autoria o dato final de donde se saco el texto, el cual se presenta con letra pequeñita. 
+ justo abajo del menu poner el estacio para presentar un Video el cual se presenta el espacio siempre y cuando lo agreguen la ruta en campo del 
+ parametro que se agregue para esta funcion. 
+5- Necesito tu ayuda para pre-llenar estos campos que si edentifiques de las secciones que comente en los campos correspondientes. 
+Por favor volver a leer www.serjema.com (nuestra pagina actual) en la cual tenemos ahora la información disponible y me ayudes por favor a llenar 
+esos campos que mas se puedan de las secciones mencionadas. 
+6- Necesitamos otra pagina con la misma funcion parametrizada pero esta cambiara la tipografia y color esta se llamara "Mundo Infantil" los colores y 
+tipografia que nos sugieras al tema infantil, esta sección tambien con el video tendra ademas juegos, trivias, cuentos, etc, para que te des una idea 
+y puedas agregar algo al respecto, la verdad es que esa seccion no existe actualmente pero se iniciara... En el titulo de esta sección tendra un
+letrero colorido que dira ELEMA KIDS el cual debe tambien estar en parametro. 
+7- Tendremos una pagina de "Llama de Amor" esta es una pagina de ayuda urgente, usaremos colores calidos para dar sensación de paz, en esta pagina tendremos 
+oraciones especiales para momentos de angustia, de ataque espiritual, etc, y aca una sección de telefonos de emergencia, por la crisis que esten viviendo... 
+tambien aca haremos pondremos un agente de IA (que luego vemos como lo haremos contigo) para que comience mientras nos pasa la llamada a los psicologos o 
+consejeros catolicos que esten disponiobles. El servicio es 24hrs. Al igual, las secciones serán en el mismo formato ya mencionado. 
+8- Ya existe una pagina con nuestra "Tienda OnLine" pero aun es simulada, por favor necesito que la hagamos como lo hicimos en el proyecto c:\ERPCubox me 
+refiero al modelo de tienda en linea, con la base de datos de productos, filtros, pagina con el detalle del producto, pasarela de pagos pero esta 
+con mdo Pago, (en ERPCubox esta con otra), y en la intranet ERPcubox estan las paginas de administracion de la tienda en linea: tienda en linea, 
+pedidos recibidos, Textos con los medios de pago: ver catalogo de productos, Pedidos Web, Formas de entrega, Textos, de Medios de pago, Notificaciones.
+Por favor crear todo estas paginas y secciones correspondientemente. 
+9- Crear una pagina completa de "Contactanos", telefonos de emergencia (mismos de llama de amor), telefonos de administracion de la organizacion, 
+correo electronico con la posibilidad de enviar un correo desde ahi. 
+WhatsApp con su QR aun lado, y en hipertexto para pder abrir el Whatsapp y ponder enviar un mensaje, ubicación, con su QR aun lado. y mapa de G.Maps 
+para tomar de los datos de la organizacion la ubicacion. Direccion comnpleta de la organización. pagina web (con liga). 
+Seccion de fotos de los resposnsables de la organizacion, nombre, responsabilidad en la organizacion, con un espacio abajo para texto con un saludo
+ o mensaje corto de ellos.  Tambien los datos para que puedan enviar un correo, tradicional. 
+10- En el footer, manejar los telefonos y ubicación que aca se mencionan. 
+11- Crear una pagina para "Donativos". Mismo mecanismo de tarjetas al inicio como menu, y secciones como antes mencionadas con parametros como video, etc. 
+12- Crear una pagina especial para "Testimonios" Mismo formato, pero esta debe una liga para poder agregar su testimonio, crear una captura 
+pero que puede ser Anonimo. Crear esta pantalla de catura... Esta misma opcion debe estar en intranet cuando aca estan identificados. 
+13- Necesitamos crear una pagina de "Ayuda" Esta debe tener otro formato, mas estandar a las paginas de ayuda, con secciones de ayuda espiritual, 
+psicologica, o tecnica, en cada seccion tendra el nombre de un responsable un telefono para apoyo por WhatsApp entonces con QR aun lado y la posibilidad 
+de abrir el Whatsapp desde ahi. En esta pagina tambien necesitamos poder contactarnos por correo. Poner nuestro chatbot sobre nuestros 
+serviciosde la organizacion. En esta pagina deben ir la seccion de preguntas frecuentes, esto tambien debe ser parametrizado... 
+14- Necesitamos una pagina de "Tú el Joven de Hoy" En esta pagina como en la ELEMA KITS debe llevar ese letrero parametrizado pero dira ELEMA y como 
+subtitulo "El Ejercito del Mas Amado" que eso quiere decir ELEMA. Quiza sobra decir pero los deben ser colores vivos y juveniles, con la misma configuración 
+que las demas paginas, videos, etc. En esta pagina necesitamos una seccion de colage de fotos mostrando retiros cuando ellos estan festejando, etc. estas las 
+pondremos como franja vertical a la derecha y que vaya caminando como carrucel, quiza 20 fotos sean suficientes. 
+15- Lo mismo que en la anterior necesitamos una pagina pero ahora de Matrimonios. El Letrero dira Plenitud Matrimonial pero parametrica. fondo de colores 
+amorosos, tambien la cinta de fotos como la de jovenes. 
+16- Necesitamos una pagina solo para el retiro de "Sanación Interior" el texto debe decir "Magnificat" lema "Amor al Rescate" Con el mismo modelo que las 
+anteriores con la cinta de fontos. 
+17- Crear una pagina de "Retiros y Eventos" mantener el esquema de las tarjetas iniciales como menu pero adicional, necesitamos que en hipertexto aparezca 
+la opcion para mostrar pagina modal al centro con fondo traslucido con una agenda de ese tipo de retiro, mostrando las lugares y fechas proximas de ese 
+retiro seleccionado por lo que en la base abra el tipo de retiro que enviara como parametro a esta pagina agenda. Debemos crear un modulo donde debemos 
+capturar en intranet la agenda, en donde vendran las sedes, casas de retiros, fechas, hora entrada y salida del retiro y el tipo de retiro, entnces de ahi 
+tendremos que sacar la agenda de proximos retiros de ese tipo. El detalle de que se trata cada uno, lo capturaremos en las secciones.
+
+
+9) Necesitamos Las siguientes paginas pero en modo BLOG para "Crecimientos" contendra articulos de crecimientos y predicas especificas
+10) Blog "Formacíón" aca llevaremos la formación en secciones de cursos e incluso con examenes on-line pero esos los detallamos despues. 
+11) Necsitamos una pagina para Musica, Podcast y videos, la imagino muy al estilo de Youtube pero de vista por que en realidad no quiero sus 
+funcionalidades solo visualizar y reproducir lo que tengamos en la las ligas 
+12) Pagina principal 
+
+
+
