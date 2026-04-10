@@ -16,6 +16,8 @@ export const metadata = {
 // DATOS REALES extraídos de www.serjema.com.mx
 // ============================================================
 
+const appVersion = "v1.140 - SJM Platform Premium";
+
 const ministerios = [
   {
     nombre: "Evangelización",
@@ -152,6 +154,7 @@ export default function Home() {
           </div>
           
           <p className="text-sm md:text-base font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase mb-4">
+            SJM PLATFORM &bull; v1.140
             Un Don del Espíritu Santo en nuestro tiempo
           </p>
           
@@ -526,7 +529,7 @@ export default function Home() {
           </div>
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
             <p>© 2026 Servidores de Jesús por María — Todos los derechos reservados</p>
-            <p className="text-slate-600">Plataforma SJM v1.125 • Para Gloria de Dios</p>
+            <p className="text-slate-600">Plataforma SJM v1.140 • Para Gloria de Dios</p>
           </div>
         </div>
       </footer>
