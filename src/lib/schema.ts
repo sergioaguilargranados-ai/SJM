@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, text, timestamp, date, boolean, integer, decimal } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 // -------------------------------------------------------------
 // Core y Multi-Tenant (Control de Acceso y Planes)
@@ -343,3 +344,40 @@ export const evaluaciones_evento = pgTable("evaluaciones_evento", {
   gustas_apoyar_economicamente: boolean("gustas_apoyar_economicamente"),
   oficio_profesion: varchar("oficio_profesion", { length: 255 }),
 });
+
+
+
+export const modulosRelations = relations(modulos_sistema, ({ many }) => ({
+ funciones: many(funciones_sistema),
+}));
+
+export const funcionesRelations = relations(funciones_sistema, ({ one, many }) => ({
+ modulo: one(modulos_sistema, { fields: [funciones_sistema.modulo_id], references: [modulos_sistema.id] }),
+ acciones: many(acciones_sistema),
+}));
+
+export const accionesRelations = relations(acciones_sistema, ({ one, many }) => ({
+ funcion: one(funciones_sistema, { fields: [acciones_sistema.funcion_id], references: [funciones_sistema.id] }),
+ rolesPermitidos: many(rol_permisos),
+}));
+
+export const rolesRelations = relations(roles_sistema, ({ many }) => ({
+ permisos: many(rol_permisos),
+ usuarios: many(usuarios),
+}));
+
+export const rolPermisosRelations = relations(rol_permisos, ({ one }) => ({
+ rol: one(roles_sistema, { fields: [rol_permisos.rol_id], references: [roles_sistema.id] }),
+ accion: one(acciones_sistema, { fields: [rol_permisos.accion_id], references: [acciones_sistema.id] }),
+}));
+
+export const usuariosRelations = relations(usuarios, ({ one }) => ({
+ rol: one(roles_sistema, { fields: [usuarios.rol_id], references: [roles_sistema.id] }),
+ organizacion: one(organizaciones, { fields: [usuarios.organizacion_id], references: [organizaciones.id] }),
+}));
+
+export const organizacionesRelations = relations(organizaciones, ({ one, many }) => ({
+ plan: one(planes, { fields: [organizaciones.plan_id], references: [planes.id] }),
+ usuarios: many(usuarios),
+}));
+
