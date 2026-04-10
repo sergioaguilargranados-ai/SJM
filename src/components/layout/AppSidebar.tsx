@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, CalendarDays, Receipt, Settings, FileText, Menu, X,
   LogOut, ChevronDown, ChevronRight, Music, Award, Tag, Home, MapPin, Wallet,
-  ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck
+  ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck,
+  PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -256,6 +257,43 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
                 </Link>
               </li>
             )}
+          </ul>
+
+          {/* Sección CMS — Administración de Contenido Web */}
+          <div className="px-4 mt-5 mb-2">
+            <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sitio Web</p>
+          </div>
+          <ul className="space-y-0.5">
+            {[
+              { name: "Contenido", href: "/configuracion/contenido", icon: Palette },
+              { name: "Tienda Online", href: "/configuracion/tienda", icon: ShoppingBag },
+              { name: "Blog", href: "/configuracion/blog", icon: Newspaper },
+              { name: "Media", href: "/configuracion/media", icon: MonitorPlay },
+              { name: "Agenda Retiros", href: "/configuracion/agenda", icon: Megaphone },
+            ].map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={item.name} className="px-3">
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                      isActive
+                        ? "text-white shadow-md font-bold"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                    )}
+                    style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
+                  >
+                    <item.icon className={cn(
+                      "w-4 h-4 mr-3 transition-colors",
+                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                    )} />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
         </div>

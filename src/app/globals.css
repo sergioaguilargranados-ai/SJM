@@ -139,5 +139,107 @@
   transform: translateY(-1px);
 }
 
+/* ============================================ */
+/* ANIMACIONES LANDING — Carrusel y Tarjetas    */
+/* ============================================ */
 
+@keyframes scroll-vertical {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
 
+.animate-scroll-vertical {
+  animation: scroll-vertical 30s linear infinite;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* ============================================ */
+/* MICRO-INTERACCIONES — Glow & Premium FX      */
+/* ============================================ */
+
+/* Glow hover para botones principales */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--tenant-primario, #00B4AA), #6366f1, var(--tenant-primario, #00B4AA));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease-out;
+  filter: blur(12px);
+}
+
+.btn-glow:hover::before {
+  opacity: 0.6;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 25px -5px var(--tenant-primario, #00B4AA);
+  transform: translateY(-1px);
+}
+
+/* Efecto shimmer para gradientes */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Pulse suave para badges y notificaciones */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Efecto hover con elevación para tarjetas */
+.card-hover {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradiente animado para textos hero */
+@keyframes gradient-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.text-gradient-animated {
+  background-size: 300% 300%;
+  animation: gradient-flow 6s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Scroll suave global — usa data-attribute para Next.js 16 */
+html[data-scroll-behavior="smooth"],
+html {
+  scroll-behavior: smooth;
+}

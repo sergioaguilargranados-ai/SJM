@@ -345,7 +345,360 @@ export const evaluaciones_evento = pgTable("evaluaciones_evento", {
   oficio_profesion: varchar("oficio_profesion", { length: 255 }),
 });
 
+// -------------------------------------------------------------
+// CMS — Parámetros Landing (Marca Blanca Parametrizada)
+// -------------------------------------------------------------
 
+export const parametros_landing = pgTable("parametros_landing", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  // Colores con clave descriptiva
+  color_primario_clave: varchar("color_primario_clave", { length: 50 }),
+  color_primario_hex: varchar("color_primario_hex", { length: 7 }).default("#1E3A5F"),
+  color_secundario_clave: varchar("color_secundario_clave", { length: 50 }),
+  color_secundario_hex: varchar("color_secundario_hex", { length: 7 }).default("#00B4AA"),
+  color_terciario_clave: varchar("color_terciario_clave", { length: 50 }),
+  color_terciario_hex: varchar("color_terciario_hex", { length: 7 }).default("#FFFFFF"),
+  // Cenefa
+  cenefa_transparencia: integer("cenefa_transparencia").default(70),
+  // Footer degradado
+  footer_color_inicio: varchar("footer_color_inicio", { length: 7 }).default("#000000"),
+  footer_color_fin: varchar("footer_color_fin", { length: 7 }).default("#4B5563"),
+  footer_telefonos: text("footer_telefonos"), // JSON array
+  footer_ubicacion: text("footer_ubicacion"),
+  // Carrusel principal (hasta 4 imágenes)
+  carrusel_imagenes: text("carrusel_imagenes"), // JSON [{url, nota_pie, orden}]
+  // Videos generales
+  videos_principales: text("videos_principales"), // JSON [{url, titulo, nota_pie}]
+  // WhatsApp
+  whatsapp_qr_url: text("whatsapp_qr_url"),
+  whatsapp_numero: varchar("whatsapp_numero", { length: 20 }),
+  // Google Maps
+  mapa_embed_url: text("mapa_embed_url"),
+  mapa_latitud: decimal("mapa_latitud"),
+  mapa_longitud: decimal("mapa_longitud"),
+  // Orden de secciones landing principal (JSON array)
+  orden_secciones: text("orden_secciones"),
+  creado_en: timestamp("creado_en").defaultNow(),
+  actualizado_en: timestamp("actualizado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// CMS — Secciones de Contenido (para todas las páginas)
+// -------------------------------------------------------------
+
+export const secciones_contenido = pgTable("secciones_contenido", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  pagina_clave: varchar("pagina_clave", { length: 100 }).notNull(), // "nosotros", "mundo_infantil", etc.
+  tipo: varchar("tipo", { length: 50 }).default("seccion"), // "menu_tarjeta", "seccion", "video_principal"
+  orden: integer("orden").default(0),
+  // Contenido
+  titulo: varchar("titulo", { length: 255 }),
+  subtitulo: varchar("subtitulo", { length: 255 }),
+  contenido: text("contenido"),
+  autoria: varchar("autoria", { length: 255 }),
+  // Multimedia
+  imagen_url: text("imagen_url"),
+  imagen_nota_pie: varchar("imagen_nota_pie", { length: 255 }),
+  video_url: text("video_url"),
+  video_nota_pie: varchar("video_nota_pie", { length: 255 }),
+  // Menú tarjeta
+  lema_tarjeta: varchar("lema_tarjeta", { length: 255 }),
+  imagen_tarjeta_url: text("imagen_tarjeta_url"),
+  // Estado
+  visible: boolean("visible").default(true),
+  funcion_id: uuid("funcion_id").references(() => funciones_sistema.id),
+  estatus: boolean("estatus").default(true),
+  creado_en: timestamp("creado_en").defaultNow(),
+  actualizado_en: timestamp("actualizado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// CMS — Teléfonos de Emergencia y Contacto
+// -------------------------------------------------------------
+
+export const telefonos_emergencia = pgTable("telefonos_emergencia", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  tipo: varchar("tipo", { length: 50 }).default("emergencia"), // "emergencia", "administracion"
+  nombre_contacto: varchar("nombre_contacto", { length: 255 }),
+  telefono: varchar("telefono", { length: 50 }),
+  whatsapp: varchar("whatsapp", { length: 50 }),
+  whatsapp_qr_url: text("whatsapp_qr_url"),
+  cargo: varchar("cargo", { length: 255 }),
+  horario: varchar("horario", { length: 100 }),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// CMS — Responsables de la Organización (directivos con foto)
+// -------------------------------------------------------------
+
+export const responsables_organizacion = pgTable("responsables_organizacion", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  cargo: varchar("cargo", { length: 255 }),
+  foto_url: text("foto_url"),
+  correo: varchar("correo", { length: 255 }),
+  telefono: varchar("telefono", { length: 50 }),
+  whatsapp: varchar("whatsapp", { length: 50 }),
+  mensaje_saludo: text("mensaje_saludo"),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// CMS — Testimonios Parametrizados
+// -------------------------------------------------------------
+
+export const testimonios = pgTable("testimonios", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre_autor: varchar("nombre_autor", { length: 255 }),
+  es_anonimo: boolean("es_anonimo").default(false),
+  texto: text("texto").notNull(),
+  calificacion: integer("calificacion").default(5),
+  foto_url: text("foto_url"),
+  usuario_id: uuid("usuario_id").references(() => usuarios.id),
+  aprobado: boolean("aprobado").default(false),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// CMS — Preguntas Frecuentes Parametrizadas
+// -------------------------------------------------------------
+
+export const preguntas_frecuentes = pgTable("preguntas_frecuentes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  pagina_clave: varchar("pagina_clave", { length: 100 }).default("general"),
+  pregunta: text("pregunta").notNull(),
+  respuesta: text("respuesta").notNull(),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// CMS — Galería de Fotos (cintas/collages por página)
+// -------------------------------------------------------------
+
+export const galeria_fotos = pgTable("galeria_fotos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  pagina_clave: varchar("pagina_clave", { length: 100 }).notNull(),
+  imagen_url: text("imagen_url").notNull(),
+  titulo: varchar("titulo", { length: 255 }),
+  descripcion: text("descripcion"),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// CMS — Letreros Especiales Parametrizados
+// (ELEMA KIDS, ELEMÁ, Plenitud Matrimonial, Magnificat)
+// -------------------------------------------------------------
+
+export const letreros_especiales = pgTable("letreros_especiales", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  pagina_clave: varchar("pagina_clave", { length: 100 }).notNull(),
+  texto_principal: varchar("texto_principal", { length: 255 }).notNull(),
+  texto_subtitulo: varchar("texto_subtitulo", { length: 255 }),
+  fuente_especial: varchar("fuente_especial", { length: 100 }),
+  color_texto: varchar("color_texto", { length: 7 }),
+  estilo: varchar("estilo", { length: 50 }).default("elegante"),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Categorías de Producto
+// -------------------------------------------------------------
+
+export const categorias_producto = pgTable("categorias_producto", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  descripcion: text("descripcion"),
+  imagen_url: text("imagen_url"),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Productos
+// -------------------------------------------------------------
+
+export const productos_tienda = pgTable("productos_tienda", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  descripcion: text("descripcion"),
+  precio: decimal("precio").notNull(),
+  precio_anterior: decimal("precio_anterior"),
+  categoria_id: uuid("categoria_id").references(() => categorias_producto.id),
+  imagen_principal_url: text("imagen_principal_url"),
+  imagenes_adicionales: text("imagenes_adicionales"), // JSON array
+  sku: varchar("sku", { length: 50 }),
+  stock: integer("stock").default(0),
+  peso: decimal("peso"),
+  destacado: boolean("destacado").default(false),
+  estatus: boolean("estatus").default(true),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Pedidos Web
+// -------------------------------------------------------------
+
+export const pedidos_web = pgTable("pedidos_web", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  usuario_id: uuid("usuario_id").references(() => usuarios.id),
+  folio: varchar("folio", { length: 50 }),
+  // Datos cliente
+  nombre_cliente: varchar("nombre_cliente", { length: 255 }).notNull(),
+  correo_cliente: varchar("correo_cliente", { length: 255 }),
+  telefono_cliente: varchar("telefono_cliente", { length: 50 }),
+  direccion_envio: text("direccion_envio"),
+  // Financiero
+  subtotal: decimal("subtotal").default("0"),
+  impuestos: decimal("impuestos").default("0"),
+  costo_envio: decimal("costo_envio").default("0"),
+  total: decimal("total").default("0"),
+  metodo_pago: varchar("metodo_pago", { length: 50 }),
+  referencia_pago: varchar("referencia_pago", { length: 255 }),
+  // Entrega
+  forma_entrega: varchar("forma_entrega", { length: 50 }),
+  sede_recoger_id: uuid("sede_recoger_id").references(() => sedes.id),
+  // Estado
+  estatus: varchar("estatus", { length: 50 }).default("PENDIENTE"),
+  notas: text("notas"),
+  creado_en: timestamp("creado_en").defaultNow(),
+  actualizado_en: timestamp("actualizado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Detalle de Pedido
+// -------------------------------------------------------------
+
+export const detalle_pedido = pgTable("detalle_pedido", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  pedido_id: uuid("pedido_id").references(() => pedidos_web.id).notNull(),
+  producto_id: uuid("producto_id").references(() => productos_tienda.id).notNull(),
+  cantidad: integer("cantidad").notNull(),
+  precio_unitario: decimal("precio_unitario").notNull(),
+  subtotal: decimal("subtotal").notNull(),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Formas de Entrega
+// -------------------------------------------------------------
+
+export const formas_entrega = pgTable("formas_entrega", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  descripcion: text("descripcion"),
+  costo: decimal("costo").default("0"),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Textos Medios de Pago
+// -------------------------------------------------------------
+
+export const textos_medios_pago = pgTable("textos_medios_pago", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  contenido: text("contenido"),
+  tipo: varchar("tipo", { length: 50 }),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// Tienda Online — Notificaciones
+// -------------------------------------------------------------
+
+export const notificaciones_tienda = pgTable("notificaciones_tienda", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  tipo: varchar("tipo", { length: 50 }),
+  asunto: varchar("asunto", { length: 255 }),
+  cuerpo_html: text("cuerpo_html"),
+  estatus: boolean("estatus").default(true),
+});
+
+// -------------------------------------------------------------
+// Agenda de Retiros (calendario público y gestión intranet)
+// -------------------------------------------------------------
+
+export const agenda_retiros = pgTable("agenda_retiros", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  tipo_evento_id: uuid("tipo_evento_id").references(() => tipos_eventos.id).notNull(),
+  sede_id: uuid("sede_id").references(() => sedes.id),
+  casa_retiro_id: uuid("casa_retiro_id").references(() => casas_retiro.id),
+  nombre_evento: varchar("nombre_evento", { length: 255 }).notNull(),
+  fecha_inicio: timestamp("fecha_inicio"),
+  fecha_fin: timestamp("fecha_fin"),
+  hora_entrada: varchar("hora_entrada", { length: 10 }),
+  hora_salida: varchar("hora_salida", { length: 10 }),
+  cupo_maximo: integer("cupo_maximo"),
+  costo: decimal("costo"),
+  descripcion: text("descripcion"),
+  estatus: varchar("estatus", { length: 50 }).default("PROXIMA"),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Blog — Artículos (Crecimientos, Formación)
+// -------------------------------------------------------------
+
+export const articulos_blog = pgTable("articulos_blog", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  blog_clave: varchar("blog_clave", { length: 50 }).default("crecimientos"),
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }),
+  extracto: text("extracto"),
+  contenido: text("contenido"),
+  imagen_portada_url: text("imagen_portada_url"),
+  autor_id: uuid("autor_id").references(() => usuarios.id),
+  categoria: varchar("categoria", { length: 100 }),
+  etiquetas: text("etiquetas"), // JSON array
+  publicado: boolean("publicado").default(false),
+  fecha_publicacion: timestamp("fecha_publicacion"),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Media — Música, Podcast, Videos
+// -------------------------------------------------------------
+
+export const media_contenido = pgTable("media_contenido", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(), // "musica", "podcast", "video"
+  titulo: varchar("titulo", { length: 255 }).notNull(),
+  descripcion: text("descripcion"),
+  url_contenido: text("url_contenido").notNull(),
+  imagen_miniatura_url: text("imagen_miniatura_url"),
+  duracion: varchar("duracion", { length: 20 }),
+  artista_autor: varchar("artista_autor", { length: 255 }),
+  categoria: varchar("categoria", { length: 100 }),
+  orden: integer("orden").default(0),
+  estatus: boolean("estatus").default(true),
+  creado_en: timestamp("creado_en").defaultNow(),
+});
+
+// -------------------------------------------------------------
+// Relaciones (Relations) — ORM Drizzle
+// -------------------------------------------------------------
 
 export const modulosRelations = relations(modulos_sistema, ({ many }) => ({
  funciones: many(funciones_sistema),

@@ -1,7 +1,122 @@
-# 📜 Histórico de SJM PLATFORM • v1.140
+# 📜 Histórico de SJM PLATFORM • v1.165
 
-**Última actualización:** 10 de Abril de 2026 - 00:55 CST
+**Última actualización:** 10 de Abril de 2026 - 11:08 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.165 - 10 de Abril de 2026 - 11:08 CST
+
+#### ✨ Interfaz Premium y Micro-Interacciones
+- **Hero Carrusel Animado:** (`HeroCarrusel.tsx`) Carrusel con auto-advance y transiciones fluidas de fundido y escalado, con soporte para imágenes y "shimmer" (brillo animado).
+- **Animaciones Globales:** Implementación nativa en `globals.css` para `.btn-glow` (resplandor de botón interactivo) y `.text-gradient-animated` para títulos importantes.
+- **Scroll Reveal Experiencial:** (`ScrollReveal.tsx`) Integración inteligente de Intersection Observer para animaciones en pantalla al hacer scroll (`fade-in-up`).
+- **Widget de WhatsApp Flotante:** (`WhatsAppWidget.tsx`) Botón flotante pulsante que detecta automáticamente el número de contacto de la Organización (Tenant) para re-dirigir a un chat en vivo.
+- **Resolución de Errores Frontend:** Solución de re-renderizado (`Hydration Mismatch`) causados por `next-themes` en Next.js 16.1+, solución al error de Favicon y mitigación de errores de extensiones externas de Chrome.
+
+#### 🔗 Conexión Dinámica — Páginas Públicas al CMS
+
+##### Infraestructura Multi-Tenant
+- **`src/lib/tenant.ts`:** Nuevo resolver de tenant que identifica la organización por dominio (`dominio_tenant`) con fallback a la primera organización. Incluye `obtenerOrganizacionPorId()` con join a planes para compatibilidad con TenantData.
+- La Landing (`page.tsx`) fue convertida a `SSR` y resuelve todos sus componentes compartiendo propiedades de organización como el logotipo cargado y contactos.
+
+##### Páginas Públicas Conectadas (8 páginas ○ → ƒ)
+- **`/` (Landing Page):** Logo central dinámico y cenefas de navegación que reaccionan a los datos del Tenant.
+- **`/nosotros`:** Consume `secciones_contenido` (pagina_clave: "nosotros") con fallback a contenido estático pre-llenado.
+- **`/testimonios`:** Consume `testimonios` aprobados con calificación, autores y anonimato.
+- **`/tienda`:** Consume `productos_tienda` y `categorias_producto` con grid visual, precios, stock bajo y empty state.
+- **`/crecimientos`:** Consume `articulos_blog` (blog_clave: "crecimientos") con portada, extracto y fecha de publicación.
+- **`/media`:** Consume `media_contenido` con colores por tipo (música/podcast/video), badges de duración y miniaturas.
+- **`/retiros-eventos`:** Consume `agenda_retiros` con joins a tipos_eventos y sedes, tarjetas tipo calendario.
+- **`/ayuda`:** Consume `preguntas_frecuentes` con expand/collapse y `telefonos_emergencia` dinámicos.
+
+##### Patrón de Diseño
+- **Híbrido CMS-Fallback:** Todas las páginas consultan primero la BD; si no hay datos, muestran contenido estático de respaldo (nunca una página vacía).
+- **Empty States:** Tienda, Blog, Media y Retiros muestran estados vacíos elegantes con iconos y texto "Próximamente".
+
+---
+
+### v1.160 - 10 de Abril de 2026 - 09:58 CST
+
+#### 🎛️ Admin CMS + Server Actions (Fases 3-7)
+
+##### Server Actions Layer (2 archivos nuevos)
+- **`actions/contenido.ts`:** 30+ funciones de lectura/escritura para CMS (parametros_landing, secciones, testimonios, FAQ, teléfonos, responsables, galería, letreros, media, blog, agenda).
+- **`actions/tienda.ts`:** 20+ funciones para tienda online (productos, categorías, pedidos con folio auto-incremental, formas de entrega, medios de pago, descuento de stock automático).
+
+##### Módulos Admin Intranet (5 nuevas páginas)
+- **`/configuracion/contenido`:** Admin CMS con 6 tabs (Secciones por página, Branding con color pickers, Testimonios con aprobar/rechazar, FAQ, Teléfonos, Equipo directivo).
+- **`/configuracion/tienda`:** Admin Tienda con 4 tabs (Productos con grid visual, Categorías, Pedidos con cambio de estatus, Envíos y Medios de Pago).
+- **`/configuracion/blog`:** Admin Blog con publicar/despublicar, editor con blog_clave (crecimientos/formación/general), categorías y extractos.
+- **`/configuracion/media`:** Admin Multimedia con filtro por tipo, grid visual con miniaturas, CRUD de música/podcasts/videos con URL externo.
+- **`/configuracion/agenda`:** Admin Agenda de Retiros con tarjetas tipo calendario, joins a tipos_eventos y sedes, formulario completo de programación.
+
+##### Sidebar Actualizado
+- Nueva sección "Sitio Web" en el sidebar con 5 opciones CMS (Contenido, Tienda, Blog, Media, Agenda).
+
+##### Build
+- Verificado exitoso con **30 páginas** (25 anteriores + 5 admin nuevas), **0 errores**.
+
+---
+
+
+### v1.150 - 10 de Abril de 2026 - 04:35 CST
+
+#### 🏗️ Transformación Landing Marca Blanca — Fase 1 & 2
+
+##### Base de Datos (17 tablas nuevas)
+- **`parametros_landing`:** Configuración completa del sitio por org (colores con clave, cenefa, footer degradado, carrusel, videos, WhatsApp QR, Google Maps, orden de secciones).
+- **`secciones_contenido`:** CMS parametrizado para todas las páginas (título, subtítulo, contenido, autoría, imagen, video, menú tarjeta, liga a función de permisos).
+- **`telefonos_emergencia`:** Teléfonos de emergencia y administración con WhatsApp QR.
+- **`responsables_organizacion`:** Directivos con foto, cargo, mensaje de saludo.
+- **`testimonios`:** Sistema de testimonios parametrizados con soporte anónimo y aprobación.
+- **`preguntas_frecuentes`:** FAQ parametrizadas por página.
+- **`galeria_fotos`:** Galería de fotos por página para cintas/collages.
+- **`letreros_especiales`:** Letreros parametrizados (ELEMA KIDS, ELEMÁ, etc.) con fuente y estilo.
+- **`categorias_producto`:** Categorías para tienda online.
+- **`productos_tienda`:** Productos con precio, stock, SKU, imágenes.
+- **`pedidos_web`:** Pedidos con datos de cliente, financieros, y entrega.
+- **`detalle_pedido`:** Líneas de pedido.
+- **`formas_entrega`:** Formas de entrega parametrizadas.
+- **`textos_medios_pago`:** Instrucciones de medios de pago.
+- **`notificaciones_tienda`:** Plantillas de notificación de tienda.
+- **`agenda_retiros`:** Calendario de retiros públicos.
+- **`articulos_blog`:** Artículos de blog (Crecimientos, Formación).
+- **`media_contenido`:** Música, Podcasts, Videos con URLs externas.
+
+##### Componentes Globales
+- **`CenefaNavbar`:** Cenefa traslúcida al 70% + navbar integrada con todas las páginas, soporte de sesión, menú móvil.
+- **`FooterPublico`:** Footer alto con degradado negro a gris, parametrizado (navegación, recursos, contacto, redes sociales).
+- **`ComponentesLanding`:** TarjetaMenuSeccion, SeccionContenido, CarruselImagenes, CintaFotosVertical, LetreroEspecial.
+- **Layout `(public)`:** Layout compartido con cenefa + footer para todas las páginas públicas.
+
+##### Página Principal Rediseñada (14 secciones)
+- Cenefa 70% sticky, carrusel parametrizable, bienvenida con logo grande, "No estás solo", retiros, matrimonios, jóvenes, mundo infantil, testimonios, tienda, centros, donaciones, ayuda, contacto.
+
+##### 17 Páginas Públicas
+- `/nosotros` — 8 secciones completas con contenido pre-llenado de serjema.com.mx
+- `/contactanos` — Formulario, tarjetas de contacto, equipo directivo, redes sociales
+- `/testimonios` — Testimonios con CTA para agregar (anónimo)
+- `/donativos` — Datos bancarios reales, impactos, 3 métodos de pago
+- `/jovenes` — ELEMÁ con letrero colorido juvenil
+- `/matrimonios` — Plenitud Matrimonial con colores amorosos
+- `/sanacion-interior` — Magnificat con cita bíblica
+- `/mundo-infantil` — ELEMA KIDS con colores pastel vivos, juegos, trivias, videos
+- `/llama-de-amor` — Oración, teléfonos emergencia, placeholder agente IA
+- `/centros` — 8 sedes pre-llenadas con links Facebook
+- `/retiros-eventos` — Placeholder para agenda interactiva
+- `/ayuda` — 3 categorías (Espiritual, Psicológica, Técnica)
+- `/tienda` — Placeholder para catálogo (modelo ERPCubox)
+- `/media` — Tabs Música/Podcasts/Videos estilo YouTube
+- `/crecimientos` — Blog de crecimientos
+- `/formacion` — Blog de formación + E-Learning
+- `/blog` — Blog migrado con artículos pre-llenados
+
+##### Infraestructura
+- **Middleware:** Agregadas 17 rutas públicas nuevas.
+- **Migración:** Eliminadas las páginas antiguas `/blog`, `/donativos`, `/tienda` con nav/footer estáticos propios.
+- **CSS:** Animaciones de carrusel vertical, fade-in-up, scroll suave global.
+- **Build:** Verificado exitosamente (25 páginas, 0 errores).
 
 ---
 

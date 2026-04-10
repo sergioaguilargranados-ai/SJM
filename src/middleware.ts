@@ -24,6 +24,23 @@ const RUTAS_PUBLICAS = [
   "/recuperar",
   "/diplomado",
   "/api",
+  "/nosotros",
+  "/retiros-eventos",
+  "/jovenes",
+  "/matrimonios",
+  "/sanacion-interior",
+  "/mundo-infantil",
+  "/llama-de-amor",
+  "/contactanos",
+  "/donativos",
+  "/testimonios",
+  "/centros",
+  "/ayuda",
+  "/crecimientos",
+  "/formacion",
+  "/media",
+  "/tienda",
+  "/blog",
 ];
 
 export default auth((req) => {
