@@ -19,14 +19,23 @@ export default async function DashboardLayout({
 
   return (
     <TenantProvider tenant={tenant}>
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0f1015] transition-colors">
-        <AppSidebar permisos={permisos} />
+      {/* 
+        Layout Renovado:
+        1. Cenefa Superior (AppTopbar) que abarca el 100% del ancho.
+        2. AppSidebar debajo de la cenefa (pt-16 o top-20).
+      */}
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0f1015] transition-colors">
         <AppTopbar />
-        <div className="lg:pl-64 flex flex-col min-h-screen">
-          <main className="flex-1 p-6 lg:p-8 pt-24 lg:pt-24 w-full mx-auto">
-            {children}
-          </main>
-          <AppFooter />
+        
+        <div className="flex flex-1 pt-20">
+          <AppSidebar permisos={permisos} />
+          
+          <div className="lg:pl-64 flex flex-col flex-1 min-w-0">
+            <main className="flex-1 p-4 lg:p-8 w-full mx-auto">
+              {children}
+            </main>
+            <AppFooter />
+          </div>
         </div>
       </div>
     </TenantProvider>

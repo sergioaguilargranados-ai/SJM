@@ -107,20 +107,30 @@ export function CenefaNavbar({ transparencia = 70, logoUrl = "/logo-sjm-oficial.
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
               >
-                {session.user.image ? (
+                {session?.user?.image ? (
                   <Image
                     src={session.user.image}
                     alt={session.user.nombre_completo || session.user.name || ""}
                     width={32} height={32}
-                    className="rounded-full border-2 border-[#00B4AA]"
+                    className="rounded-full border-2 border-[#00B4AA] object-cover"
+                    onError={(e) => {
+                      // Si la imagen de Google o base de datos está rota, oculta el <img> y muestra el fallback
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      if (target.nextElementSibling) {
+                        (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                      }
+                    }}
                   />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] flex items-center justify-center text-white font-bold text-xs">
-                    {(session.user.nombre_completo || session.user.name || "U")[0].toUpperCase()}
-                  </div>
-                )}
+                ) : null}
+                <div 
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] flex items-center justify-center text-white font-bold text-xs"
+                  style={{ display: session?.user?.image ? 'none' : 'flex' }}
+                >
+                  {(session?.user?.nombre_completo || session?.user?.name || "U")[0].toUpperCase()}
+                </div>
                 <span className="hidden md:inline text-sm font-medium text-slate-700 dark:text-slate-300 max-w-[120px] truncate">
-                  {(session.user.nombre_completo || session.user.name || "").split(" ")[0]}
+                  {(session?.user?.nombre_completo || session?.user?.name || "").split(" ")[0]}
                 </span>
                 <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
               </button>
@@ -131,12 +141,12 @@ export function CenefaNavbar({ transparencia = 70, logoUrl = "/logo-sjm-oficial.
                   <div className="absolute right-0 top-full mt-2 w-56 z-50 bg-white dark:bg-[#1a1b26] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#2a2b3d] py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="px-4 py-3 border-b border-slate-100 dark:border-[#2a2b3d]">
                       <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                        {session.user.nombre_completo || session.user.name}
+                        {session?.user?.nombre_completo || session?.user?.name}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{session.user.email}</p>
-                      {session.user.rol_nombre && (
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{session?.user?.email}</p>
+                      {session?.user?.rol_nombre && (
                         <span className="inline-block mt-1.5 text-[9px] font-black text-[#00B4AA] uppercase tracking-wider bg-[#00B4AA]/10 px-2 py-0.5 rounded-full">
-                          {session.user.rol_nombre}
+                          {session?.user?.rol_nombre}
                         </span>
                       )}
                     </div>
