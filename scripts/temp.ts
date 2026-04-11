@@ -8,10 +8,12 @@ async function run() {
   
   await db.insert(secciones_contenido).values([
     {
-      organizacion_id: orgId, paginas_clave: "nosotros", clave_seccion: "carisma", // CORRECCION: pagina_clave
+      organizacion_id: orgId,
+      pagina_clave: "nosotros",
       titulo: "Nuestro Carisma",
       contenido: "Configurados con Cristo compasivo y misericordioso, anunciar la Buena Nueva, haciendo presente la misericordia de Dios",
-      orden: 4, mostrar_titulo: true, estatus: true
+      orden: 4,
+      estatus: true
     }
   ]).onConflictDoNothing();
 }
