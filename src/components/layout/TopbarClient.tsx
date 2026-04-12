@@ -38,17 +38,17 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
       
       {/* Logos & Branding */}
       <div className="flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105" title="Regresar a Inicio Público (Toda la Pantalla)">
+        <Link href="/" className="flex items-center gap-3 shrink-0 transition-transform hover:scale-105" title="Regresar a Inicio Público (Toda la Pantalla)">
            {tenant.logo_url ? (
-            <Image src={tenant.logo_url} alt={tenant.nombre} width={36} height={36} className="rounded-md object-contain" />
+            <Image src={tenant.logo_url} alt={tenant.nombre || "SJM Nacional"} width={40} height={40} className="drop-shadow rounded-lg object-contain" />
           ) : (
-            <div className="w-9 h-9 rounded-md flex items-center justify-center text-white font-extrabold text-sm shadow-sm" style={{ backgroundColor: tenant.color_primario || "#00B4AA" }}>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-extrabold text-base shadow-sm" style={{ backgroundColor: tenant.color_primario || "#00B4AA" }}>
               SJM
             </div>
           )}
-          <div className="hidden lg:flex flex-col">
-            <h2 className="font-extrabold text-slate-900 dark:text-white text-sm tracking-wide leading-none truncate max-w-[140px]">{tenant.nombre || "SJM"}</h2>
-            <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: tenant.color_primario || "#00B4AA" }}>Intranet</span>
+          <div className="hidden sm:block">
+            <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none">{tenant.nombre || "SJM Nacional"}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: tenant.color_primario || "#00B4AA" }}>INTRANET</span>
           </div>
         </Link>
       </div>
@@ -92,33 +92,38 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
         <div className="h-6 w-px bg-slate-200 dark:bg-[#2a2b3d] mx-2"></div>
         
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex flex-col items-end">
-            <span className="text-sm font-bold text-slate-800 dark:text-white leading-none">{nombre}</span>
-            <div className="flex items-center gap-2 mt-0.5">
-               <span className="text-[10px] text-slate-500 dark:text-[#8e8ea0]">{correo}</span>
-               <span className="font-bold text-[8px] px-1.5 py-[1px] rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase tracking-wider tooltip" title="Rol actual asignado">{rol || "Invitado"}</span>
-            </div>
-          </div>
-          {foto ? (
-            <Image 
-              src={foto} 
-              alt={nombre} 
-              width={32} height={32} 
-              className="rounded-full border-2 border-slate-200 dark:border-[#3b3c54] object-cover" 
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                if (target.nextElementSibling) {
-                  (target.nextElementSibling as HTMLElement).style.display = 'flex';
-                }
+          <div className="flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors">
+            {foto ? (
+              <Image 
+                src={foto} 
+                alt={nombre} 
+                width={36} height={36} 
+                className="rounded-full border-2 object-cover" 
+                style={{ borderColor: tenant.color_primario || "#00B4AA" }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  if (target.nextElementSibling) {
+                    (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                  }
+                }}
+              />
+            ) : null}
+            <div 
+              className="w-9 h-9 rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold text-sm shadow-sm"
+              style={{ 
+                display: foto ? 'none' : 'flex',
+                background: `linear-gradient(135deg, ${tenant.color_primario || "#00B4AA"}, #1E3A5F)`
               }}
-            />
-          ) : null}
-          <div 
-            className="w-8 h-8 rounded-full bg-blue-100 dark:bg-[#2a2b3d] border-2 border-slate-200 dark:border-[#3b3c54] flex items-center justify-center"
-            style={{ display: foto ? 'none' : 'flex' }}
-          >
-            <span className="text-sm font-bold text-blue-600 dark:text-slate-300">{nombre?.charAt(0) || "U"}</span>
+            >
+              {nombre?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="hidden md:flex flex-col items-start pr-2">
+               <span className="text-sm font-medium text-slate-700 dark:text-slate-300 max-w-[120px] truncate leading-none">
+                {nombre.split(" ")[0]}
+              </span>
+               <span className="text-[10px] font-bold text-slate-500 dark:text-[#8e8ea0] mt-1 uppercase tracking-wider">{rol || "Invitado"}</span>
+            </div>
           </div>
           <button onClick={handleLogout} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors ml-1" title="Cerrar Sesión">
             <LogOut className="w-5 h-5" />

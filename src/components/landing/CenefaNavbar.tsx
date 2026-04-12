@@ -90,9 +90,7 @@ export function CenefaNavbar({ transparencia = 70, logoUrl = "/logo-sjm-oficial.
               {pag.icono} {pag.nombre}
             </Link>
           ))}
-          <Link href="/donativos" className="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1">
-            <Heart className="w-3.5 h-3.5" /> Donativos
-          </Link>
+
         </div>
 
         {/* Acciones */}

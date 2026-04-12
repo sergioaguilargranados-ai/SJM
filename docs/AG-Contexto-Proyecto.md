@@ -99,11 +99,12 @@ Los siguientes workflows están disponibles en `.agents/workflows/` para ejecuta
 - **Usuario:** `sergioaguilargranados-ai`
 - **Deploy:** Vercel (auto-deploy desde push a main)
 
-### Archivos de Versión (TODOS deben actualizarse)
+### Archivos de Versión (TODOS deben actualizarse junto con la fecha y hora de compilación actual)
 1. `docs/AG-Historico-Cambios.md` — Entrada nueva al inicio
-2. `src/app/layout.tsx` — Footer `Build: vX.XXX`
-3. `src/app/page.tsx` — Footer `Plataforma SJM vX.XXX`
-4. `src/app/login/page.tsx` — Footer `© 2026 Admin SJM Nacional vX.XXX`
+2. `src/components/layout/AppFooter.tsx` (Intranet) — Update `appVersion` y la fecha de `buildTime`
+3. `src/app/page.tsx` (Landing) — Pasa la prop de versión completa con la fecha a la landing
+4. `src/app/login/page.tsx` (Login) — Footer `vX.XXX • COMPILACIÓN: DD-MM-YYYY HH:mm`
+**⚠️ IMPORTANTE:** Cada incremento de versión DEBE estar acompañado de la hora exacta de despliegue ("Compilación") en los formatos respectivos de UI en todos los archivos.
 
 ---
 

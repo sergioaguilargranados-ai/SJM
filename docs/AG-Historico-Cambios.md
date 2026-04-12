@@ -1,15 +1,265 @@
-# 📜 Histórico de Cambios - SJM Platform
+# 📜 Histórico de SJM PLATFORM • v1.166
 
-**Última actualización:** 08 de Abril de 2026 - 16:55 CST
+**Última actualización:** 11 de Abril de 2026 - 21:10 CST
 **Responsable:** AntiGravity AI Assistant
 
 ---
 
-### v1.091 - 11 de Abril de 2026 - 09:25 CST
+### v1.166 - 11 de Abril de 2026 - 21:10 CST
 
-#### Revisión y Compilación
-- **Ajustes:** Revisión de la documentación AG- de contexto y despliegue del proyecto.
-- **Git Push:** Compilación exitosa y carga de cambios a GitHub para habilitación del Vercel Pipeline.
+#### 🎨 Alineación Visual Intranet y Landing
+- **Topbar Client (Intranet):** Se reestructuró la zona del logo para utilizar los mismos parámetros y formato visual que la `CenefaNavbar` (Landing Page).
+- **Perfil de Usuario:** El componente de usuario en la Intranet ahora muestra la inicial/avatar alineada a la izquierda, seguida del primer nombre y con el **rol debajo** del nombre, imitando el estilo exacto que se diseñó para la landing, brindando completa paridad visual.
+- **Aclaración Color Menú Vertical:** El AppSidebar actualmente usa dinámicamente `tenant.color_primario`. Si el color de selección está en azul, significa que en el módulo *Configuración*, la Organización de SJM tiene asignado este color. El código permanece adaptativo hacia este valor en caso de que se actualice la configuración institucional.
+- **Versión Sincronizada:** v1.166 en footers y documentación.
+
+---
+
+### v1.165 - 10 de Abril de 2026 - 11:08 CST
+
+#### ✨ Interfaz Premium y Micro-Interacciones
+- **Hero Carrusel Animado:** (`HeroCarrusel.tsx`) Carrusel con auto-advance y transiciones fluidas de fundido y escalado, con soporte para imágenes y "shimmer" (brillo animado).
+- **Animaciones Globales:** Implementación nativa en `globals.css` para `.btn-glow` (resplandor de botón interactivo) y `.text-gradient-animated` para títulos importantes.
+- **Scroll Reveal Experiencial:** (`ScrollReveal.tsx`) Integración inteligente de Intersection Observer para animaciones en pantalla al hacer scroll (`fade-in-up`).
+- **Widget de WhatsApp Flotante:** (`WhatsAppWidget.tsx`) Botón flotante pulsante que detecta automáticamente el número de contacto de la Organización (Tenant) para re-dirigir a un chat en vivo.
+- **Resolución de Errores Frontend:** Solución de re-renderizado (`Hydration Mismatch`) causados por `next-themes` en Next.js 16.1+, solución al error de Favicon y mitigación de errores de extensiones externas de Chrome.
+
+#### 🔗 Conexión Dinámica — Páginas Públicas al CMS
+
+##### Infraestructura Multi-Tenant
+- **`src/lib/tenant.ts`:** Nuevo resolver de tenant que identifica la organización por dominio (`dominio_tenant`) con fallback a la primera organización. Incluye `obtenerOrganizacionPorId()` con join a planes para compatibilidad con TenantData.
+- La Landing (`page.tsx`) fue convertida a `SSR` y resuelve todos sus componentes compartiendo propiedades de organización como el logotipo cargado y contactos.
+
+##### Páginas Públicas Conectadas (8 páginas ○ → ƒ)
+- **`/` (Landing Page):** Logo central dinámico y cenefas de navegación que reaccionan a los datos del Tenant.
+- **`/nosotros`:** Consume `secciones_contenido` (pagina_clave: "nosotros") con fallback a contenido estático pre-llenado.
+- **`/testimonios`:** Consume `testimonios` aprobados con calificación, autores y anonimato.
+- **`/tienda`:** Consume `productos_tienda` y `categorias_producto` con grid visual, precios, stock bajo y empty state.
+- **`/crecimientos`:** Consume `articulos_blog` (blog_clave: "crecimientos") con portada, extracto y fecha de publicación.
+- **`/media`:** Consume `media_contenido` con colores por tipo (música/podcast/video), badges de duración y miniaturas.
+- **`/retiros-eventos`:** Consume `agenda_retiros` con joins a tipos_eventos y sedes, tarjetas tipo calendario.
+- **`/ayuda`:** Consume `preguntas_frecuentes` con expand/collapse y `telefonos_emergencia` dinámicos.
+
+##### Patrón de Diseño
+- **Híbrido CMS-Fallback:** Todas las páginas consultan primero la BD; si no hay datos, muestran contenido estático de respaldo (nunca una página vacía).
+- **Empty States:** Tienda, Blog, Media y Retiros muestran estados vacíos elegantes con iconos y texto "Próximamente".
+
+---
+
+### v1.160 - 10 de Abril de 2026 - 09:58 CST
+
+#### 🎛️ Admin CMS + Server Actions (Fases 3-7)
+
+##### Server Actions Layer (2 archivos nuevos)
+- **`actions/contenido.ts`:** 30+ funciones de lectura/escritura para CMS (parametros_landing, secciones, testimonios, FAQ, teléfonos, responsables, galería, letreros, media, blog, agenda).
+- **`actions/tienda.ts`:** 20+ funciones para tienda online (productos, categorías, pedidos con folio auto-incremental, formas de entrega, medios de pago, descuento de stock automático).
+
+##### Módulos Admin Intranet (5 nuevas páginas)
+- **`/configuracion/contenido`:** Admin CMS con 6 tabs (Secciones por página, Branding con color pickers, Testimonios con aprobar/rechazar, FAQ, Teléfonos, Equipo directivo).
+- **`/configuracion/tienda`:** Admin Tienda con 4 tabs (Productos con grid visual, Categorías, Pedidos con cambio de estatus, Envíos y Medios de Pago).
+- **`/configuracion/blog`:** Admin Blog con publicar/despublicar, editor con blog_clave (crecimientos/formación/general), categorías y extractos.
+- **`/configuracion/media`:** Admin Multimedia con filtro por tipo, grid visual con miniaturas, CRUD de música/podcasts/videos con URL externo.
+- **`/configuracion/agenda`:** Admin Agenda de Retiros con tarjetas tipo calendario, joins a tipos_eventos y sedes, formulario completo de programación.
+
+##### Sidebar Actualizado
+- Nueva sección "Sitio Web" en el sidebar con 5 opciones CMS (Contenido, Tienda, Blog, Media, Agenda).
+
+##### Build
+- Verificado exitoso con **30 páginas** (25 anteriores + 5 admin nuevas), **0 errores**.
+
+---
+
+
+### v1.150 - 10 de Abril de 2026 - 04:35 CST
+
+#### 🏗️ Transformación Landing Marca Blanca — Fase 1 & 2
+
+##### Base de Datos (17 tablas nuevas)
+- **`parametros_landing`:** Configuración completa del sitio por org (colores con clave, cenefa, footer degradado, carrusel, videos, WhatsApp QR, Google Maps, orden de secciones).
+- **`secciones_contenido`:** CMS parametrizado para todas las páginas (título, subtítulo, contenido, autoría, imagen, video, menú tarjeta, liga a función de permisos).
+- **`telefonos_emergencia`:** Teléfonos de emergencia y administración con WhatsApp QR.
+- **`responsables_organizacion`:** Directivos con foto, cargo, mensaje de saludo.
+- **`testimonios`:** Sistema de testimonios parametrizados con soporte anónimo y aprobación.
+- **`preguntas_frecuentes`:** FAQ parametrizadas por página.
+- **`galeria_fotos`:** Galería de fotos por página para cintas/collages.
+- **`letreros_especiales`:** Letreros parametrizados (ELEMA KIDS, ELEMÁ, etc.) con fuente y estilo.
+- **`categorias_producto`:** Categorías para tienda online.
+- **`productos_tienda`:** Productos con precio, stock, SKU, imágenes.
+- **`pedidos_web`:** Pedidos con datos de cliente, financieros, y entrega.
+- **`detalle_pedido`:** Líneas de pedido.
+- **`formas_entrega`:** Formas de entrega parametrizadas.
+- **`textos_medios_pago`:** Instrucciones de medios de pago.
+- **`notificaciones_tienda`:** Plantillas de notificación de tienda.
+- **`agenda_retiros`:** Calendario de retiros públicos.
+- **`articulos_blog`:** Artículos de blog (Crecimientos, Formación).
+- **`media_contenido`:** Música, Podcasts, Videos con URLs externas.
+
+##### Componentes Globales
+- **`CenefaNavbar`:** Cenefa traslúcida al 70% + navbar integrada con todas las páginas, soporte de sesión, menú móvil.
+- **`FooterPublico`:** Footer alto con degradado negro a gris, parametrizado (navegación, recursos, contacto, redes sociales).
+- **`ComponentesLanding`:** TarjetaMenuSeccion, SeccionContenido, CarruselImagenes, CintaFotosVertical, LetreroEspecial.
+- **Layout `(public)`:** Layout compartido con cenefa + footer para todas las páginas públicas.
+
+##### Página Principal Rediseñada (14 secciones)
+- Cenefa 70% sticky, carrusel parametrizable, bienvenida con logo grande, "No estás solo", retiros, matrimonios, jóvenes, mundo infantil, testimonios, tienda, centros, donaciones, ayuda, contacto.
+
+##### 17 Páginas Públicas
+- `/nosotros` — 8 secciones completas con contenido pre-llenado de serjema.com.mx
+- `/contactanos` — Formulario, tarjetas de contacto, equipo directivo, redes sociales
+- `/testimonios` — Testimonios con CTA para agregar (anónimo)
+- `/donativos` — Datos bancarios reales, impactos, 3 métodos de pago
+- `/jovenes` — ELEMÁ con letrero colorido juvenil
+- `/matrimonios` — Plenitud Matrimonial con colores amorosos
+- `/sanacion-interior` — Magnificat con cita bíblica
+- `/mundo-infantil` — ELEMA KIDS con colores pastel vivos, juegos, trivias, videos
+- `/llama-de-amor` — Oración, teléfonos emergencia, placeholder agente IA
+- `/centros` — 8 sedes pre-llenadas con links Facebook
+- `/retiros-eventos` — Placeholder para agenda interactiva
+- `/ayuda` — 3 categorías (Espiritual, Psicológica, Técnica)
+- `/tienda` — Placeholder para catálogo (modelo ERPCubox)
+- `/media` — Tabs Música/Podcasts/Videos estilo YouTube
+- `/crecimientos` — Blog de crecimientos
+- `/formacion` — Blog de formación + E-Learning
+- `/blog` — Blog migrado con artículos pre-llenados
+
+##### Infraestructura
+- **Middleware:** Agregadas 17 rutas públicas nuevas.
+- **Migración:** Eliminadas las páginas antiguas `/blog`, `/donativos`, `/tienda` con nav/footer estáticos propios.
+- **CSS:** Animaciones de carrusel vertical, fade-in-up, scroll suave global.
+- **Build:** Verificado exitosamente (25 páginas, 0 errores).
+
+---
+
+### v1.140 - 10 de Abril de 2026 - 00:55 CST
+
+#### Módulo Completo de Gestión de Accesos (RBAC)
+- **Matriz de Permisos:** Nueva interfaz en `/configuracion/permisos` que permite activar/desactivar permisos (Ver, Crear, Editar, Eliminar) por cada módulo del sistema de forma granular.
+- **Gestión de Usuarios:** Nuevo módulo en `/configuracion/usuarios` para listar el equipo y asignar roles dinámicamente mediante un diálogo de gestión.
+- **Estructura de Sistema (Seed):** Se pobló la base de datos con la jerarquía completa de Módulos (Dashboard, Servidores, Eventos, Finanzas, etc.) para habilitar el control granular.
+- **Acciones Flexibles:** Implementación de `upsertRolAction`, `actualizarPermisosRolAction` y `asignarRolUsuarioAction` para una gestión reactiva.
+- **UI Components:** Integración de componentes Radix (`Checkbox`, `Select`) estilizados con la identidad visual SJM (#00B4AA).
+- **Consistencia:** Actualización de Sidebar para incluir "Equipo y Usuarios" y sincronización de versiones.
+
+---
+
+### v1.125 - 09 de Abril de 2026 - 17:08 CST
+
+#### Integración WhatsApp Twilio
+- **whatsappService.ts:** Servicio Twilio con inicialización lazy (mismo patrón que Resend). Soporte para código de país México automático.
+- **Bienvenida WhatsApp:** Al registrarse con celular, se envía mensaje de bienvenida por WhatsApp además del email.
+- **Recuperación por WhatsApp:** Cuando solicitan recuperación por celular, el enlace se envía tanto por email como por WhatsApp.
+- **Mensajes predefinidos:** `mensajeBienvenidaWhatsApp()` y `mensajeRecuperacionWhatsApp()` con formato markdown de WhatsApp.
+- **Fix Menú Intranet:** Se corrigió la visibilidad del menú para el tenant principal (SJM), promoviendo al usuario administrador a "Super Administrador" y activando el flag `es_admin_sistema` en los roles de gestión. Esto restaura las opciones de navegación que se ocultaron tras la implementación del sistema RBAC granular.
+- **Versión Sincronizada:** v1.125 en Landing, Login, Registro e Intranet.
+
+---
+
+### v1.120 - 09 de Abril de 2026 - 14:50 CST
+
+#### Recuperación de Contraseña Completa
+- **Tabla `tokens_recuperacion`:** Nueva tabla para tokens de recuperación con expiración (1 hora) y uso único. Sincronizada con Neon.
+- **Página `/recuperar`:** Formulario para solicitar recuperación por correo o celular. Envía email con enlace seguro vía Resend.
+- **Página `/recuperar/[token]`:** Formulario para nueva contraseña con validador de fortaleza. 4 estados: validando, inválido, formulario, éxito.
+- **Server Actions:** `solicitarRecuperacionAction`, `validarTokenAction`, `restablecerContrasenaAction` — Flujo seguro end-to-end.
+- **Seguridad:** No revela si el correo/celular existe (protección contra enumeración). Tokens single-use con bcrypt hash.
+- **Link en Login:** El "¿Olvidaste tu contraseña?" ya apunta a `/recuperar`.
+- **Versión Sincronizada:** v1.120.
+
+---
+
+### v1.115 - 09 de Abril de 2026 - 14:25 CST
+
+#### Navbar con Sesión, Perfil de Usuario y Email Resend
+- **NavbarPublica:** Nuevo componente cliente que muestra avatar y dropdown con opciones cuando el usuario está logueado (Mi Perfil, Dashboard, Cerrar Sesión). Botón "Acceso" cuando no lo está. Menú hamburguesa responsive.
+- **AuthProvider:** SessionProvider de NextAuth agregado al layout raíz para soportar `useSession()` en toda la app.
+- **Página `/perfil`:** Interfaz premium con avatar, datos personales editables, toggle "Soy Servidor SJM" con selector de sede. Al guardar se actualiza la DB.
+- **Server Action `actualizarPerfilAction`:** Backend para actualizar nombre, celular, fecha nacimiento, estatus servidor y sede.
+- **Resend Email Service:** `emailService.ts` con inicialización lazy para evitar crash en build. `emailTemplate.ts` con plantilla HTML corporativa SJM.
+- **Email de Bienvenida:** Se envía automáticamente al registrarse (Google o credenciales).
+- **Middleware:** Ruta `/perfil` protegida, `/recuperar` pública.
+- **Versión Sincronizada:** v1.115.
+
+---
+
+### v1.110 - 09 de Abril de 2026 - 13:00 CST
+
+#### Sistema de Autenticación y Registro Completo (Fase 1)
+- **Auto-creación con Google:** El callback `signIn` ahora crea automáticamente usuarios nuevos en la DB con rol "General" al acceder con Google. Ya no muestra "Acceso Denegado".
+- **Provider de Credenciales:** Nuevo provider `Credentials` en NextAuth para login por correo/contraseña y celular/contraseña con verificación bcrypt.
+- **Página `/registro`:** Interfaz Glassmorphism con 3 modos de registro (Google, Correo, Celular). Incluye validador visual de fortaleza de contraseña en tiempo real.
+- **Server Action `registrarUsuarioAction`:** Backend de registro con validación, hash bcrypt, detección de duplicados y asignación automática de rol.
+- **Rol "General":** Nuevo rol auto-creado para usuarios que se registran por su cuenta, con acceso a portal público, inscripciones y perfil.
+- **Esquema DB:** Campos `fecha_nacimiento` y `es_servidor` agregados a tabla `usuarios`. Sincronizado con Neon.
+- **Dependencia:** `bcryptjs` instalado para hash de contraseñas.
+- **Versión Sincronizada:** v1.110.
+
+---
+
+### v1.102 - 09 de Abril de 2026 - 12:00 CST
+
+#### Build Fix: Static Prerendering
+- **auth/error/page.tsx:** Se envolvió el contenido que usa `useSearchParams` en un boundary de `<Suspense />`. Esto es mandatorio en Next.js para permitir la generación estática de páginas que dependen de parámetros de búsqueda del lado del cliente.
+- **Versión Sincronizada:** v1.102.
+
+---
+
+### v1.101 - 09 de Abril de 2026 - 11:55 CST
+
+#### Build Fix: Missing Assets
+- **AppSidebar.tsx:** Se añadió el import de `ShieldCheck` de `lucide-react` que causaba fallo de compilación.
+- **Versión Sincronizada:** v1.101.
+
+---
+
+### v1.100 - 09 de Abril de 2026 - 11:50 CST (Hito 100)
+
+#### Build Fix: Tenant Identity
+- **TenantProvider.tsx:** Sincronización de la interfaz `TenantData` con el objeto `TENANT_DEFAULT`. Se añadió la propiedad `plan` requerida para evitar fallos de compilación en Vercel.
+- **Hito:** 100 versiones de evolución continua.
+- **Versión Sincronizada:** v1.100.
+
+---
+
+### v1.099 - 09 de Abril de 2026 - 11:10 CST
+
+#### Build Fix: TypeScript & UI
+- **auth/error/page.tsx:** Eliminación de propiedad `asChild` no compatible con el componente `Button` actual. Se refactorizó la navegación usando envoltorios `Link` estándar.
+- **Versión Sincronizada:** v1.099.
+
+---
+
+### v1.098 - 09 de Abril de 2026 - 10:55 CST
+
+#### Build Fix: TypeScript Typings
+- **permisos.ts:** Se añadió el retorno explícito de `{ session, orgId, planClave }` en `validarAccesoPlan` para corregir errores de tipado en páginas de consulta.
+- **Versión Sincronizada:** v1.098.
+
+---
+
+### v1.097 - 09 de Abril de 2026 - 10:45 CST
+
+#### Build Fix: Syntax Object Close
+- **permisos.ts:** Corrección de cierre de objeto `accesos` (falta de `;}`).
+- **Versión Sincronizada:** v1.097.
+
+---
+
+### v1.096 - 09 de Abril de 2026 - 10:40 CST
+
+#### Build Fix: Turbopack & Syntax
+- **permisos.ts:** Corrección de error de sintaxis (llave de cierre faltante en `validarAccesoPlan`) que impedía la compilación en Vercel.
+- **Importaciones:** Se añadieron las tablas de schema faltantes en el módulo de permisos para el RBAC granular.
+- **Versión Sincronizada:** v1.096.
+
+---
+
+### v1.095 - 09 de Abril de 2026 - 10:15 CST
+
+#### Fix Crítico Autenticación y Despliegue
+- **Página de Error NextAuth:** Creación de `src/app/auth/error/page.tsx` para manejar errores de `AccessDenied` con UI premium, eliminando el error 404.
+- **Sincronización Neon:** Ejecución de `drizzle-kit push` para homologar la existencia de `organizacion_id` en `roles_sistema`.
+- **Inyección de Administradores:** Ejecución de script de reparación para autorizar correos de Sergio Aguilar as Super Admins.
+- **Versión Sincronizada:** Actualización global a v1.095 en footers y documentación.
 
 ---
 
