@@ -5,8 +5,8 @@ import { useTenant } from "@/components/TenantProvider";
 export function AppFooter() {
   const tenant = useTenant();
   // Formato: DD-MM-YYYY HH:mm
-  const buildTime = "11-04-2026 09:53 PM";
-  const appVersion = "v1.166 - SJM Platform Premium";
+  const buildTime = "12-04-2026 01:47 PM";
+  const appVersion = "v1.167 - SJM Platform Premium";
 
   return (
     <footer className="w-full min-h-10 py-2 border-t border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#151621] mt-auto flex flex-col md:flex-row items-center justify-between px-6 text-[11px] text-slate-500 font-medium gap-2">

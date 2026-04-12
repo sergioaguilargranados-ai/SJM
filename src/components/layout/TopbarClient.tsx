@@ -38,17 +38,26 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
       
       {/* Logos & Branding */}
       <div className="flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-3 shrink-0 transition-transform hover:scale-105" title="Regresar a Inicio Público (Toda la Pantalla)">
-           {tenant.logo_url ? (
-            <Image src={tenant.logo_url} alt={tenant.nombre || "SJM Nacional"} width={40} height={40} className="drop-shadow rounded-lg object-contain" />
-          ) : (
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-extrabold text-base shadow-sm" style={{ backgroundColor: tenant.color_primario || "#00B4AA" }}>
-              SJM
-            </div>
-          )}
+        <Link href="/" className="flex items-center gap-3 shrink-0 transition-all hover:scale-105" title="Regresar a Inicio Público">
+          <Image 
+            src={tenant.logo_url || "/logo-sjm-oficial.png"} 
+            alt={tenant.nombre || "SJM Nacional"} 
+            width={40} 
+            height={40} 
+            className="drop-shadow rounded-lg object-contain" 
+          />
           <div className="hidden sm:block">
-            <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none">{tenant.nombre || "SJM Nacional"}</span>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: tenant.color_primario || "#00B4AA" }}>INTRANET</span>
+            <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none">
+              {tenant.nombre || "SJM Nacional"}
+            </span>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-[9px] text-slate-500 dark:text-[#8e8ea0] font-medium truncate max-w-[150px]">
+                {tenant.lema || "Servidores de Jesús por María"}
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400">
+                Intranet
+              </span>
+            </div>
           </div>
         </Link>
       </div>

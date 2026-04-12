@@ -1,7 +1,17 @@
-# 📜 Histórico de SJM PLATFORM • v1.166
+# 📜 Histórico SJM PLATFORM • v1.167 • COMPILACIÓN: 12-04-2026 01:47 PM
 
-**Última actualización:** 11 de Abril de 2026 - 21:10 CST
+**Última actualización:** 12 de Abril de 2026 - 13:47 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.167 - 12 de Abril de 2026 - 13:47 CST
+
+#### 🎨 Alineación Visual Intranet y Landing
+- **Topbar Client (Intranet):** Se reestructuró la zona del logo para utilizar los mismos parámetros y formato visual que la `CenefaNavbar` (Landing Page).
+- **Branding Parametrizado:** Ahora utiliza `tenant.logo_url` con fallback automático al logo oficial de SJM (`/logo-sjm-oficial.png`), eliminando el cuadro de texto genérico.
+- **Lema Corporativo:** Se añadió el lema debajo del nombre de la organización en el Topbar, brindando paridad total con la landing page.
+- **Versión Sincronizada:** v1.167 en footers, login, landing y documentación.
 
 ---
 
@@ -66,6 +76,7 @@
 
 ##### Build
 - Verificado exitoso con **30 páginas** (25 anteriores + 5 admin nuevas), **0 errores**.
+
 
 ---
 
