@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM • v1.167 • COMPILACIÓN: 12-04-2026 01:47 PM
+# 📜 Histórico SJM PLATFORM • v1.170 • COMPILACIÓN: 13-04-2026 12:00 PM
 
-**Última actualización:** 12 de Abril de 2026 - 13:47 CST
+**Última actualización:** 13 de Abril de 2026 - 12:00 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.170 - 13 de Abril de 2026 - 12:00 CST
+
+#### 📱 Encapsulación Móvil (PWA) Nativa
+- **Progressive Web App (PWA):** Implementación de la arquitectura PWA sin dependencias externas usando `manifest.json` y `sw.js` (Service Worker en raíz) para permitir instalación nativa en dispositivos iOS y Android.
+- **Registro de Service Worker:** Nuevo componente cliente `<PwaRegister />` inyectado en el `layout.tsx` maestro para activar el cacheo local y habilitar la solicitud de instalación ("Añadir a Pantalla de Inicio").
+- **Versión Sincronizada:** v1.170 lista para despliegue automatizado.
 
 ---
 

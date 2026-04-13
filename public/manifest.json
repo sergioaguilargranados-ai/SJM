@@ -1,0 +1,17 @@
+{
+  "name": "Plataforma SJM",
+  "short_name": "SJM",
+  "description": "Servidores de Jesús por María - Plataforma Integral",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1015",
+  "theme_color": "#00B4AA",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo-sjm-oficial.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}
