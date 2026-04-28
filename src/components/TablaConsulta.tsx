@@ -16,6 +16,7 @@ interface Columna {
   cell?: (valor: any, row: any) => React.ReactNode;
   pdfKey?: string; // Key alterna para el PDF
   halign?: "left" | "center" | "right";
+  ocultarEnUI?: boolean;
 }
 
 interface Props {
@@ -268,7 +269,7 @@ export function TablaConsulta({
           <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
             <thead className="bg-slate-50 dark:bg-[#151621] text-slate-800 dark:text-slate-200 font-semibold text-xs border-b border-slate-200 dark:border-[#2a2b3d]">
               <tr>
-                {columnas.map((col) => (
+                {columnas.filter(c => !c.ocultarEnUI).map((col) => (
                   <th
                     key={col.accessorKey}
                     className={`px-5 py-3.5 font-semibold ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
@@ -281,7 +282,7 @@ export function TablaConsulta({
             <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
               {datosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={columnas.length} className="px-6 py-16 text-center">
+                  <td colSpan={columnas.filter(c => !c.ocultarEnUI).length} className="px-6 py-16 text-center">
                     {filaVacia || (
                       <div className="space-y-2">
                         <FileText className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto" />
@@ -301,7 +302,7 @@ export function TablaConsulta({
                     key={row.id || idx}
                     className="hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/30 transition-colors"
                   >
-                    {columnas.map((col) => (
+                    {columnas.filter(c => !c.ocultarEnUI).map((col) => (
                       <td
                         key={col.accessorKey}
                         className={`px-5 py-3.5 ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}

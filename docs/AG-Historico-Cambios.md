@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM • v1.170 • COMPILACIÓN: 13-04-2026 12:00 PM
+# 📜 Histórico SJM PLATFORM • v1.171 • COMPILACIÓN: 27-04-2026 21:50 PM
 
-**Última actualización:** 13 de Abril de 2026 - 12:00 CST
+**Última actualización:** 27 de Abril de 2026 - 21:50 CST
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.171 - 27 de Abril de 2026 - 21:50 CST
+
+#### 📊 Reportes de Inscripción PDF/Excel Mejorados
+- **TablaConsulta:** Se implementó una nueva propiedad `ocultarEnUI` en la interface de columnas, la cual permite incluir campos de datos (como el correo electrónico) en los reportes de exportación generados en PDF y Excel, manteniendo una interfaz de usuario limpia.
+- **Inscripciones:** Se agregó la columna oculta de "Correo Electrónico" (`correo`) para que la información de contacto sea extraída exitosamente en los reportes tabulares, compliendo con el requerimiento de análisis de datos.
+- **Versión Sincronizada:** v1.171 lista en todos los accesos.
 
 ---
 

@@ -29,6 +29,7 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
             </div>
           ),
         },
+        { header: "Correo Electrónico", accessorKey: "correo", ocultarEnUI: true },
         {
           header: "Evento",
           accessorKey: "evento_tipo",
