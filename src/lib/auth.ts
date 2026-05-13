@@ -236,4 +236,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
     error: "/auth/error",
   },
+  trustHost: true,
 });
+
