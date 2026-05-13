@@ -135,6 +135,25 @@ export default async function FinanzasPage() {
           </table>
         </div>
       </div>
+
+      {/* Módulo de Ingresos — Reubicado desde Eventos */}
+      <div className="bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] p-8 rounded-[40px] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-[#00B4AA]/20 animate-in slide-in-from-bottom-8 duration-1000">
+         <div className="flex items-center gap-6 text-center md:text-left">
+            <div className="p-4 bg-white/20 backdrop-blur-md rounded-2xl">
+               <DollarSign className="w-8 h-8" />
+            </div>
+            <div>
+               <h4 className="font-black text-2xl tracking-tight leading-tight">Módulo de Ingresos SJM</h4>
+               <p className="text-white/70 font-medium max-w-md">Reporte centralizado de donativos, becas y liquidación de inscripciones por evento.</p>
+            </div>
+         </div>
+         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <button className="bg-white text-[#1E3A5F] px-8 h-14 rounded-2xl font-black text-sm hover:bg-slate-50 transition-all shadow-xl active:scale-95">
+               Exportar Corte de Caja
+            </button>
+         </div>
+      </div>
     </div>
   );
 }
+

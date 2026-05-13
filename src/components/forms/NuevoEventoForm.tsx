@@ -21,7 +21,9 @@ const formSchema = z.object({
   costo_publico: z.coerce.number().min(0, "Monto inválido"),
   cupo_maximo: z.coerce.number().min(1, "Cupo mínimo 1"),
   recomendaciones: z.string().optional(),
+  contrasena_inscripcion: z.string().optional(),
 });
+
 
 export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModal }: { sedes: any[], casas: any[], tipos: any[], onSuccess?: () => void, isModal?: boolean }) {
   const router = useRouter();
@@ -131,13 +133,18 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="dark:text-slate-300">Cupo Máximo *</Label>
-              <div className="relative">
-                <Users className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <Input type="number" {...form.register("cupo_maximo")} className="pl-9 dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Password de Inscripción (Opcional)</Label>
+              <div className="relative">
+                <Users className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <Input placeholder="Solo si requiere acceso privado" {...form.register("contrasena_inscripcion")} className="pl-9 dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+              </div>
+            </div>
+
 
             <div className="space-y-2 md:col-span-4">
               <Label className="dark:text-slate-300">Recomendaciones Especiales para Asistentes</Label>

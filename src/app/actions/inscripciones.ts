@@ -35,27 +35,43 @@ export async function registrarSolicitudAction(datos: any) {
     const inscData = {
       evento_id: finalEventoId,
       nombre_asistente: datos.nombre_asistente,
+      nombre_gafete: datos.nombre_gafete || null,
+      fecha_nacimiento: datos.fecha_nacimiento ? new Date(datos.fecha_nacimiento) : null,
       edad: datos.edad ? Number(datos.edad) : null,
       sexo: datos.sexo || null,
       estado_civil: datos.estado_civil || null,
+      
+      // Contacto y Ubicación
       telefono_celular: datos.telefono_celular || null,
+      telefono_alternativo: datos.telefono_alternativo || null,
       correo: datos.correo || null,
-      parroquia_procedencia: datos.parroquia_procedencia || null,
-      es_primera_vez: datos.es_primera_vez === true,
-      medicinas_requeridas: datos.medicinas_requeridas || null,
-      
-      // Datos de cónyuge
-      esposo_a_nombre: datos.esposo_a_nombre || null,
-      fecha_boda: datos.fecha_boda || null,
-      
-      // Campos Especiales para Diplomados u Otros Eventos
+      direccion_completa: datos.direccion_completa || null,
       pais_ciudad: datos.pais_ciudad || null,
+      contacto_emergencia_nombre: datos.contacto_emergencia_nombre || null,
+      contacto_emergencia_telefono: datos.contacto_emergencia_telefono || null,
+      parentezco_emergencia: datos.parentezco_emergencia || null,
+
+      // Perfil Espiritual y Salud
+      parroquia_procedencia: datos.parroquia_procedencia || null,
+      ultimo_sacramento: datos.ultimo_sacramento || null,
+      expectativas: datos.expectativas || null,
+      dificultad_escaleras: datos.dificultad_caminar === true,
+      enfermedades_alergias: datos.enfermedades_alergias || null,
+      
+      // Datos de cónyuge y familia
+      esposo_a_nombre: datos.esposo_a_nombre || null,
+      fecha_boda: datos.fecha_boda ? new Date(datos.fecha_boda) : null,
+      cantidad_hijos: datos.cantidad_hijos ? Number(datos.cantidad_hijos) : 0,
+      nombre_edades_hijos: datos.datos_hijos || null,
+      
+      // Campos Especiales para Diplomados
       ministerio_actual: datos.ministerio_actual || null,
       compromiso_pago_99usd: datos.compromiso_pago_99usd === true,
       
       // Control por defecto
       estatus_solicitud: "PENDIENTE_PAGO",
     };
+
 
     const nuevaInscripcion = await db.insert(solicitudes_inscripcion)
       .values(inscData)
@@ -133,8 +149,10 @@ export async function crearEventoAction(datos: any) {
       costo_publico: String(costo_publico),
       cupo_maximo: Number(cupo_maximo),
       recomendaciones,
+      contrasena_inscripcion: datos.contrasena_inscripcion || null,
       estatus: 'PLANEACION'
     }).returning();
+
 
     return { success: true, id: nuevoEvento.id };
   } catch (error: any) {

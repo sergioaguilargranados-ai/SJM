@@ -258,9 +258,17 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   correo: varchar("correo", { length: 255 }),
   nombre_gafete: varchar("nombre_gafete", { length: 150 }),
   
+  telefono_alternativo: varchar("telefono_alternativo", { length: 50 }),
+  direccion_completa: text("direccion_completa"),
+  contacto_emergencia_nombre: varchar("contacto_emergencia_nombre", { length: 255 }),
+  contacto_emergencia_telefono: varchar("contacto_emergencia_telefono", { length: 50 }),
+  parentezco_emergencia: varchar("parentezco_emergencia", { length: 100 }),
+  
   es_primera_vez: boolean("es_primera_vez").default(true),
   parroquia_procedencia: varchar("parroquia_procedencia", { length: 255 }),
+  ultimo_sacramento: varchar("ultimo_sacramento", { length: 150 }),
   medicinas_requeridas: text("medicinas_requeridas"),
+  enfermedades_alergias: text("enfermedades_alergias"),
   dificultad_escaleras: boolean("dificultad_escaleras").default(false),
   usa_estacionamiento: boolean("usa_estacionamiento").default(false),
   comparte_cuarto_con: varchar("comparte_cuarto_con", { length: 255 }),
@@ -277,6 +285,7 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   ministerio_actual: varchar("ministerio_actual", { length: 255 }),
   compromiso_pago_99usd: boolean("compromiso_pago_99usd").default(false),
   
+  cantidad_hijos: integer("cantidad_hijos").default(0),
   nombre_edades_hijos: text("nombre_edades_hijos"),
   
   quien_invito: varchar("quien_invito", { length: 255 }),
@@ -285,6 +294,7 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   observaciones: text("observaciones"),
   
   estatus_solicitud: varchar("estatus_solicitud", { length: 50 }).default('PENDIENTE_PAGO'),
+
   pago_deposito: decimal("pago_deposito").default('0'),
   pago_efectivo: decimal("pago_efectivo").default('0'),
   monto_beca: decimal("monto_beca").default('0'),

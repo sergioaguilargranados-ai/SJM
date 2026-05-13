@@ -214,15 +214,28 @@ export async function getEventoById(id: string) {
   try {
     const { orgId } = await validarAccesoPlan("eventos");
     const [resultado] = await db
-      .select()
+      .select({
+        id: eventos.id,
+        tipo: tipos_eventos.nombre,
+        casa_retiro_id: eventos.casa_retiro_id,
+        fecha_inicio: eventos.fecha_inicio,
+        fecha_fin: eventos.fecha_fin,
+        estatus: eventos.estatus,
+        costo_publico: eventos.costo_publico,
+        cupo_maximo: eventos.cupo_maximo,
+        contrasena_inscripcion: eventos.contrasena_inscripcion
+      })
       .from(eventos)
+      .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
       .where(and(eq(eventos.id, id), eq(eventos.organizacion_id, orgId)))
       .limit(1);
     return { success: true, data: resultado };
   } catch (error) {
+    console.error("Error al obtener evento por ID:", error);
     return { success: false, data: null };
   }
 }
+
 
 
 export async function getInscripcionesByEvento(eventoId: string) {

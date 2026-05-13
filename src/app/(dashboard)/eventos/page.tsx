@@ -97,24 +97,10 @@ export default async function ReporteRetiros() {
         )}
       </div>
 
-      {/* Floating Section for Reports/Exports */}
-      <div className="bg-blue-600 dark:bg-[#e11d48] p-6 rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-blue-200 dark:shadow-none">
-         <div className="flex items-center gap-4 text-center md:text-left">
-            <div className="p-3 bg-white/20 rounded-xl">
-               <DollarSign className="w-6 h-6" />
-            </div>
-            <div>
-               <h4 className="font-bold text-lg leading-tight">Módulo de Ingresos SJM</h4>
-               <p className="text-blue-100 dark:text-rose-100/80 text-sm">Gestiona donativos, becas y pagos de inscripciones de forma centralizada.</p>
-            </div>
-         </div>
-         <button className="bg-white text-blue-600 dark:text-[#e11d48] px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-50 transition-colors shrink-0">
-            Exportar Corte de Caja
-         </button>
-      </div>
     </div>
   );
 }
+
 
 function cn(...inputs: any[]) {
   return inputs.filter(Boolean).join(" ");
