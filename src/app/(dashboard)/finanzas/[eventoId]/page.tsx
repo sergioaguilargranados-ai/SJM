@@ -90,7 +90,8 @@ export default async function DetalleFinanzasEventoPage({ params }: { params: { 
       </div>
 
       {/* Alerta de Salud Financiera */}
-      {parseFloat(resumen?.margen) < 15 && (
+      {parseFloat(resumen?.margen || "0") < 15 && (
+
         <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 p-4 rounded-2xl flex gap-3">
           <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
           <div>

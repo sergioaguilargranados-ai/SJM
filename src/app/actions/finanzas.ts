@@ -154,6 +154,7 @@ export async function getResumenFinancieroEvento(eventoId: string) {
     };
   } catch (error) {
     console.error("Error al calcular resumen financiero:", error);
-    return { success: false, data: { ingresos: 0, gastos: 0, balance: 0, margen: 0 } };
+    return { success: false, data: { ingresos: 0, gastos: 0, balance: 0, margen: "0" } };
+
   }
 }

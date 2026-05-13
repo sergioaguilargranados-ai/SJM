@@ -113,8 +113,9 @@ export default async function FinanzasPage() {
                   <td className="px-6 py-4 text-right">
                     <div className={cn(
                       "inline-flex items-center px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter",
-                      parseFloat(evento.finanzas?.margen) >= 20 ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400" :
-                      parseFloat(evento.finanzas?.margen) > 0 ? "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400" :
+                      parseFloat(evento.finanzas?.margen || "0") >= 20 ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400" :
+                      parseFloat(evento.finanzas?.margen || "0") > 0 ? "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400" :
+
                       "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400"
                     )}>
                       {evento.finanzas?.margen}%
