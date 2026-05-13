@@ -2,7 +2,8 @@ import { getEventoById } from "@/app/actions/consultas";
 import { getGastosByEvento, getClasificacionesGasto, getResumenFinancieroEvento } from "@/app/actions/finanzas";
 import { GestionGastosClient } from "./GestionGastosClient";
 import Link from "next/link";
-import { ArrowLeft, Landmark, Calendar, TrendingUp, TrendingDown, DollarSign, PieChart, Info } from "lucide-react";
+import { ArrowLeft, Landmark, Calendar, TrendingUp, TrendingDown, DollarSign, PieChart, Info, AlertCircle } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export default async function DetalleFinanzasEventoPage({ params }: { params: { eventoId: string } }) {
