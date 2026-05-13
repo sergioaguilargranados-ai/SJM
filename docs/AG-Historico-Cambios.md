@@ -1,11 +1,31 @@
-# 📜 Histórico SJM PLATFORM • v1.171 • COMPILACIÓN: 27-04-2026 21:50 PM
+# 📜 Histórico SJM PLATFORM • v1.185 • COMPILACIÓN: 13-05-2026 18:25 PM
 
-**Última actualización:** 27 de Abril de 2026 - 21:50 CST
+**Última actualización:** 13 de Mayo de 2026 - 18:25 CST
 **Responsable:** AntiGravity AI Assistant
 
 ---
 
+### v1.185 - 13 de Mayo de 2026 - 18:25 CST
+
+#### 💰 Módulo de Finanzas y Control de Gastos
+- **Gestión de Egresos:** Se implementó el módulo de gastos operativos (`/finanzas`) con desglose por evento. Permite registrar facturas, recibos y conceptos de gasto con categorización dinámica.
+- **Análisis de Rentabilidad:** Nuevo motor de cálculo financiero que compara ingresos reales (Inscripciones pagadas) contra gastos operativos, generando indicadores de margen neto y alertas de salud financiera.
+- **Interfaz Premium:** Diseño de tarjetas de resumen financiero con micro-animaciones y modales de cristalería (glassmorphism) para el registro de datos.
+
+---
+
+### v1.180 - 13 de Mayo de 2026 - 18:15 CST
+
+
+#### 🛡️ Refactor de Seguridad y Multi-tenancy (Triple Filtro)
+- **Esquema de Base de Datos:** Se añadieron columnas `organizacion_id` con vinculación mandatoria a las tablas de `servidores`, `eventos`, `casas_retiro` y `solicitudes_inscripcion`. Esto asegura la integridad del aislamiento de datos por organización (Marca Blanca).
+- **Filtrado Estricto en Consultas:** Se refactorizó `src/app/actions/consultas.ts` para incluir validación de plan (`validarAccesoPlan`) y filtrado por `orgId` en todas las funciones de lectura. 
+- **Estabilización de Sesión:** Se actualizó el `AppTopbar` para manejar errores de sesión del servidor y evitar fallos de hidratación (React Error #418), permitiendo una navegación fluida incluso en estados de "Invitado".
+
+---
+
 ### v1.171 - 27 de Abril de 2026 - 21:50 CST
+
 
 #### 📊 Reportes de Inscripción PDF/Excel Mejorados
 - **TablaConsulta:** Se implementó una nueva propiedad `ocultarEnUI` en la interface de columnas, la cual permite incluir campos de datos (como el correo electrónico) en los reportes de exportación generados en PDF y Excel, manteniendo una interfaz de usuario limpia.

@@ -159,6 +159,8 @@ export const cargos = pgTable("cargos", {
 
 export const servidores = pgTable("servidores", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
+
   usuario_id: uuid("usuario_id").references(() => usuarios.id).notNull(),
   sede_id: uuid("sede_id").references(() => sedes.id).notNull(),
   ministerio_id: uuid("ministerio_id").references(() => ministerios.id),
@@ -184,6 +186,7 @@ export const servidores = pgTable("servidores", {
   estatus: boolean("estatus").default(true),
 });
 
+
 // -------------------------------------------------------------
 // Módulo Eventos y Retiros
 // -------------------------------------------------------------
@@ -197,6 +200,8 @@ export const tipos_eventos = pgTable("tipos_eventos", {
 
 export const casas_retiro = pgTable("casas_retiro", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
+
   nombre: varchar("nombre", { length: 255 }).notNull(),
   domicilio: text("domicilio"),
   codigo_postal: varchar("codigo_postal", { length: 10 }),
@@ -211,8 +216,11 @@ export const casas_retiro = pgTable("casas_retiro", {
   estatus: boolean("estatus").default(true),
 });
 
+
 export const eventos = pgTable("eventos", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
+
   sede_id: uuid("sede_id").references(() => sedes.id).notNull(),
   tipo_evento_id: uuid("tipo_evento_id").references(() => tipos_eventos.id).notNull(),
   casa_retiro_id: uuid("casa_retiro_id").references(() => casas_retiro.id).notNull(),
@@ -229,12 +237,15 @@ export const eventos = pgTable("eventos", {
   link_minuta_evaluacion: text("link_minuta_evaluacion"),
 });
 
+
 // -------------------------------------------------------------
 // Público e Inscripciones
 // -------------------------------------------------------------
 
 export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
+
   evento_id: uuid("evento_id").references(() => eventos.id).notNull(),
   usuario_id: uuid("usuario_id").references(() => usuarios.id),
   
@@ -282,6 +293,7 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   creado_en: timestamp("creado_en").defaultNow(),
 });
 
+
 // -------------------------------------------------------------
 // Control Operativo y Financiero
 // -------------------------------------------------------------
@@ -298,11 +310,14 @@ export const equipo_evento = pgTable("equipo_evento", {
 
 export const clasificaciones_gasto = pgTable("clasificaciones_gasto", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
   nombre: varchar("nombre", { length: 150 }).notNull(),
 });
 
+
 export const gastos_evento = pgTable("gastos_evento", {
   id: uuid("id").primaryKey().defaultRandom(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull().default("6fb191cc-a477-4632-9cb1-c30c33a9f9bd"),
   evento_id: uuid("evento_id").references(() => eventos.id).notNull(),
   clasificacion_id: uuid("clasificacion_id").references(() => clasificaciones_gasto.id).notNull(),
   monto: decimal("monto").notNull(),
@@ -310,7 +325,9 @@ export const gastos_evento = pgTable("gastos_evento", {
   url_comprobante: text("url_comprobante"),
   fecha_gasto: date("fecha_gasto"),
   registrado_por: uuid("registrado_por").references(() => usuarios.id),
+  creado_en: timestamp("creado_en").defaultNow(),
 });
+
 
 // -------------------------------------------------------------
 // Documentos y Evaluaciones

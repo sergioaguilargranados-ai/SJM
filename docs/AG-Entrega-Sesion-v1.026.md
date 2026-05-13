@@ -47,7 +47,7 @@ Los campos críticos añadidos o modificados:
 ## ⚡ Notas para el Siguiente Agente
 - **Variables de Env:** Mantener `NEXT_PUBLIC_APP_URL` actualizado para que los links de copia en el Panel de Control funcionen bien.
 - **Drizzle / Neon:** Siempre realizar `npx drizzle-kit push` si el usuario solicita cambios en el archivo `schema.ts`.
-- **Estándar de Lenguaje:** Mantener estrictamente el español tanto en UI como en nombres de columnas de base de datos.
+- **Estándar de Lenguaje:** Mantener estrictamente el español tanto en UI como en nombres de columnas de base de datos y comunicacion interna con los agentes para que usuario vaya viendo las conversaciones.
 
 ---
 **Firmado:** Antigravity AI (Lead Dev)
