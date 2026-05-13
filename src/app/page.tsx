@@ -18,7 +18,8 @@ export const metadata = {
   description: "Evangelización, retiros de sanación interior, formación cristiana y acompañamiento espiritual. Configurados con Cristo compasivo y misericordioso.",
 };
 
-const appVersion = "v1.171 - SJM Platform Premium • Compilación: 27-04-2026 09:50 PM";
+const appVersion = "v1.189 - SJM Finance Engine • Compilación: 13-05-2026 09:50 PM";
+
 
 // ============================================================
 // SECCION PROMOCIONAL — Componente reutilizable para la landing

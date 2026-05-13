@@ -6,7 +6,8 @@ export function AppFooter() {
   const tenant = useTenant();
   // Formato: DD-MM-YYYY HH:mm
   const buildTime = "13-05-2026 06:25 PM";
-  const appVersion = "v1.185 - SJM Finance Engine";
+  const appVersion = "v1.189 - SJM Finance Engine";
+
 
 
 
