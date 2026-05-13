@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Plus, Receipt, Trash2, FileText, Calendar, DollarSign, Tag, Info, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { crearGasto, eliminarGasto } from "@/app/actions/finanzas";
-import { toast } from "sonner"; // Asumiendo que existe, sino usar alert o toast propio
+// import { toast } from "sonner"; // Eliminado temporalmente para corregir error de build
+
 
 interface Gasto {
   id: string;
