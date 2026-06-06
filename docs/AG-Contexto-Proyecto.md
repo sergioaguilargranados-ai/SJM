@@ -66,6 +66,26 @@ Al igual que en otros proyectos (ej. AS Operadora), **se exige el uso del idioma
 - **Documentación:** Todo trabajo queda registrado en `AG-Historico-Cambios.md` (en la misma carpeta `docs/`).
 - **Documentación de sesiones:** Todo documento importante, reporte o guía generado por el asistente debe llevar el prefijo **AG-** (AntiGravity) al inicio para estandarización: `AG-[tema]-v1.XXX.md`.
 
+### 💬 Carpeta `chats/` — Continuidad Multi-Equipo (Obligatoria)
+
+Permite retomar el trabajo desde cualquier equipo sin perder contexto.
+
+| Regla | Descripción |
+|-------|-------------|
+| **Al iniciar** | Leer el archivo más reciente en `chats/` antes de empezar |
+| **Al terminar** | Escribir `AG-sesion-YYMMDD-[tema].md` en `chats/` con lo hecho y próximos pasos |
+| **Commit** | Siempre incluir archivos de `chats/` en el commit |
+| **Prohibido** | Jamás incluir API keys ni passwords en `chats/` |
+
+```bash
+# Iniciar en cualquier equipo:
+git pull origin main
+# Luego: "Lee el último archivo en chats/ y retoma"
+
+# Cerrar sesión:
+# "Guarda el resumen de esta sesión en chats/"
+```
+
 ---
 
 ## 🏗️ ARQUITECTURA MULTI-TENANT, MARCA BLANCA Y ROLES Granulares
@@ -105,6 +125,18 @@ Los siguientes workflows están disponibles en `.agents/workflows/` para ejecuta
 3. `src/app/page.tsx` (Landing) — Pasa la prop de versión completa con la fecha a la landing
 4. `src/app/login/page.tsx` (Login) — Footer `vX.XXX • COMPILACIÓN: DD-MM-YYYY HH:mm`
 **⚠️ IMPORTANTE:** Cada incremento de versión DEBE estar acompañado de la hora exacta de despliegue ("Compilación") en los formatos respectivos de UI en todos los archivos.
+
+### Flujo Multi-Equipo
+
+```
+Equipo A                    Equipo B
+────────────────────        ────────────────────
+git pull                    git pull
+"Lee chats/ y retoma" ←──  (mismo archivo en repo)
+Trabaja...                  Trabaja...
+"Guarda sesión en chats/"   "Guarda sesión en chats/"
+git push ──────────────►    git push
+```
 
 ---
 
