@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { organizaciones, planes } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { eq, like, or } from "drizzle-orm";
 import { headers } from "next/headers";
 import { cache } from "react";
 
@@ -15,18 +15,41 @@ export const resolverTenant = cache(async () => {
   const host = headersList.get("host") || "localhost:3000";
   
   // Buscar organización por dominio personalizado
-  const dominio = host.replace(/:.*$/, ""); // quitar puerto
+  let dominio = host.replace(/:.*$/, ""); // quitar puerto
+  if (dominio.startsWith("www.")) {
+    dominio = dominio.replace(/^www\./, "");
+  }
 
-  // Primero intentar por dominio exacto
+  // Primero intentar por dominio exacto (con o sin www)
   const [orgPorDominio] = await db
     .select()
     .from(organizaciones)
-    .where(eq(organizaciones.dominio_tenant, dominio))
+    .where(
+      or(
+        eq(organizaciones.dominio_tenant, dominio),
+        eq(organizaciones.dominio_tenant, `www.${dominio}`)
+      )
+    )
     .limit(1);
 
   if (orgPorDominio) return orgPorDominio;
 
-  // Fallback: primera organización (SJM Nacional en dev)
+  // Fallback 1: Buscar organización que sea de SJM explícitamente
+  const [orgSJM] = await db
+    .select()
+    .from(organizaciones)
+    .where(
+      or(
+        like(organizaciones.dominio_tenant, "%serjema%"),
+        like(organizaciones.nombre, "%SJM%"),
+        like(organizaciones.nombre, "%Servidores%")
+      )
+    )
+    .limit(1);
+
+  if (orgSJM) return orgSJM;
+
+  // Fallback 2: primera organización (SJM Nacional en dev original)
   const [orgDefault] = await db
     .select()
     .from(organizaciones)
