@@ -122,43 +122,40 @@ export function SeccionContenido({
           )}
         </div>
 
-        {/* Imagen artística */}
-        {imagenUrl && (
-          <div className="flex-1 w-full max-w-md">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
-              <Image
-                src={imagenUrl}
-                alt={titulo}
-                width={500}
-                height={350}
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
-            {imagenNotaPie && (
-              <p className="text-[10px] text-slate-400 dark:text-[#5e5e72] mt-2 text-center italic">{imagenNotaPie}</p>
+        {/* Multimedia: Video prioritario, de lo contrario Imagen */}
+        {(videoUrl || imagenUrl) && (
+          <div className="flex-1 w-full max-w-md lg:max-w-lg">
+            {videoUrl ? (
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video w-full group">
+                <iframe
+                  src={videoUrl.replace("watch?v=", "embed/")}
+                  title={titulo}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+                {videoNotaPie && (
+                  <p className="text-[10px] text-slate-400 dark:text-[#5e5e72] mt-2 text-center italic">{videoNotaPie}</p>
+                )}
+              </div>
+            ) : (
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
+                <Image
+                  src={imagenUrl!}
+                  alt={titulo}
+                  width={500}
+                  height={350}
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {imagenNotaPie && (
+                  <p className="text-[10px] text-slate-400 dark:text-[#5e5e72] mt-2 text-center italic">{imagenNotaPie}</p>
+                )}
+              </div>
             )}
           </div>
         )}
       </div>
-
-      {/* Video (si existe) */}
-      {videoUrl && (
-        <div className="mt-8">
-          <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video max-w-3xl mx-auto">
-            <iframe
-              src={videoUrl.replace("watch?v=", "embed/")}
-              title={titulo}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-          </div>
-          {videoNotaPie && (
-            <p className="text-[10px] text-slate-400 dark:text-[#5e5e72] mt-2 text-center italic">{videoNotaPie}</p>
-          )}
-        </div>
-      )}
     </section>
   );
 }
@@ -308,15 +305,15 @@ export interface FotoGaleria {
   descripcion?: string | null;
 }
 
-export function GaleriaPublica({ fotos }: { fotos: FotoGaleria[] }) {
+export function GaleriaPublica({ fotos, compacta = false }: { fotos: FotoGaleria[], compacta?: boolean }) {
   if (!fotos || fotos.length === 0) return null;
 
   return (
-    <div className="mt-16">
-      <h3 className="text-3xl font-black text-center mb-8 text-slate-900 dark:text-white tracking-tight">
-        Galeria de Fotos
+    <div className={compacta ? "mt-0" : "mt-16"}>
+      <h3 className={`font-black mb-8 text-slate-900 dark:text-white tracking-tight ${compacta ? "text-xl text-left" : "text-3xl text-center"}`}>
+        {compacta ? "Galería Relacionada" : "Galería de Fotos"}
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className={`grid gap-4 ${compacta ? "grid-cols-2" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
         {fotos.map((foto) => (
           <div key={foto.id} className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
             <Image
@@ -328,8 +325,8 @@ export function GaleriaPublica({ fotos }: { fotos: FotoGaleria[] }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-              {foto.titulo && <p className="font-bold text-white text-sm mb-1 drop-shadow-md">{foto.titulo}</p>}
-              {foto.descripcion && <p className="text-xs text-slate-200 line-clamp-2 drop-shadow-md">{foto.descripcion}</p>}
+              {foto.titulo && <p className={`font-bold text-white mb-1 drop-shadow-md ${compacta ? "text-xs" : "text-sm"}`}>{foto.titulo}</p>}
+              {foto.descripcion && <p className="text-[10px] text-slate-200 line-clamp-2 drop-shadow-md">{foto.descripcion}</p>}
             </div>
           </div>
         ))}

@@ -71,11 +71,11 @@ export function CenefaNavbar({ transparencia = 70, logoUrl = "/logo-sjm-oficial.
 
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 shrink-0">
-          <Image src={logoUrl} alt={nombreOrg} width={40} height={40} className="drop-shadow rounded-lg" />
-          <div className="hidden sm:block">
-            <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none">{nombreOrg}</span>
-            <span className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-medium">{lemaOrg}</span>
+        <Link href="/" className="flex items-center gap-3 min-w-0 shrink">
+          <Image src={logoUrl} alt={nombreOrg} width={40} height={40} className="drop-shadow rounded-lg shrink-0" />
+          <div className="hidden sm:block min-w-0">
+            <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight block leading-none truncate">{nombreOrg}</span>
+            <span className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-medium truncate">{lemaOrg}</span>
           </div>
         </Link>
 

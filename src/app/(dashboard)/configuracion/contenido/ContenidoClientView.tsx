@@ -22,6 +22,7 @@ import { subirImagen } from "@/app/actions/upload";
 // ============================================================
 
 const PAGINAS = [
+  { clave: "landing", nombre: "Landing Principal (Carrusel)" },
   { clave: "nosotros", nombre: "Nosotros" },
   { clave: "jovenes", nombre: "Jóvenes (ELEMÁ)" },
   { clave: "matrimonios", nombre: "Matrimonios" },

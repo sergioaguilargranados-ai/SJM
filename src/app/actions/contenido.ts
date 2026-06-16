@@ -26,7 +26,7 @@ export async function obtenerParametrosLanding(organizacionId: string) {
       return resultado || null;
     },
     [`parametros_landing_${organizacionId}`],
-    { revalidate: 3600, tags: ["parametros_landing"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["parametros_landing"] }
   )();
 }
 
@@ -47,7 +47,7 @@ export async function obtenerSeccionesPagina(organizacionId: string, paginaClave
         .orderBy(asc(secciones_contenido.orden));
     },
     [`secciones_contenido_${organizacionId}_${paginaClave}`],
-    { revalidate: 3600, tags: ["secciones_contenido", paginaClave] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["secciones_contenido", paginaClave] }
   )();
 }
 
@@ -67,7 +67,7 @@ export async function obtenerTestimoniosAprobados(organizacionId: string) {
         .orderBy(desc(testimonios.creado_en));
     },
     [`testimonios_aprobados_${organizacionId}`],
-    { revalidate: 3600, tags: ["testimonios"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["testimonios"] }
   )();
 }
 
@@ -88,7 +88,7 @@ export async function obtenerFAQ(organizacionId: string, paginaClave: string = "
         .orderBy(asc(preguntas_frecuentes.orden));
     },
     [`faq_${organizacionId}_${paginaClave}`],
-    { revalidate: 3600, tags: ["faq", paginaClave] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["faq", paginaClave] }
   )();
 }
 
@@ -109,7 +109,7 @@ export async function obtenerGaleria(organizacionId: string, paginaClave: string
         .orderBy(asc(galeria_fotos.orden));
     },
     [`galeria_${organizacionId}_${paginaClave}`],
-    { revalidate: 3600, tags: ["galeria", paginaClave] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["galeria", paginaClave] }
   )();
 }
 
@@ -131,7 +131,7 @@ export async function obtenerLetrero(organizacionId: string, paginaClave: string
       return resultado || null;
     },
     [`letreros_${organizacionId}_${paginaClave}`],
-    { revalidate: 3600, tags: ["letreros", paginaClave] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["letreros", paginaClave] }
   )();
 }
 
@@ -152,7 +152,7 @@ export async function obtenerTelefonos(organizacionId: string, tipo?: string) {
         .orderBy(asc(telefonos_emergencia.orden));
     },
     [`telefonos_${organizacionId}_${tipo || "all"}`],
-    { revalidate: 3600, tags: ["telefonos"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["telefonos"] }
   )();
 }
 
@@ -172,7 +172,7 @@ export async function obtenerResponsables(organizacionId: string) {
         .orderBy(asc(responsables_organizacion.orden));
     },
     [`responsables_${organizacionId}`],
-    { revalidate: 3600, tags: ["responsables"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["responsables"] }
   )();
 }
 
@@ -193,7 +193,7 @@ export async function obtenerMedia(organizacionId: string, tipo?: string) {
         .orderBy(asc(media_contenido.orden));
     },
     [`media_${organizacionId}_${tipo || "all"}`],
-    { revalidate: 3600, tags: ["media"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["media"] }
   )();
 }
 
@@ -214,7 +214,7 @@ export async function obtenerArticulosBlog(organizacionId: string, blogClave: st
         .orderBy(desc(articulos_blog.fecha_publicacion));
     },
     [`articulos_${organizacionId}_${blogClave}`],
-    { revalidate: 3600, tags: ["articulos", blogClave] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["articulos", blogClave] }
   )();
 }
 
@@ -248,7 +248,7 @@ export async function obtenerAgendaRetiros(organizacionId: string) {
         .orderBy(asc(agenda_retiros.fecha_inicio));
     },
     [`agenda_retiros_${organizacionId}`],
-    { revalidate: 3600, tags: ["agenda_retiros"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["agenda_retiros"] }
   )();
 }
 

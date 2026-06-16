@@ -138,22 +138,39 @@ export default async function NosotrosPage() {
       </section>
 
       {/* Secciones de contenido */}
-      <div className="max-w-6xl mx-auto px-6 space-y-20 md:space-y-28 pb-20">
-        {secciones.map((seccion, idx) => (
-          <SeccionContenido
-            key={seccion.id}
-            id={`sec-${idx}`}
-            titulo={seccion.titulo}
-            subtitulo={seccion.subtitulo}
-            contenido={seccion.contenido}
-            autoria={seccion.autoria}
-            imagenUrl={(seccion as any).imagen_url}
-            videoUrl={(seccion as any).video_url}
-            indice={idx}
-          />
-        ))}
-
-        <GaleriaPublica fotos={galeriaCMS} />
+      <div className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="flex flex-col lg:flex-row gap-12">
+          {/* Columna Principal - Secciones */}
+          <div className={`flex-1 space-y-20 ${galeriaCMS.length > 0 ? "lg:w-2/3" : "w-full"}`}>
+            {secciones.map((seccion, idx) => (
+              <SeccionContenido
+                key={seccion.id}
+                id={`sec-${idx}`}
+                titulo={seccion.titulo}
+                subtitulo={seccion.subtitulo}
+                contenido={seccion.contenido}
+                autoria={seccion.autoria}
+                imagenUrl={(seccion as any).imagen_url}
+                videoUrl={(seccion as any).video_url}
+                indice={idx}
+              />
+            ))}
+            {!tieneContenidoCMS && secciones.length === 0 && (
+              <p className="text-center text-slate-500 dark:text-slate-400 italic">
+                Aún no hay contenido publicado para esta sección.
+              </p>
+            )}
+          </div>
+          
+          {/* Columna Lateral - Galería */}
+          {galeriaCMS.length > 0 && (
+            <div className="lg:w-1/3">
+              <div className="sticky top-32">
+                <GaleriaPublica fotos={galeriaCMS} compacta={true} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* CTA final */}

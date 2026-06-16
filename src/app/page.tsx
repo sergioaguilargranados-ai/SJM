@@ -12,6 +12,7 @@ import { resolverTenant } from "@/lib/tenant";
 import { HeroCarrusel } from "@/components/landing/HeroCarrusel";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { WhatsAppWidget } from "@/components/landing/WhatsAppWidget";
+import { obtenerGaleria } from "@/app/actions/contenido";
 
 export const metadata = {
   title: "Servidores de Jesús por María | Un Don del Espíritu Santo en nuestro tiempo",
@@ -98,6 +99,18 @@ export default async function Home() {
   const nombreOrg = tenant?.nombre || "SJM Nacional";
   const lemaOrg = tenant?.lema || "Servidores de Jesús por María";
 
+  let slidesCarrusel = undefined;
+  if (tenant?.id) {
+    const galeriaLanding = await obtenerGaleria(tenant.id, "landing");
+    if (galeriaLanding && galeriaLanding.length > 0) {
+      slidesCarrusel = galeriaLanding.map((img: any) => ({
+        imagen_url: img.imagen_url,
+        titulo: img.titulo || "",
+        subtitulo: img.descripcion || "",
+      }));
+    }
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1015] font-sans selection:bg-blue-100 dark:selection:bg-blue-900/30">
       
@@ -105,7 +118,7 @@ export default async function Home() {
       <CenefaNavbar transparencia={70} logoUrl={logoUrl} nombreOrg={nombreOrg} lemaOrg={lemaOrg} />
 
       {/* 2. CARRUSEL DE IMÁGENES AUTOMÁTICO */}
-      <HeroCarrusel />
+      <HeroCarrusel slides={slidesCarrusel} />
 
       {/* 3. BIENVENIDA — Logo grande + nombre + lema */}
       <section className="relative py-16 md:py-20 overflow-hidden">

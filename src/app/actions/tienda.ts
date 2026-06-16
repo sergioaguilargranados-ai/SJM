@@ -23,7 +23,7 @@ export async function obtenerCategorias(organizacionId: string) {
         .orderBy(asc(categorias_producto.orden));
     },
     [`categorias_tienda_${organizacionId}`],
-    { revalidate: 3600, tags: ["tienda_categorias"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["tienda_categorias"] }
   )();
 }
 
@@ -55,7 +55,7 @@ export async function obtenerProductos(organizacionId: string, categoriaId?: str
         .orderBy(desc(productos_tienda.destacado));
     },
     [`productos_tienda_${organizacionId}_${categoriaId || "all"}`],
-    { revalidate: 3600, tags: ["tienda_productos"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["tienda_productos"] }
   )();
 }
 
@@ -66,7 +66,7 @@ export async function obtenerProductoPorId(id: string) {
       return producto || null;
     },
     [`producto_tienda_${id}`],
-    { revalidate: 3600, tags: ["tienda_productos"] }
+    { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["tienda_productos"] }
   )();
 }
 
