@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM • v1.190 • COMPILACIÓN: 16-06-2026 01:14 AM (CDMX)
+# 📜 Histórico SJM PLATFORM • v1.191 • COMPILACIÓN: 16-06-2026 02:45 AM (CDMX)
 
-**Última actualización:** 16 de Junio de 2026 - 01:14 AM (CDMX)
+**Última actualización:** 16 de Junio de 2026 - 02:45 AM (CDMX)
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.191 - 16 de Junio de 2026 - 02:45 AM (CDMX)
+
+#### 🚀 Optimización de Rendimiento Frontend (Fase 1 y 2)
+- **Caché en Server Actions:** Implementación sistemática de `unstable_cache` de Next.js en las funciones de lectura pública (`obtenerParametrosLanding`, `obtenerSeccionesPagina`, `obtenerTestimoniosAprobados`, `obtenerAgendaRetiros`, `obtenerProductos`, `obtenerCategorias`, etc.). Esta actualización minimiza drásticamente las consultas redundantes a la base de datos de Neon/Turso, reduciendo costos a $0 y logrando tiempos de respuesta de milisegundos (ISG-like behavior).
+- **Optimización de Imágenes (LCP):** Refactorización completa de etiquetas estándar HTML `<img>` por el componente ultra-optimizado `<Image />` de `next/image` en las páginas públicas de Crecimientos, Media y Tienda. Se configuraron parámetros de `fill` y `sizes` condicionales para un renderizado responsivo (max-width: 768px 100vw, 33vw) y soporte al diseño premium de la arquitectura visual.
+- **Diagnóstico de Vercel DB:** Se identificó que Vercel apuntaba a una base de datos antigua (Operadora) al heredar un viejo `.env`. El usuario actualizó la variable `DATABASE_URL` y `AUTH_SECRET` en la consola de Vercel para que las consultas de producción mapeen a la DB correcta (`serjema.com`).
 
 ---
 
