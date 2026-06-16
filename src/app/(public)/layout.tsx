@@ -2,6 +2,8 @@ import { CenefaNavbar } from "@/components/landing/CenefaNavbar";
 import { FooterPublico } from "@/components/landing/FooterPublico";
 import { resolverTenant } from "@/lib/tenant";
 
+export const dynamic = 'force-dynamic';
+
 // ============================================================
 // LayoutPaginaPublica — Layout compartido para TODAS las páginas
 // públicas de la landing. Incluye cenefa 70% + footer degradado.
