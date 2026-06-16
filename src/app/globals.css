@@ -15,8 +15,8 @@
   --color-muted-text: var(--muted);
   --color-muted-soft: var(--muted-soft);
   
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
 }
 
 /* Habilitar selector .dark para variantes dark: en Tailwind v4 */
@@ -28,8 +28,8 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
-  --surface: #f8fafc;
+  --foreground: #1c1c1e;
+  --surface: #f4f4f6;
   --card: #ffffff;
   --card-border: #e2e8f0;
   --sidebar: #ffffff;
@@ -39,13 +39,13 @@
 }
 
 .dark {
-  --background: #0f1015;
-  --foreground: #f8fafc; /* slate-50 */
-  --surface: #151621;
-  --card: #1a1b26;
-  --card-border: #2a2b3d;
-  --sidebar: #1a1b26;
-  --sidebar-border: #2a2b3d;
+  --background: #000000;
+  --foreground: #f4f4f6;
+  --surface: #1c1c1e;
+  --card: #111111;
+  --card-border: #333333;
+  --sidebar: #111111;
+  --sidebar-border: #333333;
   --muted: #94a3b8;
   --muted-soft: #475569;
 }

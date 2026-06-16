@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Shield } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
-import { obtenerSeccionesPagina } from "@/app/actions/contenido";
+import { obtenerSeccionesPagina, obtenerGaleria } from "@/app/actions/contenido";
+import { SeccionContenido, GaleriaPublica } from "@/components/landing/ComponentesLanding";
 
 export const metadata: Metadata = {
   title: "Nosotros | Servidores de Jesús por María",
@@ -74,14 +75,16 @@ export default async function NosotrosPage() {
   const orgId = tenant?.id;
   
   let seccionesCMS: any[] = [];
+  let galeriaCMS: any[] = [];
   if (orgId) {
     seccionesCMS = await obtenerSeccionesPagina(orgId, "nosotros");
+    galeriaCMS = await obtenerGaleria(orgId, "nosotros");
   }
 
   // Usar datos del CMS si existen, si no, usar defaults estáticos
   const tieneContenidoCMS = seccionesCMS.length > 0;
   const secciones = tieneContenidoCMS
-    ? seccionesCMS.map((s) => ({ id: s.id, titulo: s.titulo || "", subtitulo: s.subtitulo || "", contenido: s.contenido || "", autoria: s.autoria || "", icono: "📄", imagen_url: s.imagen_url }))
+    ? seccionesCMS.map((s) => ({ id: s.id, titulo: s.titulo || "", subtitulo: s.subtitulo || "", contenido: s.contenido || "", autoria: s.autoria || "", icono: "📄", imagen_url: s.imagen_url, video_url: s.video_url }))
     : seccionesDefault;
 
   return (
@@ -137,50 +140,20 @@ export default async function NosotrosPage() {
       {/* Secciones de contenido */}
       <div className="max-w-6xl mx-auto px-6 space-y-20 md:space-y-28 pb-20">
         {secciones.map((seccion, idx) => (
-          <section key={seccion.id} id={`sec-${idx}`} className="scroll-mt-24">
-            <div className={`flex flex-col ${idx % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-8 lg:gap-12 items-start`}>
-              <div className="flex-1 w-full">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{seccion.icono}</span>
-                  <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                      {seccion.titulo}
-                    </h2>
-                    <p className="text-sm font-bold text-[#00B4AA] uppercase tracking-wider mt-0.5">
-                      {seccion.subtitulo}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] whitespace-pre-line mt-4">
-                  {seccion.contenido}
-                </div>
-                {seccion.autoria && (
-                  <p className="mt-4 text-[11px] text-slate-400 dark:text-[#5e5e72] italic font-medium">
-                    — {seccion.autoria}
-                  </p>
-                )}
-              </div>
-
-              {/* Columna decorativa / imagen del CMS */}
-              <div className="flex-shrink-0 w-full lg:w-80">
-                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#1a1b26] dark:to-[#151621] aspect-[4/3] flex items-center justify-center shadow-lg">
-                  {(seccion as any).imagen_url ? (
-                    <img src={(seccion as any).imagen_url} alt={seccion.titulo} className="absolute inset-0 w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-7xl opacity-20">{seccion.icono}</span>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
-                </div>
-              </div>
-            </div>
-
-            {idx < secciones.length - 1 && (
-              <div className="mt-16 flex justify-center">
-                <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
-              </div>
-            )}
-          </section>
+          <SeccionContenido
+            key={seccion.id}
+            id={`sec-${idx}`}
+            titulo={seccion.titulo}
+            subtitulo={seccion.subtitulo}
+            contenido={seccion.contenido}
+            autoria={seccion.autoria}
+            imagenUrl={(seccion as any).imagen_url}
+            videoUrl={(seccion as any).video_url}
+            indice={idx}
+          />
         ))}
+
+        <GaleriaPublica fotos={galeriaCMS} />
       </div>
 
       {/* CTA final */}

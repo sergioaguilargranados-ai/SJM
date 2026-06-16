@@ -36,7 +36,7 @@ export async function registrarSolicitudAction(datos: any) {
       evento_id: finalEventoId,
       nombre_asistente: datos.nombre_asistente,
       nombre_gafete: datos.nombre_gafete || null,
-      fecha_nacimiento: datos.fecha_nacimiento ? new Date(datos.fecha_nacimiento) : null,
+      fecha_nacimiento: datos.fecha_nacimiento || null,
       edad: datos.edad ? Number(datos.edad) : null,
       sexo: datos.sexo || null,
       estado_civil: datos.estado_civil || null,
@@ -60,11 +60,13 @@ export async function registrarSolicitudAction(datos: any) {
       
       // Datos de cónyuge y familia
       esposo_a_nombre: datos.esposo_a_nombre || null,
-      fecha_boda: datos.fecha_boda ? new Date(datos.fecha_boda) : null,
+      fecha_boda: datos.fecha_boda || null,
       cantidad_hijos: datos.cantidad_hijos ? Number(datos.cantidad_hijos) : 0,
       nombre_edades_hijos: datos.datos_hijos || null,
+      acepta_responsiva: datos.acepta_responsiva === true,
       
       // Campos Especiales para Diplomados
+
       ministerio_actual: datos.ministerio_actual || null,
       compromiso_pago_99usd: datos.compromiso_pago_99usd === true,
       

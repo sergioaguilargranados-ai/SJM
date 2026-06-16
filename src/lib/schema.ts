@@ -235,6 +235,8 @@ export const eventos = pgTable("eventos", {
   recomendaciones: text("recomendaciones"),
   politica_cancelacion: text("politica_cancelacion"),
   link_minuta_evaluacion: text("link_minuta_evaluacion"),
+  contrasena_inscripcion: varchar("contrasena_inscripcion", { length: 50 }),
+  es_matrimonial: boolean("es_matrimonial").default(false),
 });
 
 
@@ -288,7 +290,9 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   cantidad_hijos: integer("cantidad_hijos").default(0),
   nombre_edades_hijos: text("nombre_edades_hijos"),
   
+  acepta_responsiva: boolean("acepta_responsiva").default(false),
   quien_invito: varchar("quien_invito", { length: 255 }),
+
   expectativas: text("expectativas"),
   otros_retiros_tomados: text("otros_retiros_tomados"),
   observaciones: text("observaciones"),
@@ -757,7 +761,24 @@ export const usuariosRelations = relations(usuarios, ({ one }) => ({
 }));
 
 export const organizacionesRelations = relations(organizaciones, ({ one, many }) => ({
- plan: one(planes, { fields: [organizaciones.plan_id], references: [planes.id] }),
- usuarios: many(usuarios),
+  plan: one(planes, { fields: [organizaciones.plan_id], references: [planes.id] }),
+  usuarios: many(usuarios),
 }));
+
+// ==========================================
+// LEADS CRM (AS Operadora)
+// ==========================================
+
+export const leads_crm = pgTable("leads_crm", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizacion_id: uuid("organizacion_id").references(() => organizaciones.id),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  correo: varchar("correo", { length: 255 }).notNull(),
+  telefono: varchar("telefono", { length: 50 }),
+  tipo_lead: varchar("tipo_lead", { length: 100 }), // Viajero, Agencia de Viajes, Agencia de Eventos, Empresa
+  estatus: varchar("estatus", { length: 50 }).default("NUEVO"), // NUEVO, CONTACTADO, DESCARTADO, APROBADO
+  notas: text("notas"),
+  creado_en: timestamp("creado_en").defaultNow().notNull(),
+});
+
 

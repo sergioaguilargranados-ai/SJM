@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { MapPin, ExternalLink } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -59,3 +59,6 @@ export default function CentrosPage() {
     </div>
   );
 }
+
+
+

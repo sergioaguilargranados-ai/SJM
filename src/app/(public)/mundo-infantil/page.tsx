@@ -1,4 +1,7 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
+import { resolverTenant } from "@/lib/tenant";
+import { obtenerSeccionesPagina, obtenerGaleria } from "@/app/actions/contenido";
+import { SeccionContenido, GaleriaPublica } from "@/components/landing/ComponentesLanding";
 import { Baby, Gamepad2, BookOpen, Music } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -6,7 +9,16 @@ export const metadata: Metadata = {
   description: "¡Vamos a jugar y a aprender con Jesús! Sección infantil de SJM.",
 };
 
-export default function MundoInfantilPage() {
+export default async function MundoInfantilPage() {
+  const tenant = await resolverTenant();
+  const orgId = tenant?.id;
+
+  let seccionesCMS: any[] = [];
+  let galeriaCMS: any[] = [];
+  if (orgId) {
+    seccionesCMS = await obtenerSeccionesPagina(orgId, "mundo-infantil");
+    galeriaCMS = await obtenerGaleria(orgId, "mundo-infantil");
+  }
   return (
     <div className="min-h-screen">
       <section className="py-16 md:py-24 text-center relative overflow-hidden">
@@ -47,10 +59,33 @@ export default function MundoInfantilPage() {
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Videos y canciones infantiles</p>
           </div>
         </div>
-        <p className="text-center text-slate-500 dark:text-slate-400 italic">
-          Contenido de secciones parametrizable próximamente disponible desde el CMS.
-        </p>
+                <div className="space-y-20">
+          {seccionesCMS.map((seccion, idx) => (
+            <SeccionContenido
+              key={seccion.id}
+              id={`sec-${idx}`}
+              titulo={seccion.titulo || ""}
+              subtitulo={seccion.subtitulo || ""}
+              contenido={seccion.contenido || ""}
+              autoria={seccion.autoria || ""}
+              imagenUrl={seccion.imagen_url}
+              videoUrl={seccion.video_url}
+              indice={idx}
+            />
+          ))}
+          {seccionesCMS.length === 0 && (
+            <p className="text-center text-slate-500 dark:text-slate-400 italic">
+              Aún no hay contenido publicado para esta sección.
+            </p>
+          )}
+        </div>
+        <GaleriaPublica fotos={galeriaCMS} />
       </div>
     </div>
   );
 }
+
+
+
+
+

@@ -251,6 +251,7 @@ export async function crearTestimonio(datos: {
   es_anonimo?: boolean;
   texto: string;
   calificacion?: number;
+  foto_url?: string;
 }) {
   await db.insert(testimonios).values(datos);
   revalidatePath("/testimonios");
@@ -364,8 +365,20 @@ export async function crearFotoGaleria(datos: {
 
 export async function eliminarFotoGaleria(id: string) {
   await db.delete(galeria_fotos).where(eq(galeria_fotos.id, id));
-  revalidatePath("/");
+  // We can't revalidate a specific path here easily if we don't have it, 
+  // but let's revalidate all paths where galeria might show up, or just "/"
+  revalidatePath("/", "layout");
 }
+
+export async function obtenerGaleriaAdmin(organizacionId: string) {
+  return db
+    .select()
+    .from(galeria_fotos)
+    .where(eq(galeria_fotos.organizacion_id, organizacionId))
+    .orderBy(desc(galeria_fotos.orden));
+}
+
+
 
 /** CRUD Letreros */
 export async function crearLetrero(datos: {

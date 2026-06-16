@@ -133,10 +133,13 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Cupo Máximo *</Label>
+              <div className="relative">
+                <Users className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <Input type="number" {...form.register("cupo_maximo")} className="pl-9 dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
               </div>
             </div>
-
             <div className="space-y-2">
               <Label className="dark:text-slate-300">Password de Inscripción (Opcional)</Label>
               <div className="relative">

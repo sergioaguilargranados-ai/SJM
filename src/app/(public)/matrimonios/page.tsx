@@ -1,4 +1,7 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
+import { resolverTenant } from "@/lib/tenant";
+import { obtenerSeccionesPagina, obtenerGaleria } from "@/app/actions/contenido";
+import { SeccionContenido, GaleriaPublica } from "@/components/landing/ComponentesLanding";
 import { Heart } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -6,7 +9,16 @@ export const metadata: Metadata = {
   description: "¿Problemas en tu matrimonio? Jesús es la solución. Retiros y acompañamiento para matrimonios.",
 };
 
-export default function MatrimoniosPage() {
+export default async function MatrimoniosPage() {
+  const tenant = await resolverTenant();
+  const orgId = tenant?.id;
+
+  let seccionesCMS: any[] = [];
+  let galeriaCMS: any[] = [];
+  if (orgId) {
+    seccionesCMS = await obtenerSeccionesPagina(orgId, "matrimonios");
+    galeriaCMS = await obtenerGaleria(orgId, "matrimonios");
+  }
   return (
     <div className="min-h-screen">
       <section className="py-16 md:py-24 text-center relative overflow-hidden">
@@ -32,10 +44,33 @@ export default function MatrimoniosPage() {
       </section>
 
       <div className="max-w-6xl mx-auto px-6 pb-20">
-        <p className="text-center text-slate-500 dark:text-slate-400 italic">
-          Contenido de secciones, cinta de fotos y agenda próximamente disponible desde el CMS.
-        </p>
+                <div className="space-y-20">
+          {seccionesCMS.map((seccion, idx) => (
+            <SeccionContenido
+              key={seccion.id}
+              id={`sec-${idx}`}
+              titulo={seccion.titulo || ""}
+              subtitulo={seccion.subtitulo || ""}
+              contenido={seccion.contenido || ""}
+              autoria={seccion.autoria || ""}
+              imagenUrl={seccion.imagen_url}
+              videoUrl={seccion.video_url}
+              indice={idx}
+            />
+          ))}
+          {seccionesCMS.length === 0 && (
+            <p className="text-center text-slate-500 dark:text-slate-400 italic">
+              Aún no hay contenido publicado para esta sección.
+            </p>
+          )}
+        </div>
+        <GaleriaPublica fotos={galeriaCMS} />
       </div>
     </div>
   );
 }
+
+
+
+
+

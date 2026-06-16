@@ -13,7 +13,9 @@ import {
   crearFAQ, actualizarFAQ, eliminarFAQ,
   crearTelefono, actualizarTelefono, eliminarTelefono,
   crearResponsable, actualizarResponsable, eliminarResponsable,
+  crearFotoGaleria, eliminarFotoGaleria,
 } from "@/app/actions/contenido";
+import { subirImagen } from "@/app/actions/upload";
 
 // ============================================================
 // Admin CMS — Vista de gestión de contenido completa
@@ -38,12 +40,13 @@ interface ContenidoClientViewProps {
   faq: any[];
   telefonos: any[];
   responsables: any[];
+  galeria?: any[];
   organizacionId: string;
 }
 
 export default function ContenidoClientView({
   secciones, parametros, testimonios: testimoniosInit, faq: faqInit,
-  telefonos: telefonosInit, responsables: responsablesInit, organizacionId
+  telefonos: telefonosInit, responsables: responsablesInit, galeria: galeriaInit = [], organizacionId
 }: ContenidoClientViewProps) {
   const [isPending, startTransition] = useTransition();
   const [tabActiva, setTabActiva] = useState("secciones");
@@ -51,12 +54,15 @@ export default function ContenidoClientView({
   const [modalAbierto, setModalAbierto] = useState<string | null>(null);
   const [editandoId, setEditandoId] = useState<string | null>(null);
   
+  const [isUploading, setIsUploading] = useState(false);
+  
   // Forms
-  const [formSeccion, setFormSeccion] = useState({ pagina_clave: "nosotros", titulo: "", subtitulo: "", contenido: "", autoria: "", orden: 0, tipo: "contenido" });
-  const [formTestimonio, setFormTestimonio] = useState({ texto: "", nombre_autor: "", es_anonimo: false, calificacion: 5 });
+  const [formSeccion, setFormSeccion] = useState({ pagina_clave: "nosotros", titulo: "", subtitulo: "", contenido: "", autoria: "", orden: 0, tipo: "contenido", imagen_url: "", video_url: "" });
+  const [formTestimonio, setFormTestimonio] = useState({ texto: "", nombre_autor: "", es_anonimo: false, calificacion: 5, foto_url: "" });
   const [formFAQ, setFormFAQ] = useState({ pregunta: "", respuesta: "", pagina_clave: "general", orden: 0 });
   const [formTelefono, setFormTelefono] = useState({ tipo: "emergencia", nombre_contacto: "", telefono: "", whatsapp: "", cargo: "", horario: "", orden: 0 });
-  const [formResponsable, setFormResponsable] = useState({ nombre: "", cargo: "", correo: "", telefono: "", mensaje_saludo: "", orden: 0 });
+  const [formResponsable, setFormResponsable] = useState({ nombre: "", cargo: "", correo: "", telefono: "", mensaje_saludo: "", orden: 0, foto_url: "" });
+  const [formGaleria, setFormGaleria] = useState({ pagina_clave: "nosotros", imagen_url: "", titulo: "", descripcion: "", orden: 0 });
 
   // Parámetros de landing
   const [formParams, setFormParams] = useState({
@@ -79,7 +85,25 @@ export default function ContenidoClientView({
     { id: "faq", nombre: "FAQ", icono: HelpCircle, count: faqInit.length },
     { id: "telefonos", nombre: "Teléfonos", icono: Phone, count: telefonosInit.length },
     { id: "responsables", nombre: "Equipo", icono: Users, count: responsablesInit.length },
+    { id: "galeria", nombre: "Galería", icono: ImageIcon, count: galeriaInit.length },
   ];
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (url: string) => void) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const result = await subirImagen(formData);
+    if (result.success && result.url) {
+      callback(result.url);
+    } else {
+      alert("Error subiendo la imagen: " + (result.error || "Desconocido"));
+    }
+    setIsUploading(false);
+  };
 
   const guardarSeccion = () => {
     startTransition(async () => {
@@ -103,7 +127,7 @@ export default function ContenidoClientView({
     startTransition(async () => {
       await crearTestimonio({ ...formTestimonio, organizacion_id: organizacionId });
       setModalAbierto(null);
-      setFormTestimonio({ texto: "", nombre_autor: "", es_anonimo: false, calificacion: 5 });
+      setFormTestimonio({ texto: "", nombre_autor: "", es_anonimo: false, calificacion: 5, foto_url: "" });
     });
   };
 
@@ -140,6 +164,14 @@ export default function ContenidoClientView({
       }
       setModalAbierto(null);
       setEditandoId(null);
+    });
+  };
+
+  const guardarGaleriaNueva = () => {
+    startTransition(async () => {
+      await crearFotoGaleria({ ...formGaleria, organizacion_id: organizacionId });
+      setModalAbierto(null);
+      setFormGaleria({ pagina_clave: "nosotros", imagen_url: "", titulo: "", descripcion: "", orden: 0 });
     });
   };
 
@@ -195,7 +227,7 @@ export default function ContenidoClientView({
             </select>
             <button
               onClick={() => {
-                setFormSeccion({ pagina_clave: paginaFiltro, titulo: "", subtitulo: "", contenido: "", autoria: "", orden: seccionesFiltradas.length + 1, tipo: "contenido" });
+                setFormSeccion({ pagina_clave: paginaFiltro, titulo: "", subtitulo: "", contenido: "", autoria: "", orden: seccionesFiltradas.length + 1, tipo: "contenido", imagen_url: "", video_url: "" });
                 setEditandoId(null);
                 setModalAbierto("seccion");
               }}
@@ -231,7 +263,8 @@ export default function ContenidoClientView({
                       onClick={() => {
                         setFormSeccion({
                           pagina_clave: seccion.pagina_clave, titulo: seccion.titulo || "", subtitulo: seccion.subtitulo || "",
-                          contenido: seccion.contenido || "", autoria: seccion.autoria || "", orden: seccion.orden || 0, tipo: seccion.tipo || "contenido"
+                          contenido: seccion.contenido || "", autoria: seccion.autoria || "", orden: seccion.orden || 0, tipo: seccion.tipo || "contenido",
+                          imagen_url: seccion.imagen_url || "", video_url: seccion.video_url || ""
                         });
                         setEditandoId(seccion.id);
                         setModalAbierto("seccion");
@@ -419,7 +452,7 @@ export default function ContenidoClientView({
       {tabActiva === "responsables" && (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => { setFormResponsable({ nombre: "", cargo: "", correo: "", telefono: "", mensaje_saludo: "", orden: responsablesInit.length + 1 }); setEditandoId(null); setModalAbierto("responsable"); }} className="flex items-center gap-2 px-4 py-2 bg-[#00B4AA] text-white rounded-lg text-sm font-bold">
+            <button onClick={() => { setFormResponsable({ nombre: "", cargo: "", correo: "", telefono: "", mensaje_saludo: "", orden: responsablesInit.length + 1, foto_url: "" }); setEditandoId(null); setModalAbierto("responsable"); }} className="flex items-center gap-2 px-4 py-2 bg-[#00B4AA] text-white rounded-lg text-sm font-bold">
               <Plus className="w-4 h-4" /> Nuevo Responsable
             </button>
           </div>
@@ -433,9 +466,63 @@ export default function ContenidoClientView({
                 <p className="text-xs text-[#00B4AA] font-medium">{r.cargo}</p>
                 {r.correo && <p className="text-[10px] text-slate-400 mt-1">{r.correo}</p>}
                 <div className="flex items-center justify-center gap-1 mt-3">
-                  <button onClick={() => { setFormResponsable({ nombre: r.nombre || "", cargo: r.cargo || "", correo: r.correo || "", telefono: r.telefono || "", mensaje_saludo: r.mensaje_saludo || "", orden: r.orden || 0 }); setEditandoId(r.id); setModalAbierto("responsable"); }} className="p-1.5 text-slate-400 hover:text-blue-600"><Edit2 className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setFormResponsable({ nombre: r.nombre || "", cargo: r.cargo || "", correo: r.correo || "", telefono: r.telefono || "", mensaje_saludo: r.mensaje_saludo || "", orden: r.orden || 0, foto_url: r.foto_url || "" }); setEditandoId(r.id); setModalAbierto("responsable"); }} className="p-1.5 text-slate-400 hover:text-blue-600"><Edit2 className="w-3.5 h-3.5" /></button>
                   <button onClick={() => startTransition(() => eliminarResponsable(r.id))} className="p-1.5 text-slate-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ===== TAB: GALERIA ===== */}
+      {tabActiva === "galeria" && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <select
+              value={paginaFiltro}
+              onChange={(e) => setPaginaFiltro(e.target.value)}
+              className="px-4 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#1a1b26] text-sm text-slate-700 dark:text-slate-300"
+            >
+              {PAGINAS.map((p) => (
+                <option key={p.clave} value={p.clave}>{p.nombre}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => {
+                setFormGaleria({ pagina_clave: paginaFiltro, imagen_url: "", titulo: "", descripcion: "", orden: (galeriaInit || []).filter((g: any) => g.pagina_clave === paginaFiltro).length + 1 });
+                setEditandoId(null);
+                setModalAbierto("galeria");
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-[#00B4AA] text-white rounded-lg text-sm font-bold hover:bg-[#009990] transition-colors"
+            >
+              <Plus className="w-4 h-4" /> Agregar Foto
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {(galeriaInit || []).filter((g: any) => g.pagina_clave === paginaFiltro).map((g: any) => (
+              <div key={g.id} className="bg-white dark:bg-[#1a1b26] rounded-xl border border-slate-200 dark:border-[#2a2b3d] overflow-hidden group">
+                <div className="relative aspect-video bg-slate-100 dark:bg-[#2a2b3d]">
+                  {g.imagen_url ? (
+                    <img src={g.imagen_url} alt={g.titulo || "Foto de galería"} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button onClick={() => startTransition(() => eliminarFotoGaleria(g.id))} className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                {(g.titulo || g.descripcion) && (
+                  <div className="p-3">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white truncate">{g.titulo}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{g.descripcion}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -489,6 +576,20 @@ export default function ContenidoClientView({
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Autoría / Fuente</label>
                     <input type="text" value={formSeccion.autoria} onChange={(e) => setFormSeccion({...formSeccion, autoria: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Imagen (Opcional)</label>
+                      <div className="flex gap-2 items-center">
+                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setFormSeccion({...formSeccion, imagen_url: url}))} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-xs" />
+                        {isUploading && <span className="text-xs text-blue-500">...</span>}
+                        {formSeccion.imagen_url && <img src={formSeccion.imagen_url} alt="Preview" className="h-8 w-8 rounded object-cover" />}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">URL YouTube (Opcional)</label>
+                      <input type="url" value={formSeccion.video_url} onChange={(e) => setFormSeccion({...formSeccion, video_url: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" placeholder="https://youtube.com/..." />
+                    </div>
+                  </div>
                   <button onClick={guardarSeccion} disabled={isPending} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00B4AA] text-white rounded-lg text-sm font-bold disabled:opacity-50">
                     <Save className="w-4 h-4" /> {isPending ? "Guardando..." : "Guardar Sección"}
                   </button>
@@ -508,10 +609,20 @@ export default function ContenidoClientView({
                     </label>
                   </div>
                   {!formTestimonio.es_anonimo && (
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre del autor</label>
-                      <input type="text" value={formTestimonio.nombre_autor} onChange={(e) => setFormTestimonio({...formTestimonio, nombre_autor: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
-                    </div>
+                    <>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre del autor</label>
+                        <input type="text" value={formTestimonio.nombre_autor} onChange={(e) => setFormTestimonio({...formTestimonio, nombre_autor: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Foto del autor (Opcional)</label>
+                        <div className="flex gap-2 items-center">
+                          <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setFormTestimonio({...formTestimonio, foto_url: url}))} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-xs" />
+                          {isUploading && <span className="text-xs text-blue-500">...</span>}
+                          {formTestimonio.foto_url && <img src={formTestimonio.foto_url} alt="Preview" className="h-8 w-8 rounded-full object-cover" />}
+                        </div>
+                      </div>
+                    </>
                   )}
                   <button onClick={guardarTestimonioNuevo} disabled={isPending} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00B4AA] text-white rounded-lg text-sm font-bold disabled:opacity-50">
                     <Save className="w-4 h-4" /> {isPending ? "Guardando..." : "Guardar Testimonio"}
@@ -600,11 +711,62 @@ export default function ContenidoClientView({
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Mensaje de Saludo</label>
                     <textarea rows={3} value={formResponsable.mensaje_saludo} onChange={(e) => setFormResponsable({...formResponsable, mensaje_saludo: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm resize-none" />
                   </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Foto de Perfil (Opcional)</label>
+                    <div className="flex gap-2 items-center">
+                      <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setFormResponsable({...formResponsable, foto_url: url}))} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-xs" />
+                      {isUploading && <span className="text-xs text-blue-500">...</span>}
+                      {formResponsable.foto_url && <img src={formResponsable.foto_url} alt="Preview" className="h-8 w-8 rounded-full object-cover" />}
+                    </div>
+                  </div>
                   <button onClick={guardarResponsableNuevo} disabled={isPending} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00B4AA] text-white rounded-lg text-sm font-bold disabled:opacity-50">
                     <Save className="w-4 h-4" /> {isPending ? "Guardando..." : "Guardar"}
                   </button>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Galería */}
+      {modalAbierto === "galeria" && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setModalAbierto(null)}>
+          <div className="bg-white dark:bg-[#1a1b26] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#2a2b3d] w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-[#2a2b3d]">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Agregar Foto a Galería</h2>
+              <button onClick={() => setModalAbierto(null)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Imagen (Obligatorio)</label>
+                <div className="flex gap-2 items-center">
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => setFormGaleria({...formGaleria, imagen_url: url}))} className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
+                  {isUploading && <span className="text-xs text-blue-500">Subiendo...</span>}
+                </div>
+                {formGaleria.imagen_url && (
+                  <div className="mt-2 rounded border border-slate-200 p-1">
+                    <img src={formGaleria.imagen_url} alt="Preview" className="w-full h-32 object-cover rounded" />
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Título (Opcional)</label>
+                  <input type="text" value={formGaleria.titulo} onChange={(e) => setFormGaleria({...formGaleria, titulo: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Orden</label>
+                  <input type="number" value={formGaleria.orden} onChange={(e) => setFormGaleria({...formGaleria, orden: parseInt(e.target.value)})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Descripción (Opcional)</label>
+                <input type="text" value={formGaleria.descripcion} onChange={(e) => setFormGaleria({...formGaleria, descripcion: e.target.value})} className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] text-sm" />
+              </div>
+              <button onClick={guardarGaleriaNueva} disabled={isPending || !formGaleria.imagen_url || isUploading} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00B4AA] text-white rounded-lg text-sm font-bold disabled:opacity-50">
+                <Save className="w-4 h-4" /> {isPending ? "Guardando..." : "Guardar Foto"}
+              </button>
             </div>
           </div>
         </div>

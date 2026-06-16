@@ -1,4 +1,7 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
+import { resolverTenant } from "@/lib/tenant";
+import { obtenerSeccionesPagina, obtenerGaleria } from "@/app/actions/contenido";
+import { SeccionContenido, GaleriaPublica } from "@/components/landing/ComponentesLanding";
 import { Flame } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -6,7 +9,16 @@ export const metadata: Metadata = {
   description: "ELEMÁ - El Ejército del Más Amado. Es tu momento, caminemos juntos.",
 };
 
-export default function JovenesPage() {
+export default async function JovenesPage() {
+  const tenant = await resolverTenant();
+  const orgId = tenant?.id;
+
+  let seccionesCMS: any[] = [];
+  let galeriaCMS: any[] = [];
+  if (orgId) {
+    seccionesCMS = await obtenerSeccionesPagina(orgId, "jovenes");
+    galeriaCMS = await obtenerGaleria(orgId, "jovenes");
+  }
   return (
     <div className="min-h-screen">
       <section className="py-16 md:py-24 text-center relative overflow-hidden">
@@ -34,10 +46,33 @@ export default function JovenesPage() {
       </section>
 
       <div className="max-w-6xl mx-auto px-6 pb-20">
-        <p className="text-center text-slate-500 dark:text-slate-400 italic">
-          Contenido de secciones y galería de fotos próximamente disponible desde el CMS.
-        </p>
+                <div className="space-y-20">
+          {seccionesCMS.map((seccion, idx) => (
+            <SeccionContenido
+              key={seccion.id}
+              id={`sec-${idx}`}
+              titulo={seccion.titulo || ""}
+              subtitulo={seccion.subtitulo || ""}
+              contenido={seccion.contenido || ""}
+              autoria={seccion.autoria || ""}
+              imagenUrl={seccion.imagen_url}
+              videoUrl={seccion.video_url}
+              indice={idx}
+            />
+          ))}
+          {seccionesCMS.length === 0 && (
+            <p className="text-center text-slate-500 dark:text-slate-400 italic">
+              Aún no hay contenido publicado para esta sección.
+            </p>
+          )}
+        </div>
+        <GaleriaPublica fotos={galeriaCMS} />
       </div>
     </div>
   );
 }
+
+
+
+
+

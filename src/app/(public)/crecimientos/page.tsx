@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, CalendarDays } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
@@ -66,3 +66,6 @@ export default async function CrecimientosPage() {
     </div>
   );
 }
+
+
+

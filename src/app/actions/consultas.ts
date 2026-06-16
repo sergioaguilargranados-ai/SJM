@@ -223,7 +223,8 @@ export async function getEventoById(id: string) {
         estatus: eventos.estatus,
         costo_publico: eventos.costo_publico,
         cupo_maximo: eventos.cupo_maximo,
-        contrasena_inscripcion: eventos.contrasena_inscripcion
+        contrasena_inscripcion: eventos.contrasena_inscripcion,
+        es_matrimonial: eventos.es_matrimonial
       })
       .from(eventos)
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))

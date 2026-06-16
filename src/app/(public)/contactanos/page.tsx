@@ -1,13 +1,36 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, MapPin, Phone, Mail, MessageCircle, Globe, Users, ExternalLink } from "lucide-react";
+import { resolverTenant } from "@/lib/tenant";
+import { obtenerResponsables } from "@/app/actions/contenido";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Contáctanos | Servidores de Jesús por María",
   description: "Comunícate con nosotros. Teléfonos, WhatsApp, correo electrónico, ubicación y mapa.",
 };
 
-export default function ContactanosPage() {
+export default async function ContactanosPage() {
+  const tenant = await resolverTenant();
+  const orgId = tenant?.id;
+
+  let responsables: any[] = [];
+  if (orgId) {
+    responsables = await obtenerResponsables(orgId);
+  }
+
+  // Si no hay en DB, usamos fallback
+  if (responsables.length === 0) {
+    responsables = [
+      {
+        id: "default",
+        nombre: "Fernando Casillas Gallardo",
+        cargo: "Director General",
+        mensaje_saludo: "“Con el corazón de Jesús, al servicio de los más necesitados.”"
+      }
+    ];
+  }
+
   return (
     <div className="min-h-screen">
       {/* Hero */}
@@ -88,16 +111,31 @@ export default function ContactanosPage() {
         <div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6 text-center">Nuestro Equipo</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-[#1a1b26] rounded-2xl p-6 border border-slate-200 dark:border-[#2a2b3d] shadow-sm text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
-                FC
+            {responsables.map((r) => (
+              <div key={r.id} className="bg-white dark:bg-[#1a1b26] rounded-2xl p-6 border border-slate-200 dark:border-[#2a2b3d] shadow-sm text-center">
+                {r.foto_url ? (
+                  <div className="w-20 h-20 rounded-full mx-auto mb-4 relative overflow-hidden shadow-md">
+                    <Image src={r.foto_url} alt={r.nombre} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-md">
+                    {r.nombre.substring(0, 2).toUpperCase()}
+                  </div>
+                )}
+                <h3 className="font-bold text-slate-900 dark:text-white">{r.nombre}</h3>
+                <p className="text-sm text-[#00B4AA] font-medium">{r.cargo}</p>
+                {r.mensaje_saludo && (
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 italic leading-relaxed">
+                    &ldquo;{r.mensaje_saludo}&rdquo;
+                  </p>
+                )}
+                {r.correo && (
+                  <a href={`mailto:${r.correo}`} className="text-xs text-slate-400 block mt-2 hover:text-[#00B4AA]">
+                    {r.correo}
+                  </a>
+                )}
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-white">Fernando Casillas Gallardo</h3>
-              <p className="text-sm text-[#00B4AA] font-medium">Director General</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-3 italic leading-relaxed">
-                &ldquo;Con el corazón de Jesús, al servicio de los más necesitados.&rdquo;
-              </p>
-            </div>
+            ))}
           </div>
         </div>
 

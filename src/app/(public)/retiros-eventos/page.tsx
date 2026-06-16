@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { Calendar, MapPin, Users, DollarSign, Clock } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerAgendaRetiros } from "@/app/actions/contenido";
@@ -82,3 +82,6 @@ export default async function RetirosEventosPage() {
     </div>
   );
 }
+
+
+

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { 
   User, Phone, MapPin, Church, Heart, Baby, 
   ChevronRight, ChevronLeft, CheckCircle2, Info,
-  Stethoscope, Cross, Sparkles
+  Stethoscope, Cross, Sparkles, FileText, ShieldCheck
 } from "lucide-react";
 import { registrarSolicitudAction } from "@/app/actions/inscripciones";
 import { cn } from "@/lib/utils";
@@ -46,6 +46,10 @@ const formSchema = z.object({
   fecha_boda: z.string().optional(),
   cantidad_hijos: z.coerce.number().optional(),
   datos_hijos: z.string().optional(),
+  // Paso 4/5: Legal / Responsiva
+  acepta_responsiva: z.boolean().refine((val) => val === true, {
+    message: "Debes aceptar la carta responsiva para continuar",
+  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -54,7 +58,7 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
   const [cargando, setCargando] = useState(false);
-  const totalSteps = esMatrimonial ? 4 : 3;
+  const totalSteps = esMatrimonial ? 5 : 4; // Subimos un paso por la responsiva
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as any,
@@ -62,6 +66,7 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
       sexo: "M",
       edad: 0,
       dificultad_caminar: false,
+      acepta_responsiva: false,
     }
   });
 
@@ -77,6 +82,8 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
   const getFieldsForStep = (currentStep: number) => {
     if (currentStep === 1) return ["nombre_asistente", "sexo", "estado_civil", "edad"];
     if (currentStep === 2) return ["telefono_celular", "correo", "pais_ciudad", "contacto_emergencia_nombre", "contacto_emergencia_telefono"];
+    if (currentStep === 3 && !esMatrimonial) return []; // El paso 3 es espiritualidad
+    if (currentStep === 4 && esMatrimonial) return ["esposo_a_nombre"]; // El paso 4 es matrimonial
     return [];
   };
 
@@ -87,6 +94,7 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
     if (res.success) setSuccess(true);
     else alert("Error: " + res.error);
   }
+
 
   if (success) {
     return (
@@ -286,7 +294,65 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
             </div>
           )}
 
+
+          {step === totalSteps && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                  <ShieldCheck className="w-8 h-8 text-slate-600 dark:text-slate-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Carta Responsiva</h3>
+                  <p className="text-slate-500 text-sm">Deslinde de responsabilidades y compromiso SJM.</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 dark:bg-black/20 rounded-3xl border border-slate-100 dark:border-[#2a2b3d] overflow-hidden">
+                <div className="p-6 md:p-8 max-h-[350px] overflow-y-auto text-xs md:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-serif text-justify space-y-4">
+                  <p className="font-bold text-center text-slate-800 dark:text-slate-200 uppercase mb-4">CARTA DE DESLINDE DE RESPONSABILIDAD Y COMPROMISO</p>
+                  
+                  <p>Por medio de la presente, yo, el participante registrado, declaro que asisto al retiro organizado por <strong>Servidores de Jesús por María (SJM)</strong> por mi propia voluntad y bajo mi total responsabilidad.</p>
+                  
+                  <p>Reconozco que el retiro es un evento de carácter espiritual y formativo, y que la comunidad SJM no se hace responsable por accidentes, pérdidas materiales o situaciones de salud preexistentes que pudieran manifestarse durante el desarrollo del mismo, siempre que no sean causadas por negligencia directa de la organización.</p>
+                  
+                  <p>Me comprometo a seguir las normas de convivencia, horarios y recomendaciones de seguridad proporcionadas por los servidores coordinadores. Asimismo, autorizo a SJM a brindarme atención de primeros auxilios en caso de ser necesario o coordinar mi traslado a un centro médico si la situación lo requiere, notificando de inmediato a mi contacto de emergencia.</p>
+                  
+                  <p><strong>Uso de Imagen:</strong> Autorizo a SJM el uso de fotografías o videos captados durante el evento con fines estrictamente testimoniales o de difusión de la obra, respetando siempre el decoro y la privacidad cristiana.</p>
+
+                  <div className="pt-4 border-t border-slate-200 dark:border-[#2a2b3d] text-center italic">
+                    "Todo lo puedo en Aquel que me fortalece" (Flp 4,13)
+                  </div>
+                </div>
+                
+                <div className="bg-slate-100 dark:bg-white/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                   <div className="flex items-center gap-3">
+                      <input 
+                        type="checkbox" 
+                        id="acepta_responsiva" 
+                        {...form.register("acepta_responsiva")}
+                        className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                      />
+                      <label htmlFor="acepta_responsiva" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                        HE LEÍDO Y ACEPTO LOS TÉRMINOS
+                      </label>
+                   </div>
+                   <button 
+                     type="button" 
+                     className="flex items-center gap-2 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest hover:underline"
+                     onClick={() => window.print()}
+                   >
+                     <FileText className="w-3 h-3" /> Descargar para mis archivos
+                   </button>
+                </div>
+              </div>
+              {form.formState.errors.acepta_responsiva && (
+                <p className="text-red-500 text-xs font-bold text-center uppercase tracking-tighter">Debes marcar la casilla para poder enviar tu solicitud</p>
+              )}
+            </div>
+          )}
+
           {/* Navegación de Pasos */}
+
           <div className="pt-8 flex flex-col sm:flex-row gap-4 border-t border-slate-50 dark:border-white/5">
             {step > 1 && (
               <Button 

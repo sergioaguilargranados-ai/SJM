@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { GraduationCap } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -26,3 +26,6 @@ export default function FormacionPage() {
     </div>
   );
 }
+
+
+

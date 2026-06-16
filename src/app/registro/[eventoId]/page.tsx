@@ -12,7 +12,7 @@ export default async function RegistroPage({ params }: { params: Promise<{ event
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1015] py-12 px-4 sm:px-6 lg:px-8 transition-colors">
       <RegistroPublicoClient evento={evento}>
-        <RegistroForm eventoId={eventoId} esMatrimonial={evento.es_matrimonial} />
+        <RegistroForm eventoId={eventoId} esMatrimonial={evento.es_matrimonial ?? false} />
       </RegistroPublicoClient>
     </div>
   );

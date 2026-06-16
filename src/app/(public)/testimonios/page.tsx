@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Heart, ArrowRight, Star } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerTestimoniosAprobados } from "@/app/actions/contenido";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Testimonios | Servidores de Jesús por María",
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
 
 // Datos de respaldo si no hay testimonios en el CMS
 const testimoniosDefault = [
-  { texto: "Llegué roto por dentro. Después del retiro de sanación interior, encontré la paz que había buscado toda mi vida. Jesús realmente sana las heridas del alma.", autor: "Servidor SJM, Guadalajara", estrellas: 5 },
-  { texto: "CreeSer me devolvió la esperanza. El acompañamiento, la escucha y la fraternidad me ayudaron a entender que no estoy solo. Dios me ama tal como soy.", autor: "Participante CreeSer, Toluca", estrellas: 5 },
-  { texto: "Magnificat fue un antes y un después en mi matrimonio. La sanación interior nos permitió perdonar y reconstruir nuestra relación desde el amor de Cristo.", autor: "Matrimonio SJM, Chiapas", estrellas: 5 },
+  { texto: "Llegué roto por dentro. Después del retiro de sanación interior, encontré la paz que había buscado toda mi vida. Jesús realmente sana las heridas del alma.", autor: "Servidor SJM, Guadalajara", estrellas: 5, foto_url: null },
+  { texto: "CreeSer me devolvió la esperanza. El acompañamiento, la escucha y la fraternidad me ayudaron a entender que no estoy solo. Dios me ama tal como soy.", autor: "Participante CreeSer, Toluca", estrellas: 5, foto_url: null },
+  { texto: "Magnificat fue un antes y un después en mi matrimonio. La sanación interior nos permitió perdonar y reconstruir nuestra relación desde el amor de Cristo.", autor: "Matrimonio SJM, Chiapas", estrellas: 5, foto_url: null },
 ];
 
 export default async function TestimoniosPage() {
@@ -30,6 +31,7 @@ export default async function TestimoniosPage() {
         texto: t.texto,
         autor: t.es_anonimo ? "Anónimo" : (t.nombre_autor || "Servidor SJM"),
         estrellas: t.calificacion || 5,
+        foto_url: t.es_anonimo ? null : t.foto_url,
       }))
     : testimoniosDefault;
 
@@ -60,7 +62,18 @@ export default async function TestimoniosPage() {
                 ))}
               </div>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed italic">&ldquo;{t.texto}&rdquo;</p>
-              <p className="text-sm font-bold text-slate-900 dark:text-white mt-4">{t.autor}</p>
+              <div className="mt-4 flex items-center gap-3">
+                {t.foto_url ? (
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
+                    <Image src={t.foto_url} alt={t.autor} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                    <Heart className="w-4 h-4 text-amber-500" />
+                  </div>
+                )}
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{t.autor}</p>
+              </div>
             </div>
           ))}
         </div>
