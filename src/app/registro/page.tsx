@@ -1,4 +1,6 @@
-"use client";\r\n\r\nimport { Suspense, useState, useEffect } from "react";
+"use client";
+
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
