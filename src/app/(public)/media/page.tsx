@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { Music, Headphones, Video, MonitorPlay } from "lucide-react";
+import Image from "next/image";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerMedia } from "@/app/actions/contenido";
 
@@ -55,7 +56,7 @@ export default async function MediaPage() {
               <a key={m.id} href={m.url_contenido} target="_blank" rel="noopener noreferrer" className="bg-white dark:bg-[#1a1b26] rounded-2xl border border-slate-200 dark:border-[#2a2b3d] overflow-hidden hover:shadow-xl transition-all group">
                 <div className={`h-36 bg-gradient-to-br ${tipoColor[m.tipo] || "from-slate-300 to-slate-400"} flex items-center justify-center overflow-hidden relative`}>
                   {m.imagen_miniatura_url ? (
-                    <img src={m.imagen_miniatura_url} alt={m.titulo} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <Image src={m.imagen_miniatura_url} alt={m.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     <div className="text-white/30 scale-150">{tipoIcon[m.tipo]}</div>
                   )}

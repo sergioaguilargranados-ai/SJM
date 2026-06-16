@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ShoppingBag, Package } from "lucide-react";
+import Image from "next/image";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerProductos, obtenerCategorias } from "@/app/actions/tienda";
 
@@ -62,9 +63,9 @@ export default async function TiendaPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {productos.map((p) => (
               <div key={p.id} className="bg-white dark:bg-[#1a1b26] rounded-2xl border border-slate-200 dark:border-[#2a2b3d] overflow-hidden hover:shadow-xl transition-all group">
-                <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2a2b3d] dark:to-[#1a1b26] flex items-center justify-center overflow-hidden">
+                <div className="h-48 relative bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2a2b3d] dark:to-[#1a1b26] flex items-center justify-center overflow-hidden">
                   {p.imagen_principal_url ? (
-                    <img src={p.imagen_principal_url} alt={p.nombre} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <Image src={p.imagen_principal_url} alt={p.nombre} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     <Package className="w-12 h-12 text-slate-300" />
                   )}

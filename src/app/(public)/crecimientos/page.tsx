@@ -1,4 +1,5 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { BookOpen, CalendarDays } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
@@ -42,9 +43,9 @@ export default async function CrecimientosPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articulos.map((a) => (
               <article key={a.id} className="bg-white dark:bg-[#1a1b26] rounded-2xl border border-slate-200 dark:border-[#2a2b3d] overflow-hidden hover:shadow-xl transition-all group">
-                <div className="h-44 bg-gradient-to-br from-violet-100 to-purple-100 dark:from-[#2a2b3d] dark:to-[#1a1b26] flex items-center justify-center overflow-hidden">
+                <div className="h-44 relative bg-gradient-to-br from-violet-100 to-purple-100 dark:from-[#2a2b3d] dark:to-[#1a1b26] flex items-center justify-center overflow-hidden">
                   {a.imagen_portada_url ? (
-                    <img src={a.imagen_portada_url} alt={a.titulo} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <Image src={a.imagen_portada_url} alt={a.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     <BookOpen className="w-10 h-10 text-violet-300" />
                   )}

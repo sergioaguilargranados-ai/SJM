@@ -8,7 +8,7 @@ import {
   agenda_retiros, tipos_eventos, sedes, casas_retiro
 } from "@/lib/schema";
 import { eq, and, desc, asc } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 
 // ============================================================
 // ACCIONES DE LECTURA — Para las páginas públicas
@@ -16,174 +16,240 @@ import { revalidatePath } from "next/cache";
 
 /** Obtener parámetros de landing por organización */
 export async function obtenerParametrosLanding(organizacionId: string) {
-  const [resultado] = await db
-    .select()
-    .from(parametros_landing)
-    .where(eq(parametros_landing.organizacion_id, organizacionId))
-    .limit(1);
-  return resultado || null;
+  return unstable_cache(
+    async () => {
+      const [resultado] = await db
+        .select()
+        .from(parametros_landing)
+        .where(eq(parametros_landing.organizacion_id, organizacionId))
+        .limit(1);
+      return resultado || null;
+    },
+    [`parametros_landing_${organizacionId}`],
+    { revalidate: 3600, tags: ["parametros_landing"] }
+  )();
 }
 
 /** Obtener secciones de contenido por página */
 export async function obtenerSeccionesPagina(organizacionId: string, paginaClave: string) {
-  return db
-    .select()
-    .from(secciones_contenido)
-    .where(
-      and(
-        eq(secciones_contenido.organizacion_id, organizacionId),
-        eq(secciones_contenido.pagina_clave, paginaClave),
-        eq(secciones_contenido.estatus, true)
-      )
-    )
-    .orderBy(asc(secciones_contenido.orden));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(secciones_contenido)
+        .where(
+          and(
+            eq(secciones_contenido.organizacion_id, organizacionId),
+            eq(secciones_contenido.pagina_clave, paginaClave),
+            eq(secciones_contenido.estatus, true)
+          )
+        )
+        .orderBy(asc(secciones_contenido.orden));
+    },
+    [`secciones_contenido_${organizacionId}_${paginaClave}`],
+    { revalidate: 3600, tags: ["secciones_contenido", paginaClave] }
+  )();
 }
 
 /** Obtener testimonios aprobados */
 export async function obtenerTestimoniosAprobados(organizacionId: string) {
-  return db
-    .select()
-    .from(testimonios)
-    .where(
-      and(
-        eq(testimonios.organizacion_id, organizacionId),
-        eq(testimonios.aprobado, true)
-      )
-    )
-    .orderBy(desc(testimonios.creado_en));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(testimonios)
+        .where(
+          and(
+            eq(testimonios.organizacion_id, organizacionId),
+            eq(testimonios.aprobado, true)
+          )
+        )
+        .orderBy(desc(testimonios.creado_en));
+    },
+    [`testimonios_aprobados_${organizacionId}`],
+    { revalidate: 3600, tags: ["testimonios"] }
+  )();
 }
 
 /** Obtener preguntas frecuentes por página */
 export async function obtenerFAQ(organizacionId: string, paginaClave: string = "general") {
-  return db
-    .select()
-    .from(preguntas_frecuentes)
-    .where(
-      and(
-        eq(preguntas_frecuentes.organizacion_id, organizacionId),
-        eq(preguntas_frecuentes.pagina_clave, paginaClave),
-        eq(preguntas_frecuentes.estatus, true)
-      )
-    )
-    .orderBy(asc(preguntas_frecuentes.orden));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(preguntas_frecuentes)
+        .where(
+          and(
+            eq(preguntas_frecuentes.organizacion_id, organizacionId),
+            eq(preguntas_frecuentes.pagina_clave, paginaClave),
+            eq(preguntas_frecuentes.estatus, true)
+          )
+        )
+        .orderBy(asc(preguntas_frecuentes.orden));
+    },
+    [`faq_${organizacionId}_${paginaClave}`],
+    { revalidate: 3600, tags: ["faq", paginaClave] }
+  )();
 }
 
 /** Obtener galería de fotos por página */
 export async function obtenerGaleria(organizacionId: string, paginaClave: string) {
-  return db
-    .select()
-    .from(galeria_fotos)
-    .where(
-      and(
-        eq(galeria_fotos.organizacion_id, organizacionId),
-        eq(galeria_fotos.pagina_clave, paginaClave),
-        eq(galeria_fotos.estatus, true)
-      )
-    )
-    .orderBy(asc(galeria_fotos.orden));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(galeria_fotos)
+        .where(
+          and(
+            eq(galeria_fotos.organizacion_id, organizacionId),
+            eq(galeria_fotos.pagina_clave, paginaClave),
+            eq(galeria_fotos.estatus, true)
+          )
+        )
+        .orderBy(asc(galeria_fotos.orden));
+    },
+    [`galeria_${organizacionId}_${paginaClave}`],
+    { revalidate: 3600, tags: ["galeria", paginaClave] }
+  )();
 }
 
 /** Obtener letrero especial por página */
 export async function obtenerLetrero(organizacionId: string, paginaClave: string) {
-  const [resultado] = await db
-    .select()
-    .from(letreros_especiales)
-    .where(
-      and(
-        eq(letreros_especiales.organizacion_id, organizacionId),
-        eq(letreros_especiales.pagina_clave, paginaClave),
-        eq(letreros_especiales.estatus, true)
-      )
-    )
-    .limit(1);
-  return resultado || null;
+  return unstable_cache(
+    async () => {
+      const [resultado] = await db
+        .select()
+        .from(letreros_especiales)
+        .where(
+          and(
+            eq(letreros_especiales.organizacion_id, organizacionId),
+            eq(letreros_especiales.pagina_clave, paginaClave),
+            eq(letreros_especiales.estatus, true)
+          )
+        )
+        .limit(1);
+      return resultado || null;
+    },
+    [`letreros_${organizacionId}_${paginaClave}`],
+    { revalidate: 3600, tags: ["letreros", paginaClave] }
+  )();
 }
 
 /** Obtener teléfonos de contacto */
 export async function obtenerTelefonos(organizacionId: string, tipo?: string) {
-  const condiciones = [
-    eq(telefonos_emergencia.organizacion_id, organizacionId),
-    eq(telefonos_emergencia.estatus, true),
-  ];
-  if (tipo) condiciones.push(eq(telefonos_emergencia.tipo, tipo));
+  return unstable_cache(
+    async () => {
+      const condiciones = [
+        eq(telefonos_emergencia.organizacion_id, organizacionId),
+        eq(telefonos_emergencia.estatus, true),
+      ];
+      if (tipo) condiciones.push(eq(telefonos_emergencia.tipo, tipo));
 
-  return db
-    .select()
-    .from(telefonos_emergencia)
-    .where(and(...condiciones))
-    .orderBy(asc(telefonos_emergencia.orden));
+      return db
+        .select()
+        .from(telefonos_emergencia)
+        .where(and(...condiciones))
+        .orderBy(asc(telefonos_emergencia.orden));
+    },
+    [`telefonos_${organizacionId}_${tipo || "all"}`],
+    { revalidate: 3600, tags: ["telefonos"] }
+  )();
 }
 
 /** Obtener responsables de organización */
 export async function obtenerResponsables(organizacionId: string) {
-  return db
-    .select()
-    .from(responsables_organizacion)
-    .where(
-      and(
-        eq(responsables_organizacion.organizacion_id, organizacionId),
-        eq(responsables_organizacion.estatus, true)
-      )
-    )
-    .orderBy(asc(responsables_organizacion.orden));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(responsables_organizacion)
+        .where(
+          and(
+            eq(responsables_organizacion.organizacion_id, organizacionId),
+            eq(responsables_organizacion.estatus, true)
+          )
+        )
+        .orderBy(asc(responsables_organizacion.orden));
+    },
+    [`responsables_${organizacionId}`],
+    { revalidate: 3600, tags: ["responsables"] }
+  )();
 }
 
 /** Obtener contenido multimedia */
 export async function obtenerMedia(organizacionId: string, tipo?: string) {
-  const condiciones = [
-    eq(media_contenido.organizacion_id, organizacionId),
-    eq(media_contenido.estatus, true),
-  ];
-  if (tipo) condiciones.push(eq(media_contenido.tipo, tipo));
+  return unstable_cache(
+    async () => {
+      const condiciones = [
+        eq(media_contenido.organizacion_id, organizacionId),
+        eq(media_contenido.estatus, true),
+      ];
+      if (tipo) condiciones.push(eq(media_contenido.tipo, tipo));
 
-  return db
-    .select()
-    .from(media_contenido)
-    .where(and(...condiciones))
-    .orderBy(asc(media_contenido.orden));
+      return db
+        .select()
+        .from(media_contenido)
+        .where(and(...condiciones))
+        .orderBy(asc(media_contenido.orden));
+    },
+    [`media_${organizacionId}_${tipo || "all"}`],
+    { revalidate: 3600, tags: ["media"] }
+  )();
 }
 
 /** Obtener artículos de blog publicados */
 export async function obtenerArticulosBlog(organizacionId: string, blogClave: string = "crecimientos") {
-  return db
-    .select()
-    .from(articulos_blog)
-    .where(
-      and(
-        eq(articulos_blog.organizacion_id, organizacionId),
-        eq(articulos_blog.blog_clave, blogClave),
-        eq(articulos_blog.publicado, true)
-      )
-    )
-    .orderBy(desc(articulos_blog.fecha_publicacion));
+  return unstable_cache(
+    async () => {
+      return db
+        .select()
+        .from(articulos_blog)
+        .where(
+          and(
+            eq(articulos_blog.organizacion_id, organizacionId),
+            eq(articulos_blog.blog_clave, blogClave),
+            eq(articulos_blog.publicado, true)
+          )
+        )
+        .orderBy(desc(articulos_blog.fecha_publicacion));
+    },
+    [`articulos_${organizacionId}_${blogClave}`],
+    { revalidate: 3600, tags: ["articulos", blogClave] }
+  )();
 }
 
 /** Obtener agenda de retiros próximos */
 export async function obtenerAgendaRetiros(organizacionId: string) {
-  return db
-    .select({
-      id: agenda_retiros.id,
-      nombre_evento: agenda_retiros.nombre_evento,
-      fecha_inicio: agenda_retiros.fecha_inicio,
-      fecha_fin: agenda_retiros.fecha_fin,
-      hora_entrada: agenda_retiros.hora_entrada,
-      hora_salida: agenda_retiros.hora_salida,
-      cupo_maximo: agenda_retiros.cupo_maximo,
-      costo: agenda_retiros.costo,
-      descripcion: agenda_retiros.descripcion,
-      estatus: agenda_retiros.estatus,
-      tipo_evento: tipos_eventos.nombre,
-      sede_nombre: sedes.nombre,
-    })
-    .from(agenda_retiros)
-    .leftJoin(tipos_eventos, eq(agenda_retiros.tipo_evento_id, tipos_eventos.id))
-    .leftJoin(sedes, eq(agenda_retiros.sede_id, sedes.id))
-    .where(
-      and(
-        eq(agenda_retiros.organizacion_id, organizacionId),
-      )
-    )
-    .orderBy(asc(agenda_retiros.fecha_inicio));
+  return unstable_cache(
+    async () => {
+      return db
+        .select({
+          id: agenda_retiros.id,
+          nombre_evento: agenda_retiros.nombre_evento,
+          fecha_inicio: agenda_retiros.fecha_inicio,
+          fecha_fin: agenda_retiros.fecha_fin,
+          hora_entrada: agenda_retiros.hora_entrada,
+          hora_salida: agenda_retiros.hora_salida,
+          cupo_maximo: agenda_retiros.cupo_maximo,
+          costo: agenda_retiros.costo,
+          descripcion: agenda_retiros.descripcion,
+          estatus: agenda_retiros.estatus,
+          tipo_evento: tipos_eventos.nombre,
+          sede_nombre: sedes.nombre,
+        })
+        .from(agenda_retiros)
+        .leftJoin(tipos_eventos, eq(agenda_retiros.tipo_evento_id, tipos_eventos.id))
+        .leftJoin(sedes, eq(agenda_retiros.sede_id, sedes.id))
+        .where(
+          and(
+            eq(agenda_retiros.organizacion_id, organizacionId),
+          )
+        )
+        .orderBy(asc(agenda_retiros.fecha_inicio));
+    },
+    [`agenda_retiros_${organizacionId}`],
+    { revalidate: 3600, tags: ["agenda_retiros"] }
+  )();
 }
 
 // ============================================================

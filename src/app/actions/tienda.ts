@@ -6,7 +6,7 @@ import {
   formas_entrega, textos_medios_pago
 } from "@/lib/schema";
 import { eq, and, desc, asc, gt } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 
 // ============================================================
 // TIENDA ONLINE — Acciones del servidor (Modelo ERPCubox)
@@ -16,40 +16,58 @@ import { revalidatePath } from "next/cache";
 // ===== LECTURA (público) =====
 
 export async function obtenerCategorias(organizacionId: string) {
-  return db.select().from(categorias_producto)
-    .where(and(eq(categorias_producto.organizacion_id, organizacionId), eq(categorias_producto.estatus, true)))
-    .orderBy(asc(categorias_producto.orden));
+  return unstable_cache(
+    async () => {
+      return db.select().from(categorias_producto)
+        .where(and(eq(categorias_producto.organizacion_id, organizacionId), eq(categorias_producto.estatus, true)))
+        .orderBy(asc(categorias_producto.orden));
+    },
+    [`categorias_tienda_${organizacionId}`],
+    { revalidate: 3600, tags: ["tienda_categorias"] }
+  )();
 }
 
 export async function obtenerProductos(organizacionId: string, categoriaId?: string) {
-  const condiciones = [
-    eq(productos_tienda.organizacion_id, organizacionId),
-    eq(productos_tienda.estatus, true),
-  ];
-  if (categoriaId) condiciones.push(eq(productos_tienda.categoria_id, categoriaId));
+  return unstable_cache(
+    async () => {
+      const condiciones = [
+        eq(productos_tienda.organizacion_id, organizacionId),
+        eq(productos_tienda.estatus, true),
+      ];
+      if (categoriaId) condiciones.push(eq(productos_tienda.categoria_id, categoriaId));
 
-  return db.select({
-    id: productos_tienda.id,
-    nombre: productos_tienda.nombre,
-    descripcion: productos_tienda.descripcion,
-    precio: productos_tienda.precio,
-    precio_anterior: productos_tienda.precio_anterior,
-    stock: productos_tienda.stock,
-    sku: productos_tienda.sku,
-    imagen_principal_url: productos_tienda.imagen_principal_url,
-    categoria_id: productos_tienda.categoria_id,
-    destacado: productos_tienda.destacado,
-    categoria: categorias_producto.nombre,
-  })
-    .from(productos_tienda)
-    .leftJoin(categorias_producto, eq(productos_tienda.categoria_id, categorias_producto.id))
-    .where(and(...condiciones))
-    .orderBy(desc(productos_tienda.destacado));
+      return db.select({
+        id: productos_tienda.id,
+        nombre: productos_tienda.nombre,
+        descripcion: productos_tienda.descripcion,
+        precio: productos_tienda.precio,
+        precio_anterior: productos_tienda.precio_anterior,
+        stock: productos_tienda.stock,
+        sku: productos_tienda.sku,
+        imagen_principal_url: productos_tienda.imagen_principal_url,
+        categoria_id: productos_tienda.categoria_id,
+        destacado: productos_tienda.destacado,
+        categoria: categorias_producto.nombre,
+      })
+        .from(productos_tienda)
+        .leftJoin(categorias_producto, eq(productos_tienda.categoria_id, categorias_producto.id))
+        .where(and(...condiciones))
+        .orderBy(desc(productos_tienda.destacado));
+    },
+    [`productos_tienda_${organizacionId}_${categoriaId || "all"}`],
+    { revalidate: 3600, tags: ["tienda_productos"] }
+  )();
 }
 
 export async function obtenerProductoPorId(id: string) {
-  const [producto] = await db.select().from(productos_tienda).where(eq(productos_tienda.id, id)).limit(1);
-  return producto || null;
+  return unstable_cache(
+    async () => {
+      const [producto] = await db.select().from(productos_tienda).where(eq(productos_tienda.id, id)).limit(1);
+      return producto || null;
+    },
+    [`producto_tienda_${id}`],
+    { revalidate: 3600, tags: ["tienda_productos"] }
+  )();
 }
 
 export async function obtenerFormasEntrega(organizacionId: string) {
