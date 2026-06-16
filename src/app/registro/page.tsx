@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+"use client";\r\n\r\nimport { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, ArrowLeft, CheckCircle2, User, Mail, Phone, Building2, Plane, CalendarDays } from "lucide-react";
 import { registrarLeadAction } from "@/app/actions/leads";
 
-export default function RegistroLeadPage() {
+function RegistroLeadContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tipoQuery = searchParams?.get("tipo"); // viajero, agencia_viajes, agencia_eventos, empresa
@@ -199,5 +197,14 @@ export default function RegistroLeadPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+
+export default function RegistroLeadPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center p-4 bg-[var(--background)]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>}>
+      <RegistroLeadContent />
+    </Suspense>
   );
 }

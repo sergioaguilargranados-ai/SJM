@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Receipt, TrendingUp, TrendingDown, DollarSign, ArrowRight, Calendar, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic';
+
 export default async function FinanzasPage() {
   const { data: eventosData } = await getEventosRecientes();
   
@@ -156,4 +158,5 @@ export default async function FinanzasPage() {
     </div>
   );
 }
+
 
