@@ -1,3 +1,4 @@
+export const revalidate = 3600;
 ﻿import { Metadata } from "next";
 import { GraduationCap } from "lucide-react";
 

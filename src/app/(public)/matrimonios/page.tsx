@@ -1,3 +1,4 @@
+export const revalidate = 3600;
 ﻿import { Metadata } from "next";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerSeccionesPagina, obtenerGaleria } from "@/app/actions/contenido";

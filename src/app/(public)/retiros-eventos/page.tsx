@@ -1,3 +1,4 @@
+export const revalidate = 3600;
 ﻿import { Metadata } from "next";
 import { Calendar, MapPin, Users, DollarSign, Clock } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";

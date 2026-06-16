@@ -1,3 +1,4 @@
+export const revalidate = 3600;
 import { Metadata } from "next";
 import { Music, Headphones, Video, MonitorPlay } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";

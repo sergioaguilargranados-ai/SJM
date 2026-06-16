@@ -1,3 +1,4 @@
+export const revalidate = 3600;
 import { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, ArrowRight, Heart, CalendarDays } from "lucide-react";
