@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos, ministerios, cargos, estados_republica } from "@/lib/schema";
 import { desc, eq, count, sum, and } from "drizzle-orm";
 import { validarAccesoPlan } from "@/lib/permisos";
+import { getUsuarioSesion } from "@/lib/sesion";
 
 
 export async function getInscripciones() {
@@ -172,11 +173,12 @@ export async function getDashboardStats() {
 
 export async function getMinisterios() {
   try {
-    const { orgId } = await validarAccesoPlan("ministerios");
+    const usuario = await getUsuarioSesion();
+    if (!usuario) throw new Error("No autenticado");
     const resultados = await db
       .select()
       .from(ministerios)
-      .where(eq(ministerios.organizacion_id, orgId))
+      .where(eq(ministerios.organizacion_id, usuario.organizacion_id))
       .orderBy(ministerios.nombre);
     return { success: true, data: resultados };
   } catch (error) {
@@ -187,7 +189,8 @@ export async function getMinisterios() {
 
 export async function getCargos() {
   try {
-    const { orgId } = await validarAccesoPlan("admin"); // Cargos son globales por ahora pero requieren auth
+    const usuario = await getUsuarioSesion();
+    if (!usuario) throw new Error("No autenticado");
     const resultados = await db.select().from(cargos).orderBy(cargos.nombre);
     return { success: true, data: resultados };
   } catch (error) {

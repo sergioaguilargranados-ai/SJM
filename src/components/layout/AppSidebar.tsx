@@ -9,7 +9,7 @@ import {
   ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck,
   PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/components/TenantProvider";
 
@@ -60,53 +60,25 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
     (item as any).planes.includes(planClave) && tienePermiso(item.clave)
   );
 
+  useEffect(() => {
+    const handleToggle = () => setMobileMenuOpen(prev => !prev);
+    window.addEventListener('toggleMobileSidebar', handleToggle);
+    return () => window.removeEventListener('toggleMobileSidebar', handleToggle);
+  }, []);
 
   return (
     <>
-      {/* Botón Móvil */}
-      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 z-50 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          {tenant.logo_url ? (
-            <Image src={tenant.logo_url} alt={tenant.nombre} width={32} height={32} className="rounded-sm" />
-          ) : (
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: tenant.color_primario }}>SJM</div>
-          )}
-          <span className="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{tenant.nombre}</span>
-        </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-
       {/* Sidebar Overlay Movil */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/70 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
+        <div className="fixed inset-0 bg-black/70 z-[45] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
 
       {/* Sidebar ERPCubox Style */}
       <aside className={cn(
-        "fixed top-0 left-0 z-50 w-64 h-screen transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
+        "fixed top-16 left-0 z-[50] w-64 h-[calc(100vh-4rem)] transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        {/* Brand Header — Marca dinámica del tenant */}
-        <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-[#2a2b3d]">
-          <div className="flex items-center gap-3">
-            {tenant.logo_url ? (
-              <Image src={tenant.logo_url} alt={tenant.nombre} width={32} height={32} className="rounded-sm" />
-            ) : (
-              <div className="w-8 h-8 rounded-sm flex items-center justify-center text-white font-extrabold text-xs shadow-sm" style={{ backgroundColor: tenant.color_primario }}>
-                SJM
-              </div>
-            )}
-            <div className="flex flex-col">
-              <h2 className="font-bold text-slate-900 dark:text-white text-sm tracking-wide leading-tight truncate max-w-[140px]">{tenant.nombre}</h2>
-              <span className="text-[9px] font-black text-[#00B4AA] uppercase tracking-tighter">Plan {tenant.plan?.nombre || "Básico"}</span>
-            </div>
-          </div>
-          <button onClick={() => setMobileMenuOpen(false)} className="ml-auto lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+
 
         {/* Menu Items */}
         <div className="flex-1 overflow-y-auto py-4">

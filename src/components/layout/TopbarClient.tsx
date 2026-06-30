@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun, Bell, LogOut, Users2, Calendar, Flame, Heart, MessageCircle, ShoppingBag, Music, HelpCircle } from "lucide-react";
+import { Moon, Sun, Bell, LogOut, Users2, Calendar, Flame, Heart, MessageCircle, ShoppingBag, Music, HelpCircle, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -38,6 +38,14 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
       
       {/* Logos & Branding */}
       <div className="flex items-center gap-4">
+        {/* Botón Hamburger solo visible en móviles/tablets para abrir AppSidebar */}
+        <button 
+          onClick={() => window.dispatchEvent(new Event('toggleMobileSidebar'))}
+          className="lg:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
         <Link href="/" className="flex items-center gap-3 shrink-0 transition-all hover:scale-105" title="Regresar a Inicio Público">
           <Image 
             src={tenant.logo_url || "/logo-sjm-oficial.png"} 
