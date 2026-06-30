@@ -41,6 +41,7 @@ const formSchema = z.object({
   retiros_externos_detalle: z.string().optional(),
   servicios_sjm: z.string().optional(),
   nombre_gafete: z.string().optional(),
+  estatus: z.boolean().default(true),
 });
 
 export default function NuevoServidorForm({ sedes, ministerios = [], cargos = [], estados = [], onSuccess, isModal }: { sedes: any[], ministerios?: any[], cargos?: any[], estados?: any[], onSuccess?: () => void, isModal?: boolean }) {
@@ -55,6 +56,7 @@ export default function NuevoServidorForm({ sedes, ministerios = [], cargos = []
     defaultValues: {
       retiros_tomados: 0,
       sede_id: sedes[0]?.id || "",
+      estatus: true,
     },
   });
 
@@ -208,6 +210,19 @@ export default function NuevoServidorForm({ sedes, ministerios = [], cargos = []
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Estatus del Servidor</Label>
+              <select 
+                {...form.register("estatus", {
+                  setValueAs: v => v === "true" || v === true
+                })} 
+                className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none font-medium"
+              >
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+
             <div className="space-y-2">
               <Label className="dark:text-slate-300">Estado Civil</Label>
               <select {...form.register("estado_civil")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">

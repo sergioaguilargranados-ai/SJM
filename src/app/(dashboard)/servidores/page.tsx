@@ -1,4 +1,4 @@
-import { getServidores, getSedes } from "@/app/actions/consultas";
+import { getServidores, getSedes, getMinisterios, getCargos, getEstadosRepublica } from "@/app/actions/consultas";
 import { getUsuarioSesion } from "@/lib/sesion";
 import { validarAccesoPlan } from "@/lib/permisos";
 import ServidoresClientView from "./ServidoresClientView";
@@ -10,9 +10,18 @@ export default async function CatalogoServidores() {
   const { orgId } = await validarAccesoPlan("servidores");
   
   const usuario = await getUsuarioSesion();
-  const [servRes, sedesRes] = await Promise.all([
+  const [
+    servRes, 
+    sedesRes,
+    minRes,
+    cargosRes,
+    estadosRes
+  ] = await Promise.all([
     getServidores(),
-    getSedes()
+    getSedes(),
+    getMinisterios(),
+    getCargos(),
+    getEstadosRepublica()
   ]);
   
   // Filtrar datos por la organización actual
@@ -20,11 +29,17 @@ export default async function CatalogoServidores() {
   const sedes = (sedesRes.data || []).filter(
     (s: any) => s.organizacion_id === orgId
   );
+  const ministerios = minRes.data || [];
+  const cargos = cargosRes.data || [];
+  const estados = estadosRes.data || [];
 
   return (
     <ServidoresClientView
       servidores={servidores}
       sedes={sedes}
+      ministerios={ministerios}
+      cargos={cargos}
+      estados={estados}
       sedeId={usuario.sede_id || sedes[0]?.id || ""}
       organizacionId={orgId}
     />

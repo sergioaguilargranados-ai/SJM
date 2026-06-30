@@ -11,10 +11,13 @@ import {
 import NuevoServidorForm from "./NuevoServidorForm"
 
 interface ModalCrearServidorProps {
-  sedes: any[]
+  sedes: any[];
+  ministerios?: any[];
+  cargos?: any[];
+  estados?: any[];
 }
 
-export function ModalCrearServidor({ sedes }: ModalCrearServidorProps) {
+export function ModalCrearServidor({ sedes, ministerios = [], cargos = [], estados = [] }: ModalCrearServidorProps) {
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -40,6 +43,9 @@ export function ModalCrearServidor({ sedes }: ModalCrearServidorProps) {
             {/* Reusamos el componente de formulario pero le pasamos un callback para cerrar al terminar */}
             <NuevoServidorForm 
               sedes={sedes} 
+              ministerios={ministerios}
+              cargos={cargos}
+              estados={estados}
               onSuccess={() => setOpen(false)} 
               isModal={true}
             />

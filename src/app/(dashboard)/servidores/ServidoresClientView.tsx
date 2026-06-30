@@ -9,9 +9,12 @@ import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
 import { ModalImportarServidores } from "@/components/forms/ModalImportarServidores";
 import { ModalDetalleServidor } from "@/components/forms/ModalDetalleServidor";
 
-export default function ServidoresClientView({ servidores, sedes, sedeId, organizacionId }: {
+export default function ServidoresClientView({ servidores, sedes, ministerios = [], cargos = [], estados = [], sedeId, organizacionId }: {
   servidores: any[];
   sedes: any[];
+  ministerios?: any[];
+  cargos?: any[];
+  estados?: any[];
   sedeId: string;
   organizacionId: string;
 }) {
@@ -36,7 +39,12 @@ export default function ServidoresClientView({ servidores, sedes, sedeId, organi
       acciones={
         <>
           <ModalImportarServidores sedeId={sedeId} organizacionId={organizacionId} />
-          <ModalCrearServidor sedes={sedes} />
+          <ModalCrearServidor 
+            sedes={sedes} 
+            ministerios={ministerios} 
+            cargos={cargos} 
+            estados={estados} 
+          />
         </>
       }
       renderCard={(row) => (

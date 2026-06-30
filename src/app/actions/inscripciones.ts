@@ -94,35 +94,55 @@ export async function crearServidorAction(datos: any) {
     const { 
       nombre_completo, correo, celular, sede_id, ministerio_id, cargo_id, 
       estado_civil, fecha_nacimiento, sexo, fecha_ingreso, avance_servidor, 
-      retiros_tomados, observaciones, organizacion_id 
+      retiros_tomados, observaciones, organizacion_id, estatus,
+      domicilio_calle, domicilio_colonia, domicilio_cp, estado_id,
+      telefono_casa_trabajo, contacto_emergencia, tels_emergencia,
+      facebook_url, instagram_url, tiktok_url, youtube_url,
+      retiros_tomados_detalle, retiros_externos_detalle, servicios_sjm,
+      nombre_gafete
     } = datos;
 
     // Transacción para asegurar que se crea el usuario y el servidor
     const result = await db.transaction(async (tx) => {
       // 1. Crear Usuario base (si no existe por correo)
-      // Nota: En prod usar un 'upsert' o validar existencia. Para este flujo rápido insertamos.
       const [nuevoUsuario] = await tx.insert(usuarios).values({
         organizacion_id,
         nombre_completo,
         correo,
         celular,
-        rol_id: null, // Se asignaría rol de SERVIDOR por defecto
+        rol_id: null,
       }).returning();
 
       // 2. Crear Relación en Tabla Servidores
       const [nuevoServidor] = await tx.insert(servidores).values({
         usuario_id: nuevoUsuario.id,
         sede_id,
-        ministerio_id,
-        cargo_id,
-        estado_civil,
+        ministerio_id: ministerio_id || null,
+        cargo_id: cargo_id || null,
+        estado_civil: estado_civil || null,
         fecha_nacimiento: fecha_nacimiento || null,
-        sexo,
+        sexo: sexo || null,
         fecha_ingreso: fecha_ingreso || null,
-        avance_servidor,
+        avance_servidor: avance_servidor || null,
         retiros_tomados: Number(retiros_tomados) || 0,
-        observaciones,
-        estatus: true,
+        observaciones: observaciones || null,
+        estatus: estatus === false ? false : true,
+        domicilio_calle: domicilio_calle || null,
+        domicilio_colonia: domicilio_colonia || null,
+        domicilio_cp: domicilio_cp || null,
+        estado_id: estado_id || null,
+        contacto_emergencia: contacto_emergencia || null,
+        telefono_emergencia: tels_emergencia || null,
+        tels_emergencia: tels_emergencia || null,
+        telefono_casa_trabajo: telefono_casa_trabajo || null,
+        facebook_url: facebook_url || null,
+        instagram_url: instagram_url || null,
+        tiktok_url: tiktok_url || null,
+        youtube_url: youtube_url || null,
+        retiros_tomados_detalle: retiros_tomados_detalle || null,
+        retiros_externos_detalle: retiros_externos_detalle || null,
+        servicios_sjm: servicios_sjm || null,
+        nombre_gafete: nombre_gafete || null
       }).returning();
 
       return nuevoServidor;
