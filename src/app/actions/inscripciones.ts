@@ -319,15 +319,15 @@ export async function registrarRenaseAction(datos: any) {
       // 1. Crear o Actualizar usuario
       if (usuarioId) {
          await db.execute(sql`
-           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo}, fecha_nacimiento = ${datos.fecha_nacimiento || null} WHERE id = ${usuarioId}
+           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo?.trim() ? datos.correo : null}, fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null} WHERE id = ${usuarioId}
          `);
       } else {
          const [nuevoUsu] = await db.insert(usuarios).values({
            organizacion_id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
            nombre_completo: datos.nombre_completo,
            celular: datos.celular,
-           correo: datos.correo || `${Date.now()}@temporal.com`,
-           fecha_nacimiento: datos.fecha_nacimiento || null,
+           correo: datos.correo?.trim() ? datos.correo : `${Date.now()}@temporal.com`,
+           fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
            es_servidor: true
          }).returning({ id: usuarios.id });
          usuarioId = nuevoUsu.id;
@@ -341,23 +341,23 @@ export async function registrarRenaseAction(datos: any) {
               ministerio_id = ${datos.ministerio_id || null}, 
               cargo_id = ${datos.cargo_id || null},
               estado_civil = ${datos.estado_civil || null},
-              sexo = ${datos.sexo || null},
-              fecha_ingreso = ${datos.fecha_ingreso || null},
-              avance_servidor = ${datos.avance_servidor || null},
-              retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
-              observaciones = ${datos.observaciones || null}
-           WHERE id = ${servidorId}
-         `);
-      } else {
-         const [nuevoServ] = await db.insert(servidores).values({
-           usuario_id: usuarioId,
-           sede_id: datos.sede_id || "00000000-0000-0000-0000-000000000000", // Required
-           ministerio_id: datos.ministerio_id || null,
-           cargo_id: datos.cargo_id || null,
-           estado_civil: datos.estado_civil || null,
-           sexo: datos.sexo || null,
-           fecha_ingreso: datos.fecha_ingreso || null,
-           avance_servidor: datos.avance_servidor || null,
+           sexo = ${datos.sexo?.trim() ? datos.sexo : null},
+           fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null},
+           avance_servidor = ${datos.avance_servidor || null},
+           retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
+           observaciones = ${datos.observaciones || null}
+        WHERE id = ${servidorId}
+      `);
+   } else {
+      const [nuevoServ] = await db.insert(servidores).values({
+        usuario_id: usuarioId,
+        sede_id: datos.sede_id?.trim() ? datos.sede_id : "00000000-0000-0000-0000-000000000000", // Required
+        ministerio_id: datos.ministerio_id?.trim() ? datos.ministerio_id : null,
+        cargo_id: datos.cargo_id?.trim() ? datos.cargo_id : null,
+        estado_civil: datos.estado_civil?.trim() ? datos.estado_civil : null,
+        sexo: datos.sexo?.trim() ? datos.sexo : null,
+        fecha_ingreso: datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null,
+        avance_servidor: datos.avance_servidor || null,
            retiros_tomados: datos.retiros_tomados ? Number(datos.retiros_tomados) : 0,
            observaciones: datos.observaciones || null,
            estatus: true

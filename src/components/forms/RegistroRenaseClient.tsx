@@ -116,8 +116,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
       });
       setPaseUrl(newBlob.url);
       form.setValue("pase_abordar_url", newBlob.url);
-    } catch (error) {
-      alert("Error al subir el archivo.");
+    } catch (error: any) {
+      alert("Error al subir el archivo: " + (error.message || "Error desconocido"));
     } finally {
       setSubiendoArchivo(false);
     }

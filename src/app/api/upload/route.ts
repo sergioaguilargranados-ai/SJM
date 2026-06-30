@@ -12,7 +12,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         // En este punto podríamos validar permisos, usuario autenticado, etc.
         // Pero para el formulario público, permitiremos cualquier subida si es parte del flujo de registro.
         return {
-          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
+          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'application/pdf'],
           tokenPayload: JSON.stringify({
             // metadata extra
           }),
