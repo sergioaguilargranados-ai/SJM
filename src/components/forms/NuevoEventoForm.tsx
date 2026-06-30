@@ -43,15 +43,15 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       sede_id: eventoToEdit?.sede_id || sedes[0]?.id || "",
       tipo_evento_id: eventoToEdit?.tipo_evento_id || tipos[0]?.id || "",
       casa_retiro_id: eventoToEdit?.casa_retiro_id || casas[0]?.id || "",
-      fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(eventoToEdit.fecha_inicio).toISOString().slice(0, 10) : "",
-      fecha_fin: eventoToEdit?.fecha_fin ? new Date(eventoToEdit.fecha_fin).toISOString().slice(0, 10) : "",
+      fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(new Date(eventoToEdit.fecha_inicio).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
+      fecha_fin: eventoToEdit?.fecha_fin ? new Date(new Date(eventoToEdit.fecha_fin).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
       recomendaciones: eventoToEdit?.recomendaciones || "",
       politica_cancelacion: eventoToEdit?.politica_cancelacion || "",
       contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
       es_evento_servidores: eventoToEdit?.es_evento_servidores || false,
       nombre_evento: eventoToEdit?.nombre_evento || "",
       descripcion: eventoToEdit?.descripcion || "",
-      fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(eventoToEdit.fecha_inicio_promocion).toISOString().slice(0, 16) : "",
+      fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(new Date(eventoToEdit.fecha_inicio_promocion).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
     },
   });
 
