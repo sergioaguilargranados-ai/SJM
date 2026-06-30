@@ -13,7 +13,7 @@ const faqDefault = [
   { pregunta: "¿Qué son los Servidores de Jesús por María?", respuesta: "Somos un Instituto Secular y Movimiento Nacional dedicado a la evangelización, sanación interior y caridad cristiana, con presencia en múltiples ciudades de México." },
   { pregunta: "¿Qué es un retiro de sanación interior?", respuesta: "Es un encuentro personal con Cristo Jesús a través de las verdades del evangelio, donde se busca sanar las heridas del alma que han sido causadas por la falta de amor, el rechazo, el abandono y otras experiencias dolorosas." },
   { pregunta: "¿Cómo puedo participar?", respuesta: "Puedes acercarte a cualquiera de nuestros centros o comunicarte con nosotros. No necesitas pertenecer a ningún grupo religioso, solo tener el deseo de sanar y crecer espiritualmente." },
-  { pregunta: "¿Los retiros tienen costo?", respuesta: "Los retiros tienen una aportación sugerida que incluye alimentos y hospedaje. Nadie se queda sin participar por falta de recursos." },
+  { pregunta: "¿Los retiros tienen una aportación obligatoria?", respuesta: "Los retiros tienen una aportación sugerida que incluye alimentos y hospedaje. Nadie se queda sin participar por falta de recursos." },
 ];
 
 export default async function AyudaPage() {

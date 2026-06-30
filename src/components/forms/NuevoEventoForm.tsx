@@ -81,9 +81,9 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
           <Link href="/eventos" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
             <ChevronLeft className="w-5 h-5 text-slate-500" />
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Programar Nuevo Retiro / Evento</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Establece las fechas, sede y costos para el próximo evento de la obra.</p>
+          <div className="text-left flex-1 pl-4 md:pl-0 pt-2 md:pt-0">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{eventoToEdit ? "Editar Retiro / Evento" : "Programar Nuevo Retiro / Evento"}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Establece las fechas, sede y aportaciones para el próximo evento de la obra.</p>
           </div>
         </div>
       )}
@@ -138,11 +138,11 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
           </div>
         </div>
 
-        {/* BLOQUE 2: Logística y Costos */}
+        {/* BLOQUE 2: Logística y Aportaciones */}
         <div className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-xl shadow-sm p-6 md:p-8">
           <div className="flex items-center gap-2 mb-6">
             <Info className="w-5 h-5 text-blue-600 dark:text-[#e11d48]" />
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Logística, Cupo y Costos</h3>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Logística, Cupo y Aportaciones</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

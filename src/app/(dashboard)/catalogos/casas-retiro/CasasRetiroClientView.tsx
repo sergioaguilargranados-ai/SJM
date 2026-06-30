@@ -25,7 +25,7 @@ export default function CasasRetiroClientView({ datos }: { datos: any[] }) {
             { nombre: "domicilio", label: "Domicilio", placeholder: "Dirección completa" },
             { nombre: "encargado", label: "Encargado", placeholder: "Nombre del administrador" },
             { nombre: "telefonos", label: "Teléfonos", placeholder: "+52 722 000 0000" },
-            { nombre: "costo_persona", label: "Costo por Persona ($)", tipo: "number", placeholder: "500" },
+            { nombre: "costo_persona", label: "Aportación por Persona ($)", tipo: "number", placeholder: "500" },
             { nombre: "capacidad", label: "Capacidad (personas)", tipo: "number", placeholder: "50" },
           ]}
           onSubmit={crearCasaRetiroAction}
@@ -85,7 +85,7 @@ export default function CasasRetiroClientView({ datos }: { datos: any[] }) {
                   { nombre: "domicilio", label: "Domicilio" },
                   { nombre: "encargado", label: "Encargado" },
                   { nombre: "telefonos", label: "Teléfonos" },
-                  { nombre: "costo_persona", label: "Costo por Persona ($)", tipo: "number" },
+                  { nombre: "costo_persona", label: "Aportación por Persona ($)", tipo: "number" },
                   { nombre: "capacidad", label: "Capacidad", tipo: "number" },
                 ]}
                 datosActuales={{

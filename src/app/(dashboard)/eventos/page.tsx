@@ -28,6 +28,7 @@ export default async function ReporteRetiros() {
         casas={casas} 
         tipos={tipos}
         isAdmin={isAdmin}
+        organizacionId={session.organizacion_id}
       />
     </div>
   );

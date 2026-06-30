@@ -97,7 +97,7 @@ export default async function DetalleFinanzasEventoPage({ params }: { params: { 
           <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
           <div>
             <p className="text-sm font-bold text-amber-800 dark:text-amber-400">Margen de Rentabilidad Bajo</p>
-            <p className="text-xs text-amber-700 dark:text-amber-500/80">Este evento tiene una rentabilidad menor al 15%. Revisa los gastos operativos o considera ajustar el costo al público.</p>
+            <p className="text-xs text-amber-700 dark:text-amber-500/80">Este evento tiene una rentabilidad menor al 15%. Revisa los gastos operativos o considera ajustar la aportación sugerida.</p>
           </div>
         </div>
       )}

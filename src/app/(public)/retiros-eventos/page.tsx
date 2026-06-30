@@ -67,7 +67,7 @@ export default async function RetirosEventosPage() {
                       {r.sede_nombre && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-slate-400" /> {r.sede_nombre}</span>}
                       {r.cupo_maximo && <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-slate-400" /> Cupo: {r.cupo_maximo}</span>}
                       {r.costo && <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-slate-400" /> ${r.costo}</span>}
-                      {r.hora_entrada && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-400" /> {r.hora_entrada} - {r.hora_salida}</span>}
+                      {r.hora_entrada && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-400" /> {new Date(r.hora_entrada).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })} - {r.hora_salida ? new Date(r.hora_salida).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "TBD"}</span>}
                     </div>
                     <p className="text-xs text-slate-400 mt-3 font-medium">{formatFecha(r.fecha_inicio)} → {formatFecha(r.fecha_fin)}</p>
                   </div>

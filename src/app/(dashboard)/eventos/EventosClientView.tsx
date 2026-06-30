@@ -11,13 +11,15 @@ import NuevoEventoForm from "@/components/forms/NuevoEventoForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { eliminarEventoAction } from "@/app/actions/inscripciones";
 import { useRouter } from "next/navigation";
+import { ModalImportarEventos } from "@/components/forms/ModalImportarEventos";
 
-export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmin }: {
+export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmin, organizacionId }: {
   eventos: any[];
   sedes: any[];
   casas: any[];
   tipos: any[];
   isAdmin: boolean;
+  organizacionId: string;
 }) {
   const router = useRouter();
   const [eventoEditando, setEventoEditando] = useState<any>(null);
@@ -52,7 +54,10 @@ export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmi
           </div>
         }
         acciones={
-          <ModalCrearEvento sedes={sedes} casas={casas} tipos={tipos} />
+          <div className="flex items-center gap-2">
+            <ModalImportarEventos organizacionId={organizacionId} />
+            <ModalCrearEvento sedes={sedes} casas={casas} tipos={tipos} />
+          </div>
         }
         renderCard={(evt) => (
           <div key={evt.id} className="group bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col border-b-4 border-b-blue-600 dark:border-b-[#e11d48] h-full relative">
@@ -121,7 +126,7 @@ export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmi
             cell: (val: any) => val ? format(new Date(val), "dd MMM yyyy", { locale: es }) : "TBD"
           },
           {
-            header: "Costo",
+            header: "Aportación",
             accessorKey: "costo",
             cell: (val: any) => <span className="font-bold text-emerald-600">${val || "0"}</span>
           },

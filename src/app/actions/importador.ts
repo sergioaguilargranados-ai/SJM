@@ -2,8 +2,9 @@
 
 import * as XLSX from "xlsx";
 import { db } from "@/lib/db";
-import { usuarios, servidores } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { usuarios, servidores, eventos, sedes, casas_retiro, tipos_eventos } from "@/lib/schema";
+import { eq, ilike } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function importarServidoresAction(base64Data: string, organizacionId: string, sedeId: string) {
   try {
@@ -69,6 +70,97 @@ export async function importarServidoresAction(base64Data: string, organizacionI
     return { success: true, procesados, errores };
   } catch (error: any) {
     console.error("Error en importación masiva:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function importarEventosAction(base64Data: string, organizacionId: string) {
+  try {
+    const buffer = Buffer.from(base64Data, 'base64');
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const rawData = XLSX.utils.sheet_to_json(sheet);
+
+    let procesados = 0;
+    let errores = 0;
+
+    for (const filaRaw of rawData) {
+      const fila = filaRaw as any;
+      try {
+        const nombreSede = fila['Sede Responsable'];
+        const nombreCasa = fila['Casa de Retiro'];
+        const nombreTipo = fila['Tipo de Retiro / Evento'];
+        const nombreEvento = fila['Nombre del Evento'];
+        const fechaInicio = fila['Fecha Inicio'];
+        const fechaFin = fila['Fecha Fin'];
+        const costo = fila['Aportación Sugerida'] || fila['Costo'] || 0;
+        const cupo = fila['Cupo Máximo'] || 0;
+        const descripcion = fila['Descripción'] || '';
+        const recomendaciones = fila['Recomendaciones'] || '';
+
+        if (!nombreSede || !nombreTipo || !nombreEvento) continue;
+
+        await db.transaction(async (tx) => {
+          const [sede] = await tx.select().from(sedes).where(ilike(sedes.nombre, String(nombreSede).trim()));
+          if (!sede) throw new Error('Sede no encontrada: ' + nombreSede);
+
+          const [tipo] = await tx.select().from(tipos_eventos).where(ilike(tipos_eventos.nombre, String(nombreTipo).trim()));
+          if (!tipo) throw new Error('Tipo de evento no encontrado: ' + nombreTipo);
+
+          let casaId = "";
+          if (nombreCasa) {
+            const [casa] = await tx.select().from(casas_retiro).where(ilike(casas_retiro.nombre, String(nombreCasa).trim()));
+            if (casa) {
+              casaId = casa.id;
+            } else {
+              throw new Error('Casa de retiro no encontrada: ' + nombreCasa);
+            }
+          } else {
+             throw new Error('Casa de retiro es obligatoria');
+          }
+
+          const parseDate = (dStr: any) => {
+            if (!dStr) return null;
+            if (typeof dStr === 'number') {
+               const date = new Date(Math.round((dStr - 25569) * 86400 * 1000));
+               date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+               return date;
+            }
+            if (dStr instanceof Date) return dStr;
+            const parts = String(dStr).split(/[ /:T-]/);
+            if (parts.length >= 3) {
+               if (parts[2].length === 4) return new Date(Number(parts[2]), Number(parts[1])-1, Number(parts[0]), Number(parts[3]||0), Number(parts[4]||0));
+            }
+            return new Date(dStr);
+          };
+
+          await tx.insert(eventos).values({
+            organizacion_id: organizacionId,
+            sede_id: sede.id,
+            tipo_evento_id: tipo.id,
+            casa_retiro_id: casaId,
+            nombre_evento: String(nombreEvento).trim(),
+            fecha_inicio: parseDate(fechaInicio),
+            fecha_fin: parseDate(fechaFin),
+            costo_publico: String(costo),
+            cupo_maximo: Number(cupo),
+            descripcion: String(descripcion),
+            recomendaciones: String(recomendaciones),
+            estatus: 'PLANEACION'
+          });
+        });
+        procesados++;
+      } catch (e) {
+        console.error('Error en fila eventos:', e);
+        errores++;
+      }
+    }
+
+    revalidatePath('/retiros-eventos', 'page');
+    return { success: true, procesados, errores };
+  } catch (error: any) {
+    console.error("Error en importación de eventos:", error);
     return { success: false, error: error.message };
   }
 }

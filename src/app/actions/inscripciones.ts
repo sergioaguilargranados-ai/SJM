@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos } from "@/lib/schema";
 import { eq, desc, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
@@ -181,6 +182,7 @@ export async function crearEventoAction(datos: any) {
     }).returning();
 
 
+    revalidatePath("/retiros-eventos", "page");
     return { success: true, id: nuevoEvento.id };
   } catch (error: any) {
     console.error("Error al crear evento:", error);
@@ -235,6 +237,7 @@ export async function eliminarEventoAction(id: string) {
     }
     
     await db.delete(eventos).where(eq(eventos.id, id));
+    revalidatePath("/retiros-eventos", "page");
     return { success: true };
   } catch (error: any) {
     console.error("Error al eliminar evento:", error);
@@ -261,7 +264,7 @@ export async function actualizarEventoAction(id: string, datos: any) {
         es_evento_servidores: es_evento_servidores === true,
       })
       .where(eq(eventos.id, id));
-      
+    revalidatePath("/retiros-eventos", "page");
     return { success: true };
   } catch (error: any) {
     console.error("Error al actualizar evento:", error);
