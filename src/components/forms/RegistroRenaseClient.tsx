@@ -132,6 +132,11 @@ export function RegistroRenaseClient({ evento, sedes }: { evento: any, sedes: an
         <p className="text-slate-500 mt-4 text-lg">
           Tus datos de itinerario y perfil han sido guardados. Nos vemos pronto.
         </p>
+        <div className="mt-10">
+          <Button onClick={() => window.location.href = '/'} className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold w-full md:w-auto">
+            Aceptar y Volver al Inicio
+          </Button>
+        </div>
       </div>
     );
   }
