@@ -254,6 +254,7 @@ export const eventos = pgTable("eventos", {
   link_minuta_evaluacion: text("link_minuta_evaluacion"),
   contrasena_inscripcion: varchar("contrasena_inscripcion", { length: 50 }),
   es_matrimonial: boolean("es_matrimonial").default(false),
+  es_evento_servidores: boolean("es_evento_servidores").default(false),
 });
 
 
@@ -313,6 +314,16 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   expectativas: text("expectativas"),
   otros_retiros_tomados: text("otros_retiros_tomados"),
   observaciones: text("observaciones"),
+  
+  // Itinerario y Logística (Especial RENASE)
+  fecha_hora_llegada: timestamp("fecha_hora_llegada"),
+  lugar_llegada: varchar("lugar_llegada", { length: 255 }),
+  medio_transporte_llegada: varchar("medio_transporte_llegada", { length: 100 }),
+  fecha_hora_salida: timestamp("fecha_hora_salida"),
+  lugar_salida: varchar("lugar_salida", { length: 255 }),
+  medio_transporte_salida: varchar("medio_transporte_salida", { length: 100 }),
+  pase_abordar_url: text("pase_abordar_url"),
+  participa_salida_paseo: boolean("participa_salida_paseo").default(false),
   
   estatus_solicitud: varchar("estatus_solicitud", { length: 50 }).default('PENDIENTE_PAGO'),
 

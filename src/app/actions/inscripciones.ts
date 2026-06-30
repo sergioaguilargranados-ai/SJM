@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos } from "@/lib/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
@@ -139,7 +139,7 @@ export async function crearEventoAction(datos: any) {
   try {
     const { 
        sede_id, tipo_evento_id, casa_retiro_id, fecha_inicio, fecha_fin, 
-       costo_publico, cupo_maximo, recomendaciones, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion
+       costo_publico, cupo_maximo, recomendaciones, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores
     } = datos;
 
     const [nuevoEvento] = await db.insert(eventos).values({
@@ -156,6 +156,7 @@ export async function crearEventoAction(datos: any) {
       recomendaciones,
       politica_cancelacion,
       contrasena_inscripcion: datos.contrasena_inscripcion || null,
+      es_evento_servidores: es_evento_servidores === true,
       estatus: 'PLANEACION'
     }).returning();
 
@@ -223,7 +224,7 @@ export async function eliminarEventoAction(id: string) {
 
 export async function actualizarEventoAction(id: string, datos: any) {
   try {
-    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion } = datos;
+    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores } = datos;
     
     await db.update(eventos)
       .set({
@@ -237,6 +238,7 @@ export async function actualizarEventoAction(id: string, datos: any) {
         recomendaciones,
         politica_cancelacion,
         contrasena_inscripcion: contrasena_inscripcion || null,
+        es_evento_servidores: es_evento_servidores === true,
       })
       .where(eq(eventos.id, id));
       
@@ -244,5 +246,94 @@ export async function actualizarEventoAction(id: string, datos: any) {
   } catch (error: any) {
     console.error("Error al actualizar evento:", error);
     return { success: false, error: error.message || "Error al actualizar evento" };
+  }
+}
+
+// -------------------------------------------------------------
+// FUNCIONES NUEVAS: FLUJO INTELIGENTE Y RENASE
+// -------------------------------------------------------------
+
+export async function buscarAsistentePrevioAction(correoCelular: string) {
+  try {
+    const term = correoCelular.trim().toLowerCase();
+    const result = await db.execute(sql`
+      SELECT * FROM solicitudes_inscripcion 
+      WHERE LOWER(correo) = ${term} OR telefono_celular = ${term} 
+      ORDER BY creado_en DESC LIMIT 1
+    `);
+    if (result.rows.length > 0) {
+      return { success: true, data: result.rows[0] };
+    }
+    return { success: false, message: "No encontrado" };
+  } catch (error: any) {
+    console.error("Error en buscarAsistentePrevioAction:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function buscarServidorPorNombreAction(nombre: string) {
+  try {
+    const term = `%${nombre.trim().toLowerCase()}%`;
+    const result = await db.execute(sql`
+      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular,
+              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor
+       FROM servidores s
+       INNER JOIN usuarios u ON s.usuario_id = u.id
+       WHERE LOWER(u.nombre_completo) LIKE ${term}
+       LIMIT 10
+    `);
+    return { success: true, data: result.rows };
+  } catch (error: any) {
+    console.error("Error en buscarServidorPorNombreAction:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function registrarRenaseAction(datos: any) {
+  try {
+    // Aquí recibimos todos los datos combinados: los del perfil del servidor y los del itinerario
+    // Actualizamos al servidor y creamos la solicitud en una transacción
+    await db.transaction(async (tx) => {
+      // 1. Actualizar usuario
+      if (datos.usuario_id) {
+         await tx.execute(sql`
+           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo} WHERE id = ${datos.usuario_id}
+         `);
+      }
+      // 2. Actualizar servidor
+      if (datos.servidor_id) {
+         await tx.execute(sql`
+           UPDATE servidores SET sede_id = ${datos.sede_id || null}, ministerio_id = ${datos.ministerio_id || null}, cargo_id = ${datos.cargo_id || null} WHERE id = ${datos.servidor_id}
+         `);
+      }
+      
+      // 3. Crear inscripción
+      await tx.insert(solicitudes_inscripcion).values({
+        evento_id: datos.evento_id,
+        usuario_id: datos.usuario_id || null,
+        nombre_asistente: datos.nombre_completo,
+        nombre_gafete: datos.nombre_gafete || null,
+        telefono_celular: datos.celular || null,
+        correo: datos.correo || null,
+        
+        // Itinerario y Logística
+        fecha_hora_llegada: datos.fecha_hora_llegada ? new Date(datos.fecha_hora_llegada) : null,
+        lugar_llegada: datos.lugar_llegada || null,
+        medio_transporte_llegada: datos.medio_transporte_llegada || null,
+        fecha_hora_salida: datos.fecha_hora_salida ? new Date(datos.fecha_hora_salida) : null,
+        lugar_salida: datos.lugar_salida || null,
+        medio_transporte_salida: datos.medio_transporte_salida || null,
+        pase_abordar_url: datos.pase_abordar_url || null,
+        participa_salida_paseo: datos.participa_salida_paseo === true,
+        
+        // Set default
+        estatus_solicitud: "PENDIENTE_PAGO"
+      });
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error en registrarRenaseAction:", error);
+    return { success: false, error: error.message || "Error al procesar inscripción RENASE" };
   }
 }

@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label";
 import { 
   User, Phone, MapPin, Church, Heart, Baby, 
   ChevronRight, ChevronLeft, CheckCircle2, Info,
-  Stethoscope, Cross, Sparkles, FileText, ShieldCheck
+  Stethoscope, Cross, Sparkles, FileText, ShieldCheck, Search, Loader2
 } from "lucide-react";
-import { registrarSolicitudAction } from "@/app/actions/inscripciones";
+import { registrarSolicitudAction, buscarAsistentePrevioAction } from "@/app/actions/inscripciones";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -58,6 +58,8 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
   const [cargando, setCargando] = useState(false);
+  const [buscandoFrecuente, setBuscandoFrecuente] = useState(false);
+  const [termBuscador, setTermBuscador] = useState("");
   const totalSteps = esMatrimonial ? 5 : 4; // Subimos un paso por la responsiva
 
   const form = useForm<FormValues>({
@@ -94,6 +96,44 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
     if (res.success) setSuccess(true);
     else alert("Error: " + res.error);
   }
+
+  const handleBuscarAsistente = async () => {
+    if (!termBuscador || termBuscador.length < 5) return;
+    setBuscandoFrecuente(true);
+    const res = await buscarAsistentePrevioAction(termBuscador);
+    setBuscandoFrecuente(false);
+    if (res.success && res.data) {
+       const data = res.data as any;
+       form.reset({
+         ...form.getValues(),
+         nombre_asistente: data.nombre_asistente || "",
+         nombre_gafete: data.nombre_gafete || "",
+         sexo: (data.sexo as any) || "M",
+         fecha_nacimiento: data.fecha_nacimiento ? data.fecha_nacimiento.toString().slice(0, 10) : "",
+         edad: data.edad || 0,
+         estado_civil: data.estado_civil || "",
+         telefono_celular: data.telefono_celular || "",
+         telefono_alternativo: data.telefono_alternativo || "",
+         correo: data.correo || "",
+         direccion_completa: data.direccion_completa || "",
+         pais_ciudad: data.pais_ciudad || "",
+         contacto_emergencia_nombre: data.contacto_emergencia_nombre || "",
+         contacto_emergencia_telefono: data.contacto_emergencia_telefono || "",
+         parentezco_emergencia: data.parentezco_emergencia || "",
+         parroquia_procedencia: data.parroquia_procedencia || "",
+         ultimo_sacramento: data.ultimo_sacramento || "",
+         dificultad_caminar: data.dificultad_escaleras || false,
+         enfermedades_alergias: data.enfermedades_alergias || "",
+         esposo_a_nombre: data.esposo_a_nombre || "",
+         fecha_boda: data.fecha_boda ? data.fecha_boda.toString().slice(0, 10) : "",
+         cantidad_hijos: data.cantidad_hijos || 0,
+         datos_hijos: data.nombre_edades_hijos || "",
+       });
+       alert("¡Tus datos han sido recuperados y cargados con éxito!");
+    } else {
+       alert("No encontramos registros previos con ese correo o celular. Por favor, llena el formulario.");
+    }
+  };
 
 
   if (success) {
@@ -141,6 +181,25 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
           
           {step === 1 && (
             <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+              {/* Buscador Inteligente */}
+              <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center gap-4">
+                 <div className="flex-1 space-y-1">
+                    <h4 className="font-bold text-blue-900 dark:text-blue-200">¿Ya has vivido un retiro en SJM?</h4>
+                    <p className="text-sm text-blue-700/70 dark:text-blue-400">Ingresa tu correo o celular para autocompletar tus datos.</p>
+                 </div>
+                 <div className="flex items-center gap-2 w-full md:w-auto">
+                    <Input 
+                      placeholder="Correo o celular..." 
+                      className="bg-white dark:bg-black/20"
+                      value={termBuscador}
+                      onChange={(e) => setTermBuscador(e.target.value)}
+                    />
+                    <Button type="button" variant="secondary" onClick={handleBuscarAsistente} disabled={buscandoFrecuente}>
+                       {buscandoFrecuente ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                    </Button>
+                 </div>
+              </div>
+
               <div className="flex items-center gap-4">
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
                   <User className="w-8 h-8 text-blue-600 dark:text-blue-400" />

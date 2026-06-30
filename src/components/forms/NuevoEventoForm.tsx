@@ -24,6 +24,7 @@ const formSchema = z.object({
   recomendaciones: z.string().optional(),
   politica_cancelacion: z.string().optional(),
   contrasena_inscripcion: z.string().optional(),
+  es_evento_servidores: z.boolean().optional(),
 });
 
 
@@ -44,6 +45,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       recomendaciones: eventoToEdit?.recomendaciones || "",
       politica_cancelacion: eventoToEdit?.politica_cancelacion || "",
       contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
+      es_evento_servidores: eventoToEdit?.es_evento_servidores || false,
     },
   });
 
@@ -174,6 +176,17 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 <Users className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <Input placeholder="Solo si requiere acceso privado" {...form.register("contrasena_inscripcion")} className="pl-9 dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
               </div>
+            </div>
+
+            <div className="space-y-2 flex flex-col justify-end">
+              <label className="flex items-center gap-2 cursor-pointer p-2 border border-slate-200 dark:border-[#2a2b3d] rounded-lg hover:bg-slate-50 dark:hover:bg-[#151621] transition-colors">
+                <input 
+                  type="checkbox" 
+                  {...form.register("es_evento_servidores")}
+                  className="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#2a2b3d]"
+                />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Es exclusivo para servidores (Flujo Especial)</span>
+              </label>
             </div>
 
 
