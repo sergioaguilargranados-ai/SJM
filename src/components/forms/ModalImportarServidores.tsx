@@ -65,19 +65,24 @@ export function ModalImportarServidores({ sedeId, organizacionId }: ModalImporta
             {!resultado && !cargando && (
               <div className="space-y-6">
                 {/* Instrucciones de Columnas */}
-                <div className="bg-blue-50 dark:bg-blue-900/10 p-5 rounded-2xl border border-blue-100 dark:border-blue-900/30">
-                   <div className="flex items-start gap-4">
-                      <FileDown className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                      <div>
-                         <p className="text-sm font-bold text-blue-900 dark:text-blue-200 uppercase tracking-tighter">Preparación de Archivo</p>
-                         <p className="text-xs text-blue-700 dark:text-blue-300/80 leading-relaxed mt-1">
-                            Asegúrate que tu archivo .xlsx tenga las columnas: <br />
-                            <strong className="block mt-1 font-mono text-[10px] bg-white/50 dark:bg-black/20 p-1 px-2 rounded">
-                               Nombre, Correo, Celular, Sexo, EstadoCivil, Avance, FechaIngreso
-                            </strong>
-                         </p>
-                      </div>
-                   </div>
+                <div className="bg-blue-50 dark:bg-blue-900/10 p-5 rounded-2xl border border-blue-100 dark:border-blue-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                     <div className="flex items-start gap-4 flex-1">
+                        <FileDown className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                        <div>
+                           <p className="text-sm font-bold text-blue-900 dark:text-blue-200 uppercase tracking-tighter">Preparación de Archivo</p>
+                           <p className="text-xs text-blue-700 dark:text-blue-300/80 leading-relaxed mt-1">
+                              Para garantizar una importación exitosa, descarga y llena nuestra plantilla oficial.
+                           </p>
+                        </div>
+                     </div>
+                     <a 
+                        href="/plantilla_servidores.xlsx" 
+                        download
+                        className="shrink-0 mt-2 sm:mt-0 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                     >
+                        <FileDown className="w-4 h-4" />
+                        Descargar Plantilla
+                     </a>
                 </div>
 
                 {/* Dropzone de Simulado */}

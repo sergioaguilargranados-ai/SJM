@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { crearEventoAction } from "@/app/actions/inscripciones";
+import { actualizarEventoAction } from "@/app/actions/inscripciones";
 import { CalendarDays, Home, MapPin, DollarSign, Users, ChevronLeft, Save, Info } from "lucide-react";
 import Link from "next/link";
 
 const formSchema = z.object({
-  tipo_evento_id: z.string().uuid("Selecciona el tipo de retiro"),
-  sede_id: z.string().uuid("Selecciona la sede responsable"),
-  casa_retiro_id: z.string().uuid("Selecciona la casa de retiro"),
+  tipo_evento_id: z.string().uuid("Selecciona el tipo de retiro").optional(),
+  sede_id: z.string().uuid("Selecciona la sede responsable").optional(),
+  casa_retiro_id: z.string().uuid("Selecciona la casa de retiro").optional(),
   fecha_inicio: z.string().min(1, "Obligatoria"),
   fecha_fin: z.string().min(1, "Obligatoria"),
   costo_publico: z.coerce.number().min(0, "Monto inválido"),
@@ -25,24 +26,30 @@ const formSchema = z.object({
 });
 
 
-export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModal }: { sedes: any[], casas: any[], tipos: any[], onSuccess?: () => void, isModal?: boolean }) {
+export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModal, eventoToEdit }: { sedes: any[], casas: any[], tipos: any[], onSuccess?: () => void, isModal?: boolean, eventoToEdit?: any }) {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
-      costo_publico: 0,
-      cupo_maximo: 50,
-      sede_id: sedes[0]?.id || "",
-      tipo_evento_id: tipos[0]?.id || "",
-      casa_retiro_id: casas[0]?.id || "",
+      costo_publico: eventoToEdit?.costo_publico ? Number(eventoToEdit.costo_publico) : 0,
+      cupo_maximo: eventoToEdit?.cupo_maximo ? Number(eventoToEdit.cupo_maximo) : 50,
+      sede_id: eventoToEdit?.sede_id || sedes[0]?.id || "",
+      tipo_evento_id: eventoToEdit?.tipo_evento_id || tipos[0]?.id || "",
+      casa_retiro_id: eventoToEdit?.casa_retiro_id || casas[0]?.id || "",
+      fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(eventoToEdit.fecha_inicio).toISOString().slice(0, 10) : "",
+      fecha_fin: eventoToEdit?.fecha_fin ? new Date(eventoToEdit.fecha_fin).toISOString().slice(0, 10) : "",
+      recomendaciones: eventoToEdit?.recomendaciones || "",
+      contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
     },
   });
 
   async function onSubmit(values: any) {
     setCargando(true);
-    const res = await crearEventoAction(values);
+    const res = eventoToEdit 
+      ? await actualizarEventoAction(eventoToEdit.id, values) 
+      : await crearEventoAction(values);
     setCargando(false);
 
     if (res.success) {
@@ -53,7 +60,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
         router.refresh();
       }
     } else {
-      alert("Error al crear retiro: " + res.error);
+      alert("Error: " + res.error);
     }
   }
 

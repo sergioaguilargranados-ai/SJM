@@ -198,3 +198,43 @@ export async function actualizarServidorAction(id: string, datos: any) {
     return { success: false, error: error.message || "Error al actualizar registro" };
   }
 }
+
+export async function eliminarEventoAction(id: string) {
+  try {
+    const { getUsuarioSesion } = await import("@/lib/sesion");
+    const session = await getUsuarioSesion();
+    
+    // Sólo Admin del sistema o Rol Admin
+    if (!session.rol_nombre?.toLowerCase().includes("admin")) {
+       return { success: false, error: "Permisos insuficientes. Sólo administradores pueden eliminar eventos." };
+    }
+    
+    await db.delete(eventos).where(eq(eventos.id, id));
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al eliminar evento:", error);
+    return { success: false, error: error.message || "No se puede eliminar porque tiene inscripciones o gastos vinculados." };
+  }
+}
+
+export async function actualizarEventoAction(id: string, datos: any) {
+  try {
+    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion } = datos;
+    
+    await db.update(eventos)
+      .set({
+        fecha_inicio: fecha_inicio ? new Date(fecha_inicio) : null,
+        fecha_fin: fecha_fin ? new Date(fecha_fin) : null,
+        costo_publico: costo_publico ? String(costo_publico) : null,
+        cupo_maximo: cupo_maximo ? Number(cupo_maximo) : null,
+        recomendaciones,
+        contrasena_inscripcion: contrasena_inscripcion || null,
+      })
+      .where(eq(eventos.id, id));
+      
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al actualizar evento:", error);
+    return { success: false, error: error.message || "Error al actualizar evento" };
+  }
+}

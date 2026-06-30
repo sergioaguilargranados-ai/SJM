@@ -181,7 +181,7 @@ export default function LoginPage() {
              <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Seguridad Fin a Fin Habilitada</span>
           </div>
           <p className="text-center text-[10px] text-slate-400 dark:text-[#5e5e72] font-black uppercase tracking-[0.2em]">
-            SJM PLATFORM &bull; v1.190 &bull; COMPILACIÓN: 16-06-2026 01:14 AM (CDMX)
+            SJM PLATFORM &bull; v1.192 &bull; COMPILACIÓN: 30-06-2026 12:00 AM (CDMX)
           </p>
         </div>
       </div>

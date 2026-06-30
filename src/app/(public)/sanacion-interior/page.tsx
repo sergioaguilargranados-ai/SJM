@@ -85,6 +85,7 @@ export default async function SanacionInteriorPage() {
       </div>
     </div>
   );
+}
 
 
 

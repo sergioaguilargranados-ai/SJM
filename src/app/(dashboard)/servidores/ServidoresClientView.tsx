@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { TablaConsulta } from "@/components/TablaConsulta";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Eye, MapPin, Mail, Phone } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
 import { ModalImportarServidores } from "@/components/forms/ModalImportarServidores";
+import { ModalDetalleServidor } from "@/components/forms/ModalDetalleServidor";
 
 export default function ServidoresClientView({ servidores, sedes, sedeId, organizacionId }: {
   servidores: any[];
@@ -13,10 +15,19 @@ export default function ServidoresClientView({ servidores, sedes, sedeId, organi
   sedeId: string;
   organizacionId: string;
 }) {
+  const [servidorSeleccionado, setServidorSeleccionado] = useState<any>(null);
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+  const verDetalle = (servidor: any) => {
+    setServidorSeleccionado(servidor);
+    setModalAbierto(true);
+  };
+
   return (
-    <TablaConsulta
+    <>
+      <TablaConsulta
       datos={servidores}
-      titulo="Catálogo Directivo de Servidores"
+      titulo="Catálogo de Servidores"
       subtitulo="Organización y administración del capital humano de la comunidad."
       icono={<ShieldCheck className="w-6 h-6 text-blue-600 dark:text-[#e11d48]" />}
       camposFiltro={["nombre_completo", "correo", "celular", "sede"]}
@@ -28,6 +39,51 @@ export default function ServidoresClientView({ servidores, sedes, sedeId, organi
           <ModalCrearServidor sedes={sedes} />
         </>
       }
+      renderCard={(row) => (
+        <div key={row.id} className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col h-full relative group">
+          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() => verDetalle(row)}
+              className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+              title="Ver detalle completo"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="flex items-center gap-4 mb-4">
+             <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-[#2a2b3d] text-blue-700 dark:text-slate-300 flex items-center justify-center font-black text-lg shadow-inner shrink-0">
+               {row.nombre_completo?.charAt(0) || "U"}
+             </div>
+             <div>
+               <h3 className="font-bold text-slate-900 dark:text-white leading-tight">{row.nombre_completo || "Usuario Sin Nombre"}</h3>
+               <div className="flex items-center gap-2 mt-1">
+                 <span className="text-[10px] font-mono text-slate-500 dark:text-[#8e8ea0] bg-slate-100 dark:bg-[#2a2b3d] px-1.5 py-0.5 rounded">ID: {row.id?.substring(0, 5)}</span>
+                 {row.estatus ? (
+                   <span className="text-[9px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Activo</span>
+                 ) : (
+                   <span className="text-[9px] bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Baja</span>
+                 )}
+               </div>
+             </div>
+          </div>
+          
+          <div className="space-y-2 mt-auto">
+             <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+               <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+               <span className="truncate">{row.correo || "Sin correo"}</span>
+             </div>
+             <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+               <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+               <span>{row.celular || "Sin celular"}</span>
+             </div>
+             <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+               <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+               <span className="font-semibold text-slate-700 dark:text-slate-300">{row.sede}</span>
+             </div>
+          </div>
+        </div>
+      )}
       columnas={[
         {
           header: "Gafete / Identidad",
@@ -82,7 +138,28 @@ export default function ServidoresClientView({ servidores, sedes, sedeId, organi
               </span>
             ),
         },
+        {
+          header: "Acciones",
+          accessorKey: "id",
+          ocultarEnUI: false, // It's visible in UI
+          halign: "center" as const,
+          cell: (val: any, row: any) => (
+            <button
+              onClick={() => verDetalle(row)}
+              className="p-1.5 rounded-md text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              title="Ver detalle completo"
+            >
+              <Eye className="w-4 h-4" />
+            </button>
+          ),
+        },
       ]}
     />
+    <ModalDetalleServidor 
+      servidor={servidorSeleccionado}
+      open={modalAbierto}
+      onOpenChange={setModalAbierto}
+    />
+    </>
   );
 }

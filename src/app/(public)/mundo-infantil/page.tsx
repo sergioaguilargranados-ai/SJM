@@ -59,6 +59,7 @@ export default async function MundoInfantilPage() {
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Videos y canciones infantiles</p>
           </div>
         </div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-6 pb-20">
         <div className="flex flex-col lg:flex-row gap-12">
@@ -96,6 +97,7 @@ export default async function MundoInfantilPage() {
       </div>
     </div>
   );
+}
 
 
 

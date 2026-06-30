@@ -1,7 +1,17 @@
-# 📜 Histórico SJM PLATFORM • v1.191 • COMPILACIÓN: 16-06-2026 02:45 AM (CDMX)
+# 📜 Histórico SJM PLATFORM • v1.192 • COMPILACIÓN: 30-06-2026 12:00 AM (CDMX)
 
-**Última actualización:** 16 de Junio de 2026 - 02:45 AM (CDMX)
+**Última actualización:** 30 de Junio de 2026 - 12:00 AM (CDMX)
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.192 - 30 de Junio de 2026 - 12:00 AM (CDMX)
+
+#### 🚀 Mejoras en Gestión Operativa y Correcciones
+- **Catálogo de Servidores (Vistas Duales):** Refactorización de la vista para soportar alternancia entre Formato Fichas (Tarjetas) y Formato Lista (Tabla). Soporte para visualizar detalle de servidores en Modal. Script para generar la plantilla Excel de importación con los nuevos campos de Base de Datos añadidos en Neon (redes sociales, detalle de retiros, etc).
+- **Gestión de Eventos y Retiros (Vistas Duales):** Refactorización a formato Vistas Duales para visualización estandarizada de eventos con soporte para editar retiros y validación de seguridad a nivel frontend/backend (rol Admin) para el borrado de retiros.
+- **Correcciones de Compilación (Sintaxis):** Solucionados errores de sintaxis en `mundo-infantil/page.tsx` y `sanacion-interior/page.tsx` donde faltaban llaves de cierre de JSX y funciones.
+- **Correcciones de Dependencias:** Ajuste de dependencias internas (removido uso de `@/components/ui/scroll-area` de `ModalDetalleServidor.tsx`) y reinstalación de módulo de Vercel Blob Blob local para corregir corrupción en la cadena de compilación de Vercel.
 
 ---
 

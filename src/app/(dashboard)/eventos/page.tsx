@@ -1,13 +1,13 @@
 import { getEventosRecientes, getSedes, getCasasRetiro, getTiposEventos } from "@/app/actions/consultas";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { Download, Search, CalendarDays, MapPin, Target, DollarSign, Users, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { ModalCrearEvento } from "@/components/forms/ModalCrearEvento";
+import EventosClientView from "./EventosClientView";
+import { getUsuarioSesion } from "@/lib/sesion";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ReporteRetiros() {
+  const session = await getUsuarioSesion();
+  const isAdmin = session.rol_nombre?.toLowerCase().includes("admin") || false;
+
   const [evtRes, sedesRes, casasRes, tiposRes] = await Promise.all([
     getEventosRecientes(),
     getSedes(),
@@ -15,93 +15,20 @@ export default async function ReporteRetiros() {
     getTiposEventos()
   ]);
 
-  const eventos = evtRes.data;
-  const success = evtRes.success;
-  
+  const eventos = evtRes.data || [];
   const sedes = sedesRes.data || [];
   const casas = casasRes.data || [];
   const tipos = tiposRes.data || [];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      
-      {/* Header ERPCubox Style */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#1a1b26] p-6 rounded-xl border border-slate-200 dark:border-[#2a2b3d] shadow-sm">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-             <CalendarDays className="w-6 h-6 text-blue-600 dark:text-[#e11d48]" /> 
-             Gestión de Retiros y Eventos
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-[#8e8ea0] mt-1 italic">
-            Planificación operativa y financiera de la obra.
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <ModalCrearEvento sedes={sedes} casas={casas} tipos={tipos} />
-        </div>
-      </div>
-
-      {/* Grid de Eventos / Retiros */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {!success || !eventos || eventos.length === 0 ? (
-          <div className="md:col-span-3 py-20 text-center bg-white dark:bg-[#1a1b26] border border-dashed border-slate-300 dark:border-[#3b3c54] rounded-2xl">
-             <Target className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto mb-4" />
-             <p className="text-slate-600 dark:text-slate-400 font-medium">No hay retiros programados próximamente.</p>
-             <Link href="/eventos/nuevo" className="text-blue-600 dark:text-[#e11d48] text-sm font-bold mt-2 inline-block">Comienza creando uno aquí</Link>
-          </div>
-        ) : (
-          eventos.map((evt: any) => (
-            <div key={evt.id} className="group bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col border-b-4 border-b-blue-600 dark:border-b-[#e11d48]">
-               
-               <div className="p-5 flex-1 space-y-4">
-                  {/* Badge Estatus */}
-                  <div className="flex justify-between items-start">
-                     <span className={cn(
-                       "text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded",
-                       evt.estatus === 'PLANEACION' ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                     )}>
-                        {evt.estatus}
-                     </span>
-                     <div className="p-2 bg-slate-50 dark:bg-[#2a2b3d] rounded-lg">
-                        <Users className="w-4 h-4 text-slate-400" />
-                     </div>
-                  </div>
-
-                  <div className="space-y-1">
-                     <h3 className="font-extrabold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-[#e11d48] transition-colors">{evt.tipo}</h3>
-                     <div className="flex items-center gap-1.5 text-slate-500 dark:text-[#8e8ea0] text-xs">
-                        <MapPin className="w-3 h-3" />
-                        <span className="truncate">{evt.casa}</span>
-                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 dark:border-[#2a2b3d]">
-                     <div>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Fecha Inicio</p>
-                        <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{evt.fecha_inicio ? format(new Date(evt.fecha_inicio), "dd MMM, yy", { locale: es }) : "TBD"}</p>
-                     </div>
-                     <div>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Aportación Sugerida</p>
-                        <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">${evt.costo || "0"}</p>
-                     </div>
-                  </div>
-               </div>
-
-               <Link href={`/eventos/${evt.id}`} className="bg-slate-50 dark:bg-[#151621] p-4 flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-[#e11d48] transition-colors">
-                  VER DETALLES OPERATIVOS
-                  <ChevronRight className="w-4 h-4" />
-               </Link>
-            </div>
-          ))
-        )}
-      </div>
-
+    <div className="w-full">
+      <EventosClientView 
+        eventos={eventos} 
+        sedes={sedes} 
+        casas={casas} 
+        tipos={tipos}
+        isAdmin={isAdmin}
+      />
     </div>
   );
-}
-
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ");
 }

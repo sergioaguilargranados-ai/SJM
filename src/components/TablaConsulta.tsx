@@ -33,6 +33,7 @@ interface Props {
   acciones?: React.ReactNode;     // Botones extra (Nuevo, Importar etc)
   filaVacia?: React.ReactNode;    // Componente cuando no hay datos
   totalLabel?: string;
+  renderCard?: (item: any) => React.ReactNode; // Optional card render function for grid view
 }
 
 function formatearFechaInput(dateStr: string): string {
@@ -63,10 +64,12 @@ export function TablaConsulta({
   acciones,
   filaVacia,
   totalLabel,
+  renderCard,
 }: Props) {
   const [busqueda, setBusqueda] = useState("");
   const [fechaDesde, setFechaDesde] = useState(inicioMes());
   const [fechaHasta, setFechaHasta] = useState(hoy());
+  const [viewMode, setViewMode] = useState<"table" | "grid">(renderCard ? "grid" : "table");
 
   // Filtrar datos
   const datosFiltrados = useMemo(() => {
@@ -245,6 +248,31 @@ export function TablaConsulta({
 
         {/* Acciones */}
         <div className="flex items-center gap-3 shrink-0">
+          {renderCard && (
+            <div className="flex bg-slate-100 dark:bg-[#0f1015] rounded-md p-1 border border-slate-200 dark:border-[#3b3c54]">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`px-3 py-1.5 rounded text-xs font-bold transition-colors ${
+                  viewMode === "grid" 
+                    ? "bg-white dark:bg-[#1a1b26] text-blue-600 dark:text-[#e11d48] shadow-sm" 
+                    : "text-slate-500 dark:text-[#8e8ea0] hover:text-slate-900 dark:hover:text-slate-300"
+                }`}
+              >
+                Fichas
+              </button>
+              <button
+                onClick={() => setViewMode("table")}
+                className={`px-3 py-1.5 rounded text-xs font-bold transition-colors ${
+                  viewMode === "table" 
+                    ? "bg-white dark:bg-[#1a1b26] text-blue-600 dark:text-[#e11d48] shadow-sm" 
+                    : "text-slate-500 dark:text-[#8e8ea0] hover:text-slate-900 dark:hover:text-slate-300"
+                }`}
+              >
+                Lista
+              </button>
+            </div>
+          )}
+
           {/* Botón PDF */}
           <button
             onClick={exportarPDF}
@@ -263,59 +291,80 @@ export function TablaConsulta({
         </div>
       </div>
 
-      {/* Tabla */}
+      {/* Contenido (Tabla o Grid) */}
       <div className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-xl shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 dark:bg-[#151621] text-slate-800 dark:text-slate-200 font-semibold text-xs border-b border-slate-200 dark:border-[#2a2b3d]">
-              <tr>
-                {columnas.filter(c => !c.ocultarEnUI).map((col) => (
-                  <th
-                    key={col.accessorKey}
-                    className={`px-5 py-3.5 font-semibold ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
-                  >
-                    {col.header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
-              {datosFiltrados.length === 0 ? (
+        {viewMode === "table" ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-[#151621] text-slate-800 dark:text-slate-200 font-semibold text-xs border-b border-slate-200 dark:border-[#2a2b3d]">
                 <tr>
-                  <td colSpan={columnas.filter(c => !c.ocultarEnUI).length} className="px-6 py-16 text-center">
-                    {filaVacia || (
-                      <div className="space-y-2">
-                        <FileText className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto" />
-                        <p className="text-slate-600 dark:text-slate-400 font-medium text-base">
-                          Sin registros encontrados
-                        </p>
-                        <p className="text-slate-500 dark:text-[#8e8ea0] text-sm">
-                          Ajusta los filtros o agrega nuevos datos.
-                        </p>
-                      </div>
-                    )}
-                  </td>
+                  {columnas.filter(c => !c.ocultarEnUI).map((col) => (
+                    <th
+                      key={col.accessorKey}
+                      className={`px-5 py-3.5 font-semibold ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
+                    >
+                      {col.header}
+                    </th>
+                  ))}
                 </tr>
-              ) : (
-                datosFiltrados.map((row, idx) => (
-                  <tr
-                    key={row.id || idx}
-                    className="hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/30 transition-colors"
-                  >
-                    {columnas.filter(c => !c.ocultarEnUI).map((col) => (
-                      <td
-                        key={col.accessorKey}
-                        className={`px-5 py-3.5 ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
-                      >
-                        {col.cell ? col.cell(row[col.accessorKey], row) : (row[col.accessorKey] ?? "—")}
-                      </td>
-                    ))}
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
+                {datosFiltrados.length === 0 ? (
+                  <tr>
+                    <td colSpan={columnas.filter(c => !c.ocultarEnUI).length} className="px-6 py-16 text-center">
+                      {filaVacia || (
+                        <div className="space-y-2">
+                          <FileText className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto" />
+                          <p className="text-slate-600 dark:text-slate-400 font-medium text-base">
+                            Sin registros encontrados
+                          </p>
+                          <p className="text-slate-500 dark:text-[#8e8ea0] text-sm">
+                            Ajusta los filtros o agrega nuevos datos.
+                          </p>
+                        </div>
+                      )}
+                    </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  datosFiltrados.map((row, idx) => (
+                    <tr
+                      key={row.id || idx}
+                      className="hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/30 transition-colors"
+                    >
+                      {columnas.filter(c => !c.ocultarEnUI).map((col) => (
+                        <td
+                          key={col.accessorKey}
+                          className={`px-5 py-3.5 ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
+                        >
+                          {col.cell ? col.cell(row[col.accessorKey], row) : (row[col.accessorKey] ?? "—")}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="p-6">
+            {datosFiltrados.length === 0 ? (
+              <div className="py-16 text-center">
+                {filaVacia || (
+                  <div className="space-y-2">
+                    <FileText className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto" />
+                    <p className="text-slate-600 dark:text-slate-400 font-medium text-base">
+                      Sin registros encontrados
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {renderCard && datosFiltrados.map((row, idx) => renderCard(row))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Footer: Resumen */}
         {datosFiltrados.length > 0 && (

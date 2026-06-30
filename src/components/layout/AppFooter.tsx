@@ -5,8 +5,8 @@ import { useTenant } from "@/components/TenantProvider";
 export function AppFooter() {
   const tenant = useTenant();
   // Formato: DD-MM-YYYY HH:mm
-  const buildTime = "16-06-2026 01:14 AM (CDMX)";
-  const appVersion = "v1.190 - SJM Multimedia Engine";
+  const buildTime = "30-06-2026 12:00 AM (CDMX)";
+  const appVersion = "v1.192 - SJM Core Engine";
 
 
 
@@ -28,4 +28,3 @@ export function AppFooter() {
     </footer>
   );
 }
-

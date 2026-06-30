@@ -115,9 +115,17 @@ export async function getEventosRecientes() {
     const resultados = await db
       .select({
          id: eventos.id,
+         tipo_evento_id: eventos.tipo_evento_id,
+         sede_id: eventos.sede_id,
+         casa_retiro_id: eventos.casa_retiro_id,
          tipo: tipos_eventos.nombre,
          casa: casas_retiro.nombre,
          fecha_inicio: eventos.fecha_inicio,
+         fecha_fin: eventos.fecha_fin,
+         costo_publico: eventos.costo_publico,
+         cupo_maximo: eventos.cupo_maximo,
+         recomendaciones: eventos.recomendaciones,
+         contrasena_inscripcion: eventos.contrasena_inscripcion,
          estatus: eventos.estatus,
          costo: eventos.costo_publico
       })

@@ -180,6 +180,19 @@ export const servidores = pgTable("servidores", {
   fecha_baja: date("fecha_baja"),
   nombre_gafete: varchar("nombre_gafete", { length: 150 }),
   avance_servidor: varchar("avance_servidor", { length: 255 }),
+  
+  // -- Nuevos campos para migración de datos (v1.172) --
+  telefono_casa_trabajo: varchar("telefono_casa_trabajo", { length: 50 }),
+  facebook_url: varchar("facebook_url", { length: 255 }),
+  instagram_url: varchar("instagram_url", { length: 255 }),
+  tiktok_url: varchar("tiktok_url", { length: 255 }),
+  youtube_url: varchar("youtube_url", { length: 255 }),
+  tels_emergencia: varchar("tels_emergencia", { length: 150 }),
+  retiros_tomados_detalle: text("retiros_tomados_detalle"),
+  retiros_externos_detalle: text("retiros_externos_detalle"),
+  servicios_sjm: text("servicios_sjm"),
+  // ---------------------------------------------------
+
   retiros_tomados: integer("retiros_tomados").default(0),
   retiros_externos: integer("retiros_externos").default(0),
   observaciones: text("observaciones"),
