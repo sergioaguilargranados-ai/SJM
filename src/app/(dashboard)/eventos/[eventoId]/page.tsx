@@ -32,9 +32,8 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
           <div className="flex justify-between items-start">
             <div className="space-y-2">
               <span className="bg-white/20 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Operación de Evento</span>
-              <h1 className="text-4xl font-black tracking-tight uppercase">{evento.tipo}</h1>
-              <p className="text-blue-100 dark:text-rose-100 text-sm font-medium">Gestión operativa y control de inscritos</p>
-
+              <h1 className="text-4xl font-black tracking-tight uppercase">{evento.nombre_evento || evento.tipo}</h1>
+              <p className="text-blue-100 dark:text-rose-100 text-sm font-medium">{evento.tipo} - Gestión operativa y control de inscritos</p>
             </div>
           </div>
         </div>

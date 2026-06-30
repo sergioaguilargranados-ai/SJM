@@ -50,39 +50,49 @@ export default async function RetirosEventosPage() {
         ) : (
           <div className="space-y-6">
             {retiros.map((r, idx) => (
-              <div key={r.id} className="bg-white dark:bg-[#1a1b26] rounded-2xl border border-slate-200 dark:border-[#2a2b3d] p-6 md:p-8 hover:shadow-xl transition-all flex flex-col md:flex-row items-start gap-6">
-                {/* Fecha visual */}
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 flex flex-col items-center justify-center text-white shrink-0 shadow-lg">
-                  <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short" }) : "TBD"}</span>
-                  <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).getDate() : "?"}</span>
-                </div>
-
-                <div className="flex-1">
-                  <h2 className="text-xl font-black text-slate-900 dark:text-white">{r.nombre_evento}</h2>
-                  <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    {r.tipo_evento && <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-orange-500" /> {r.tipo_evento}</span>}
-                    {r.sede_nombre && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-blue-500" /> {r.sede_nombre}</span>}
-                    {r.cupo_maximo && <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-green-500" /> Cupo: {r.cupo_maximo}</span>}
-                    {r.costo && <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-emerald-500" /> ${r.costo}</span>}
-                    {r.hora_entrada && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-purple-500" /> {r.hora_entrada} - {r.hora_salida}</span>}
+              <div key={r.id} className="bg-white dark:bg-[#1a1b26] rounded-3xl border border-slate-200 dark:border-[#2a2b3d] p-6 md:p-8 hover:shadow-xl transition-all flex flex-col gap-6">
+                
+                {/* Cabecera del Evento (Fecha, Título, Info y Botón) */}
+                <div className="flex flex-col md:flex-row items-start gap-6">
+                  {/* Fecha visual */}
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 flex flex-col items-center justify-center text-white shrink-0 shadow-lg">
+                    <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short" }) : "TBD"}</span>
+                    <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).getDate() : "?"}</span>
                   </div>
-                  {r.descripcion && <p className="text-slate-600 dark:text-slate-400 mt-3 text-sm leading-relaxed">{r.descripcion}</p>}
-                  <p className="text-xs text-slate-400 mt-2">{formatFecha(r.fecha_inicio)} → {formatFecha(r.fecha_fin)}</p>
+
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{r.nombre_evento}</h2>
+                    <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-600 dark:text-slate-400 font-medium">
+                      {r.tipo_evento && <span className="flex items-center gap-1.5 text-blue-700 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 rounded-md"><Calendar className="w-4 h-4" /> {r.tipo_evento}</span>}
+                      {r.sede_nombre && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-slate-400" /> {r.sede_nombre}</span>}
+                      {r.cupo_maximo && <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-slate-400" /> Cupo: {r.cupo_maximo}</span>}
+                      {r.costo && <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-slate-400" /> ${r.costo}</span>}
+                      {r.hora_entrada && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-400" /> {r.hora_entrada} - {r.hora_salida}</span>}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-3 font-medium">{formatFecha(r.fecha_inicio)} → {formatFecha(r.fecha_fin)}</p>
+                  </div>
+
+                  <div className="shrink-0 flex flex-col items-end gap-3 w-full md:w-auto">
+                    <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase self-start md:self-end ${r.estatus === "PROXIMA" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" : r.estatus === "EN_CURSO" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                      {r.estatus === "PROXIMA" ? "Próximo" : r.estatus === "EN_CURSO" ? "En Curso" : r.estatus}
+                    </span>
+                    
+                    <Link 
+                      href={`/registro/${r.id}`}
+                      className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider w-full md:w-auto"
+                    >
+                      ¡INSCRIBETE!
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                  </div>
                 </div>
 
-                <div className="shrink-0 flex flex-col items-end gap-3">
-                  <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase ${r.estatus === "PROXIMA" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" : r.estatus === "EN_CURSO" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
-                    {r.estatus === "PROXIMA" ? "Próximo" : r.estatus === "EN_CURSO" ? "En Curso" : r.estatus}
-                  </span>
-                  
-                  <Link 
-                    href={`/registro/${r.id}`}
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider text-sm"
-                  >
-                    ¡INSCRIBETE!
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                {/* Descripción (Beneficios, temario, etc) al final */}
+                {r.descripcion && (
+                  <div className="pt-5 border-t border-slate-100 dark:border-[#2a2b3d]">
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{r.descripcion}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
