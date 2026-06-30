@@ -1,7 +1,7 @@
 import { getEventoById, getInscripcionesByEvento } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Copy, ExternalLink, ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
+import { ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -19,11 +19,7 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
     );
   }
 
-  // Lógica Dinámica de Link de Registro SJM
-  const isDiplomado = true; // Por ahora forzamos diplomado para la prueba
-  const publicUrl = isDiplomado 
-    ? `https://sjm-hdzp.vercel.app/diplomado/registro/${evento.id}`
-    : `https://sjm-hdzp.vercel.app/registro/${evento.id}`;
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -44,20 +40,13 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="p-8 space-y-10">
-          {/* SECCION LINK DE REGISTRO */}
-          <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 shadow-sm">
-            <div className="flex-1 space-y-1">
-              <h3 className="text-xl font-bold text-blue-900 dark:text-blue-200">Link Público de Registro</h3>
-              <p className="text-blue-600/70 dark:text-blue-400 text-sm italic">Copia este link y compártelo con tus asistentes por WhatsApp o Redes Sociales.</p>
-              <div className="mt-4 flex items-center gap-2 bg-white dark:bg-black/20 p-3 rounded-xl border border-blue-200 dark:border-blue-800 shadow-inner">
-                <code className="text-xs font-mono text-blue-700 dark:text-blue-300 break-all">{publicUrl}</code>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 w-full md:w-auto">
-              <a href={publicUrl} target="_blank" className="bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white h-12 flex items-center justify-center rounded-xl px-8 text-sm font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all">
-                 <ExternalLink className="w-4 h-4 mr-2" /> Abrir Formulario Público
-              </a>
-            </div>
+          <div className="flex justify-end">
+            <Link 
+              href={`/registro/${evento.id}`} 
+              className="bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white h-12 flex items-center justify-center rounded-xl px-8 text-sm font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all"
+            >
+               <Users className="w-5 h-5 mr-2" /> Registrar Asistente
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

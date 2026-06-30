@@ -125,9 +125,13 @@ export async function getEventosRecientes() {
          costo_publico: eventos.costo_publico,
          cupo_maximo: eventos.cupo_maximo,
          recomendaciones: eventos.recomendaciones,
+         politica_cancelacion: eventos.politica_cancelacion,
          contrasena_inscripcion: eventos.contrasena_inscripcion,
          estatus: eventos.estatus,
-         costo: eventos.costo_publico
+         costo: eventos.costo_publico,
+         nombre_evento: eventos.nombre_evento,
+         descripcion: eventos.descripcion,
+         fecha_inicio_promocion: eventos.fecha_inicio_promocion
       })
       .from(eventos)
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
@@ -232,7 +236,12 @@ export async function getEventoById(id: string) {
         costo_publico: eventos.costo_publico,
         cupo_maximo: eventos.cupo_maximo,
         contrasena_inscripcion: eventos.contrasena_inscripcion,
-        es_matrimonial: eventos.es_matrimonial
+        es_matrimonial: eventos.es_matrimonial,
+        nombre_evento: eventos.nombre_evento,
+        descripcion: eventos.descripcion,
+        fecha_inicio_promocion: eventos.fecha_inicio_promocion,
+        recomendaciones: eventos.recomendaciones,
+        politica_cancelacion: eventos.politica_cancelacion
       })
       .from(eventos)
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))

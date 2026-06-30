@@ -269,7 +269,6 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
               { name: "Tienda Online", href: "/configuracion/tienda", icon: ShoppingBag },
               { name: "Blog", href: "/configuracion/blog", icon: Newspaper },
               { name: "Media", href: "/configuracion/media", icon: MonitorPlay },
-              { name: "Agenda Retiros", href: "/configuracion/agenda", icon: Megaphone },
             ].map((item) => {
               const isActive = pathname === item.href;
               return (

@@ -139,7 +139,7 @@ export async function crearEventoAction(datos: any) {
   try {
     const { 
        sede_id, tipo_evento_id, casa_retiro_id, fecha_inicio, fecha_fin, 
-       costo_publico, cupo_maximo, recomendaciones 
+       costo_publico, cupo_maximo, recomendaciones, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion
     } = datos;
 
     const [nuevoEvento] = await db.insert(eventos).values({
@@ -150,7 +150,11 @@ export async function crearEventoAction(datos: any) {
       fecha_fin: new Date(fecha_fin),
       costo_publico: String(costo_publico),
       cupo_maximo: Number(cupo_maximo),
+      nombre_evento,
+      descripcion,
+      fecha_inicio_promocion: fecha_inicio_promocion ? new Date(fecha_inicio_promocion) : null,
       recomendaciones,
+      politica_cancelacion,
       contrasena_inscripcion: datos.contrasena_inscripcion || null,
       estatus: 'PLANEACION'
     }).returning();
@@ -219,7 +223,7 @@ export async function eliminarEventoAction(id: string) {
 
 export async function actualizarEventoAction(id: string, datos: any) {
   try {
-    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion } = datos;
+    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion } = datos;
     
     await db.update(eventos)
       .set({
@@ -227,7 +231,11 @@ export async function actualizarEventoAction(id: string, datos: any) {
         fecha_fin: fecha_fin ? new Date(fecha_fin) : null,
         costo_publico: costo_publico ? String(costo_publico) : null,
         cupo_maximo: cupo_maximo ? Number(cupo_maximo) : null,
+        nombre_evento,
+        descripcion,
+        fecha_inicio_promocion: fecha_inicio_promocion ? new Date(fecha_inicio_promocion) : null,
         recomendaciones,
+        politica_cancelacion,
         contrasena_inscripcion: contrasena_inscripcion || null,
       })
       .where(eq(eventos.id, id));

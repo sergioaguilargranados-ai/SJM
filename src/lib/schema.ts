@@ -238,6 +238,10 @@ export const eventos = pgTable("eventos", {
   tipo_evento_id: uuid("tipo_evento_id").references(() => tipos_eventos.id).notNull(),
   casa_retiro_id: uuid("casa_retiro_id").references(() => casas_retiro.id).notNull(),
   
+  nombre_evento: varchar("nombre_evento", { length: 255 }).notNull().default('Evento General'),
+  descripcion: text("descripcion"),
+  fecha_inicio_promocion: timestamp("fecha_inicio_promocion"),
+  
   fecha_inicio: timestamp("fecha_inicio"),
   fecha_fin: timestamp("fecha_fin"),
   costo_publico: decimal("costo_publico"),

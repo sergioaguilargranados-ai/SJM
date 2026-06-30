@@ -1,7 +1,8 @@
-﻿import { Metadata } from "next";
-import { Calendar, MapPin, Users, DollarSign, Clock } from "lucide-react";
+import { Metadata } from "next";
+import { Calendar, MapPin, Users, DollarSign, Clock, ArrowRight } from "lucide-react";
 import { resolverTenant } from "@/lib/tenant";
 import { obtenerAgendaRetiros } from "@/app/actions/contenido";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Retiros y Eventos | Servidores de Jesús por María",
@@ -69,10 +70,18 @@ export default async function RetirosEventosPage() {
                   <p className="text-xs text-slate-400 mt-2">{formatFecha(r.fecha_inicio)} → {formatFecha(r.fecha_fin)}</p>
                 </div>
 
-                <div className="shrink-0">
+                <div className="shrink-0 flex flex-col items-end gap-3">
                   <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase ${r.estatus === "PROXIMA" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" : r.estatus === "EN_CURSO" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
                     {r.estatus === "PROXIMA" ? "Próximo" : r.estatus === "EN_CURSO" ? "En Curso" : r.estatus}
                   </span>
+                  
+                  <Link 
+                    href={`/registro/${r.id}`}
+                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider text-sm"
+                  >
+                    ¡INSCRIBETE!
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
               </div>
             ))}

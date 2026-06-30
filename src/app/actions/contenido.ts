@@ -5,9 +5,9 @@ import {
   parametros_landing, secciones_contenido, telefonos_emergencia,
   responsables_organizacion, testimonios, preguntas_frecuentes,
   galeria_fotos, letreros_especiales, media_contenido, articulos_blog,
-  agenda_retiros, tipos_eventos, sedes, casas_retiro
+  agenda_retiros, tipos_eventos, sedes, casas_retiro, eventos
 } from "@/lib/schema";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc, asc, gte } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 
 // ============================================================
@@ -222,30 +222,34 @@ export async function obtenerArticulosBlog(organizacionId: string, blogClave: st
 export async function obtenerAgendaRetiros(organizacionId: string) {
   return unstable_cache(
     async () => {
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0); // Inicio del día
+
       return db
         .select({
-          id: agenda_retiros.id,
-          nombre_evento: agenda_retiros.nombre_evento,
-          fecha_inicio: agenda_retiros.fecha_inicio,
-          fecha_fin: agenda_retiros.fecha_fin,
-          hora_entrada: agenda_retiros.hora_entrada,
-          hora_salida: agenda_retiros.hora_salida,
-          cupo_maximo: agenda_retiros.cupo_maximo,
-          costo: agenda_retiros.costo,
-          descripcion: agenda_retiros.descripcion,
-          estatus: agenda_retiros.estatus,
+          id: eventos.id,
+          nombre_evento: eventos.nombre_evento,
+          fecha_inicio: eventos.fecha_inicio,
+          fecha_fin: eventos.fecha_fin,
+          hora_entrada: eventos.fecha_inicio, // Placeholder o usar fecha inicio
+          hora_salida: eventos.fecha_fin, // Placeholder
+          cupo_maximo: eventos.cupo_maximo,
+          costo: eventos.costo_publico,
+          descripcion: eventos.descripcion,
+          estatus: eventos.estatus,
           tipo_evento: tipos_eventos.nombre,
           sede_nombre: sedes.nombre,
         })
-        .from(agenda_retiros)
-        .leftJoin(tipos_eventos, eq(agenda_retiros.tipo_evento_id, tipos_eventos.id))
-        .leftJoin(sedes, eq(agenda_retiros.sede_id, sedes.id))
+        .from(eventos)
+        .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
+        .leftJoin(sedes, eq(eventos.sede_id, sedes.id))
         .where(
           and(
-            eq(agenda_retiros.organizacion_id, organizacionId),
+            eq(eventos.organizacion_id, organizacionId),
+            gte(eventos.fecha_inicio, hoy)
           )
         )
-        .orderBy(asc(agenda_retiros.fecha_inicio));
+        .orderBy(asc(eventos.fecha_inicio));
     },
     [`agenda_retiros_${organizacionId}`],
     { revalidate: Number(process.env.CACHE_TTL_SECONDS) || 3600, tags: ["agenda_retiros"] }

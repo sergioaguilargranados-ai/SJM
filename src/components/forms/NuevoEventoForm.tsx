@@ -22,6 +22,7 @@ const formSchema = z.object({
   costo_publico: z.coerce.number().min(0, "Monto inválido"),
   cupo_maximo: z.coerce.number().min(1, "Cupo mínimo 1"),
   recomendaciones: z.string().optional(),
+  politica_cancelacion: z.string().optional(),
   contrasena_inscripcion: z.string().optional(),
 });
 
@@ -41,6 +42,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(eventoToEdit.fecha_inicio).toISOString().slice(0, 10) : "",
       fecha_fin: eventoToEdit?.fecha_fin ? new Date(eventoToEdit.fecha_fin).toISOString().slice(0, 10) : "",
       recomendaciones: eventoToEdit?.recomendaciones || "",
+      politica_cancelacion: eventoToEdit?.politica_cancelacion || "",
       contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
     },
   });
@@ -111,6 +113,20 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 </select>
               </div>
             </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Nombre del Evento *</Label>
+              <Input placeholder="Ej. RENACER JOVEN 2026" {...form.register("nombre_evento" as any)} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" required />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Descripción del Evento</Label>
+              <textarea 
+                className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("descripcion" as any)}
+                placeholder="Breve descripción que se mostrará al público..."
+              />
+            </div>
           </div>
         </div>
 
@@ -130,6 +146,11 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
             <div className="space-y-2">
               <Label className="dark:text-slate-300">Fecha Fin *</Label>
               <Input type="datetime-local" {...form.register("fecha_fin")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Fecha Inicio Promoción</Label>
+              <Input type="datetime-local" {...form.register("fecha_inicio_promocion" as any)} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
             </div>
 
             <div className="space-y-2">
@@ -162,6 +183,15 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 className="w-full min-h-[100px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
                 {...form.register("recomendaciones")}
                 placeholder="Ej. Llevar Biblia, artículos de aseo personal, ropa cómoda..."
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-4">
+              <Label className="dark:text-slate-300">Política de Cancelaciones</Label>
+              <textarea 
+                className="w-full min-h-[100px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("politica_cancelacion")}
+                placeholder="Cómo aplican las cancelaciones o devoluciones..."
               />
             </div>
           </div>

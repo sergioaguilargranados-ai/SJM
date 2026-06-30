@@ -78,7 +78,7 @@ export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmi
                 </div>
 
                 <div className="space-y-1">
-                   <h3 className="font-extrabold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-[#e11d48] transition-colors">{evt.tipo}</h3>
+                   <h3 className="font-extrabold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-[#e11d48] transition-colors">{evt.nombre_evento || evt.tipo}</h3>
                    <div className="flex items-center gap-1.5 text-slate-500 dark:text-[#8e8ea0] text-xs">
                       <MapPin className="w-3 h-3" />
                       <span className="truncate">{evt.casa}</span>
