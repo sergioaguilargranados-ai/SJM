@@ -25,6 +25,9 @@ const formSchema = z.object({
   politica_cancelacion: z.string().optional(),
   contrasena_inscripcion: z.string().optional(),
   es_evento_servidores: z.boolean().optional(),
+  nombre_evento: z.string().min(1, "Obligatorio"),
+  descripcion: z.string().optional(),
+  fecha_inicio_promocion: z.string().optional(),
 });
 
 
@@ -46,6 +49,9 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       politica_cancelacion: eventoToEdit?.politica_cancelacion || "",
       contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
       es_evento_servidores: eventoToEdit?.es_evento_servidores || false,
+      nombre_evento: eventoToEdit?.nombre_evento || "",
+      descripcion: eventoToEdit?.descripcion || "",
+      fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(eventoToEdit.fecha_inicio_promocion).toISOString().slice(0, 16) : "",
     },
   });
 

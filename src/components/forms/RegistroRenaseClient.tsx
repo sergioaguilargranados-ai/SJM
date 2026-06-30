@@ -39,7 +39,7 @@ const servidorSchema = z.object({
 const formSchema = z.intersection(itinerarioSchema, servidorSchema);
 type FormValues = z.infer<typeof formSchema>;
 
-export function RegistroRenaseClient({ evento }: { evento: any }) {
+export function RegistroRenaseClient({ evento, sedes }: { evento: any, sedes: any[] }) {
   const [paso, setPaso] = useState<"BUSCADOR" | "CAPTURA" | "EXITO">("BUSCADOR");
   const [cargando, setCargando] = useState(false);
   const [termBusqueda, setTermBusqueda] = useState("");
@@ -292,8 +292,13 @@ export function RegistroRenaseClient({ evento }: { evento: any }) {
                    <Input type="email" {...form.register("correo")} className="dark:bg-[#0f1015]" />
                  </div>
                  <div className="space-y-2">
-                   <Label className="dark:text-slate-300">ID Sede (Avanzado)</Label>
-                   <Input {...form.register("sede_id")} placeholder="UUID de la sede (opcional)" className="dark:bg-[#0f1015]" />
+                   <Label className="dark:text-slate-300">Sede</Label>
+                   <select {...form.register("sede_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona tu sede</option>
+                     {sedes.map((s: any) => (
+                       <option key={s.id} value={s.id}>{s.nombre}</option>
+                     ))}
+                   </select>
                  </div>
               </div>
            </div>

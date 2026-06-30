@@ -293,22 +293,21 @@ export async function registrarRenaseAction(datos: any) {
   try {
     // Aquí recibimos todos los datos combinados: los del perfil del servidor y los del itinerario
     // Actualizamos al servidor y creamos la solicitud en una transacción
-    await db.transaction(async (tx) => {
       // 1. Actualizar usuario
       if (datos.usuario_id) {
-         await tx.execute(sql`
+         await db.execute(sql`
            UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo} WHERE id = ${datos.usuario_id}
          `);
       }
       // 2. Actualizar servidor
       if (datos.servidor_id) {
-         await tx.execute(sql`
+         await db.execute(sql`
            UPDATE servidores SET sede_id = ${datos.sede_id || null}, ministerio_id = ${datos.ministerio_id || null}, cargo_id = ${datos.cargo_id || null} WHERE id = ${datos.servidor_id}
          `);
       }
       
       // 3. Crear inscripción
-      await tx.insert(solicitudes_inscripcion).values({
+      await db.insert(solicitudes_inscripcion).values({
         evento_id: datos.evento_id,
         usuario_id: datos.usuario_id || null,
         nombre_asistente: datos.nombre_completo,
@@ -329,7 +328,6 @@ export async function registrarRenaseAction(datos: any) {
         // Set default
         estatus_solicitud: "PENDIENTE_PAGO"
       });
-    });
 
     return { success: true };
   } catch (error: any) {
