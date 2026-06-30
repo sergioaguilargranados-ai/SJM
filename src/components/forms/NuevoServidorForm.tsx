@@ -24,9 +24,26 @@ const formSchema = z.object({
   avance_servidor: z.string().optional(),
   retiros_tomados: z.coerce.number().default(0),
   observaciones: z.string().optional(),
+  ministerio_id: z.string().optional(),
+  cargo_id: z.string().optional(),
+  domicilio_calle: z.string().optional(),
+  domicilio_colonia: z.string().optional(),
+  domicilio_cp: z.string().optional(),
+  estado_id: z.string().optional(),
+  telefono_casa_trabajo: z.string().optional(),
+  facebook_url: z.string().optional(),
+  instagram_url: z.string().optional(),
+  tiktok_url: z.string().optional(),
+  youtube_url: z.string().optional(),
+  contacto_emergencia: z.string().optional(),
+  tels_emergencia: z.string().optional(),
+  retiros_tomados_detalle: z.string().optional(),
+  retiros_externos_detalle: z.string().optional(),
+  servicios_sjm: z.string().optional(),
+  nombre_gafete: z.string().optional(),
 });
 
-export default function NuevoServidorForm({ sedes, onSuccess, isModal }: { sedes: any[], onSuccess?: () => void, isModal?: boolean }) {
+export default function NuevoServidorForm({ sedes, ministerios = [], cargos = [], estados = [], onSuccess, isModal }: { sedes: any[], ministerios?: any[], cargos?: any[], estados?: any[], onSuccess?: () => void, isModal?: boolean }) {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
 
@@ -112,6 +129,74 @@ export default function NuevoServidorForm({ sedes, onSuccess, isModal }: { sedes
               </div>
               {form.formState.errors.celular && <p className="text-red-500 text-xs">{form.formState.errors.celular.message}</p>}
             </div>
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Nombre Gafete</Label>
+              <Input {...form.register("nombre_gafete")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Ministerio Actual</Label>
+              <select {...form.register("ministerio_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
+                <option value="">Seleccione...</option>
+                {ministerios.map((m: any) => <option key={m.id} value={m.id}>{m.nombre}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Cargo Actual</Label>
+              <select {...form.register("cargo_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
+                <option value="">Seleccione...</option>
+                {cargos.map((c: any) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Domicilio (Calle y número)</Label>
+              <Input {...form.register("domicilio_calle")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Colonia</Label>
+              <Input {...form.register("domicilio_colonia")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Código Postal</Label>
+              <Input {...form.register("domicilio_cp")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Estado</Label>
+              <select {...form.register("estado_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
+                <option value="">Seleccione...</option>
+                {estados.map((e: any) => <option key={e.id} value={e.id}>{e.nombre}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Teléfono Casa o Trabajo</Label>
+              <Input {...form.register("telefono_casa_trabajo")} placeholder="Formato libre" className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Contacto de Emergencia</Label>
+              <Input {...form.register("contacto_emergencia")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Tels. de Emergencia</Label>
+              <Input {...form.register("tels_emergencia")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Facebook</Label>
+              <Input {...form.register("facebook_url")} placeholder="Identificador / URL" className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-slate-300">Instagram</Label>
+              <Input {...form.register("instagram_url")} placeholder="Identificador / URL" className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
           </div>
         </div>
 
@@ -160,6 +245,33 @@ export default function NuevoServidorForm({ sedes, onSuccess, isModal }: { sedes
             <div className="space-y-2">
               <Label className="dark:text-slate-300">Retiros Tomados</Label>
               <Input type="number" {...form.register("retiros_tomados")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d] dark:text-white" />
+            </div>
+
+            <div className="space-y-2 md:col-span-3">
+              <Label className="dark:text-slate-300">Retiros Tomados (Detalle extenso)</Label>
+              <textarea 
+                className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("retiros_tomados_detalle")}
+                placeholder="Listado detallado libre de retiros tomados..."
+              />
+            </div>
+            
+            <div className="space-y-2 md:col-span-3">
+              <Label className="dark:text-slate-300">Retiros Otras Comunidades (Detalle extenso)</Label>
+              <textarea 
+                className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("retiros_externos_detalle")}
+                placeholder="Listado de retiros en otras comunidades..."
+              />
+            </div>
+            
+            <div className="space-y-2 md:col-span-3">
+              <Label className="dark:text-slate-300">Servicios en SJM (Detalle extenso)</Label>
+              <textarea 
+                className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("servicios_sjm")}
+                placeholder="Listado de servicios dentro de la obra..."
+              />
             </div>
 
             <div className="space-y-2 md:col-span-3">

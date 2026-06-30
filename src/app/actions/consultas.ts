@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos, ministerios, cargos } from "@/lib/schema";
+import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos, ministerios, cargos, estados_republica } from "@/lib/schema";
 import { desc, eq, count, sum, and } from "drizzle-orm";
 import { validarAccesoPlan } from "@/lib/permisos";
 
@@ -272,6 +272,15 @@ export async function getInscripcionesByEvento(eventoId: string) {
     return { success: true, data: resultados };
   } catch (error) {
     console.error("Error al consultar inscritos por evento:", error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function getEstadosRepublica() {
+  try {
+    const resultados = await db.select().from(estados_republica).orderBy(estados_republica.nombre);
+    return { success: true, data: resultados };
+  } catch (error) {
     return { success: false, data: [] };
   }
 }

@@ -275,8 +275,8 @@ export async function buscarServidorPorNombreAction(nombre: string) {
   try {
     const term = `%${nombre.trim().toLowerCase()}%`;
     const result = await db.execute(sql`
-      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular,
-              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor
+      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, s.sexo, s.fecha_nacimiento,
+              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, s.estado_civil, s.fecha_ingreso, s.retiros_tomados, s.observaciones
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
        WHERE LOWER(u.nombre_completo) LIKE ${term}
@@ -293,23 +293,62 @@ export async function registrarRenaseAction(datos: any) {
   try {
     // Aquí recibimos todos los datos combinados: los del perfil del servidor y los del itinerario
     // Actualizamos al servidor y creamos la solicitud en una transacción
-      // 1. Actualizar usuario
-      if (datos.usuario_id) {
+      let usuarioId = datos.usuario_id;
+      let servidorId = datos.servidor_id;
+
+      // 1. Crear o Actualizar usuario
+      if (usuarioId) {
          await db.execute(sql`
-           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo} WHERE id = ${datos.usuario_id}
+           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo}, fecha_nacimiento = ${datos.fecha_nacimiento || null} WHERE id = ${usuarioId}
          `);
+      } else {
+         const [nuevoUsu] = await db.insert(usuarios).values({
+           organizacion_id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
+           nombre_completo: datos.nombre_completo,
+           celular: datos.celular,
+           correo: datos.correo || `${Date.now()}@temporal.com`,
+           fecha_nacimiento: datos.fecha_nacimiento || null,
+           es_servidor: true
+         }).returning({ id: usuarios.id });
+         usuarioId = nuevoUsu.id;
       }
-      // 2. Actualizar servidor
-      if (datos.servidor_id) {
+      
+      // 2. Crear o Actualizar servidor
+      if (servidorId) {
          await db.execute(sql`
-           UPDATE servidores SET sede_id = ${datos.sede_id || null}, ministerio_id = ${datos.ministerio_id || null}, cargo_id = ${datos.cargo_id || null} WHERE id = ${datos.servidor_id}
+           UPDATE servidores SET 
+              sede_id = ${datos.sede_id || null}, 
+              ministerio_id = ${datos.ministerio_id || null}, 
+              cargo_id = ${datos.cargo_id || null},
+              estado_civil = ${datos.estado_civil || null},
+              sexo = ${datos.sexo || null},
+              fecha_ingreso = ${datos.fecha_ingreso || null},
+              avance_servidor = ${datos.avance_servidor || null},
+              retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
+              observaciones = ${datos.observaciones || null}
+           WHERE id = ${servidorId}
          `);
+      } else {
+         const [nuevoServ] = await db.insert(servidores).values({
+           usuario_id: usuarioId,
+           sede_id: datos.sede_id || "00000000-0000-0000-0000-000000000000", // Required
+           ministerio_id: datos.ministerio_id || null,
+           cargo_id: datos.cargo_id || null,
+           estado_civil: datos.estado_civil || null,
+           sexo: datos.sexo || null,
+           fecha_ingreso: datos.fecha_ingreso || null,
+           avance_servidor: datos.avance_servidor || null,
+           retiros_tomados: datos.retiros_tomados ? Number(datos.retiros_tomados) : 0,
+           observaciones: datos.observaciones || null,
+           estatus: true
+         }).returning({ id: servidores.id });
+         servidorId = nuevoServ.id;
       }
       
       // 3. Crear inscripción
       await db.insert(solicitudes_inscripcion).values({
         evento_id: datos.evento_id,
-        usuario_id: datos.usuario_id || null,
+        usuario_id: usuarioId,
         nombre_asistente: datos.nombre_completo,
         nombre_gafete: datos.nombre_gafete || null,
         telefono_celular: datos.celular || null,

@@ -34,12 +34,19 @@ const servidorSchema = z.object({
   sede_id: z.string().optional(),
   ministerio_id: z.string().optional(),
   cargo_id: z.string().optional(),
+  estado_civil: z.string().optional(),
+  sexo: z.string().optional(),
+  fecha_nacimiento: z.string().optional(),
+  fecha_ingreso: z.string().optional(),
+  avance_servidor: z.string().optional(),
+  retiros_tomados: z.coerce.number().optional(),
+  observaciones: z.string().optional(),
 });
 
 const formSchema = z.intersection(itinerarioSchema, servidorSchema);
 type FormValues = z.infer<typeof formSchema>;
 
-export function RegistroRenaseClient({ evento, sedes }: { evento: any, sedes: any[] }) {
+export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { evento: any, sedes: any[], ministerios: any[], cargos: any[] }) {
   const [paso, setPaso] = useState<"BUSCADOR" | "CAPTURA" | "EXITO">("BUSCADOR");
   const [cargando, setCargando] = useState(false);
   const [termBusqueda, setTermBusqueda] = useState("");
@@ -76,6 +83,13 @@ export function RegistroRenaseClient({ evento, sedes }: { evento: any, sedes: an
        sede_id: serv.sede_id || "",
        ministerio_id: serv.ministerio_id || "",
        cargo_id: serv.cargo_id || "",
+       estado_civil: serv.estado_civil || "",
+       sexo: serv.sexo || "",
+       fecha_nacimiento: serv.fecha_nacimiento ? serv.fecha_nacimiento.toString().slice(0, 10) : "",
+       fecha_ingreso: serv.fecha_ingreso ? serv.fecha_ingreso.toString().slice(0, 10) : "",
+       avance_servidor: serv.avance_servidor || "",
+       retiros_tomados: serv.retiros_tomados || 0,
+       observaciones: serv.observaciones || "",
     });
     setPaso("CAPTURA");
   };
@@ -304,6 +318,62 @@ export function RegistroRenaseClient({ evento, sedes }: { evento: any, sedes: an
                        <option key={s.id} value={s.id}>{s.nombre}</option>
                      ))}
                    </select>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Ministerio Actual</Label>
+                   <select {...form.register("ministerio_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona tu ministerio</option>
+                     {ministerios.map((m: any) => (
+                       <option key={m.id} value={m.id}>{m.nombre}</option>
+                     ))}
+                   </select>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Cargo Actual</Label>
+                   <select {...form.register("cargo_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona tu cargo</option>
+                     {cargos.map((c: any) => (
+                       <option key={c.id} value={c.id}>{c.nombre}</option>
+                     ))}
+                   </select>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Estado Civil</Label>
+                   <select {...form.register("estado_civil")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona...</option>
+                     <option value="Soltero/a">Soltero/a</option>
+                     <option value="Casado/a">Casado/a</option>
+                     <option value="Divorciado/a">Divorciado/a</option>
+                     <option value="Viudo/a">Viudo/a</option>
+                   </select>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Sexo</Label>
+                   <select {...form.register("sexo")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona...</option>
+                     <option value="Masculino">Masculino</option>
+                     <option value="Femenino">Femenino</option>
+                   </select>
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Fecha de Nacimiento</Label>
+                   <Input type="date" {...form.register("fecha_nacimiento")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Fecha de Ingreso SJM</Label>
+                   <Input type="date" {...form.register("fecha_ingreso")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Avance / Nivel</Label>
+                   <Input placeholder="Ej. Servidor I" {...form.register("avance_servidor")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Retiros Tomados</Label>
+                   <Input type="number" {...form.register("retiros_tomados")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                   <Label className="dark:text-slate-300">Observaciones Internas</Label>
+                   <textarea {...form.register("observaciones")} placeholder="Notas adicionales sobre el perfil del servidor..." className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none" />
                  </div>
               </div>
            </div>
