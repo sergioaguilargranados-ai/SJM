@@ -98,7 +98,7 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
           </div>
           {/* LISTA DE INSCRITOS */}
           <div className="pt-4 border-t border-slate-100 dark:border-[#2a2b3d]">
-            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo} />
+            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo || "Evento"} />
           </div>
         </div>
       </div>

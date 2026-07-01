@@ -189,7 +189,7 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
                 Configuración
               </Link>
             </li>
-            {planClave === "premium" && permisos?.rol === "SUPER_ADMIN" && (
+            {planClave === "premium" && permisos?.includes("*") && (
               <li className="px-3">
                 <Link
                   href="/configuracion/organizaciones"
