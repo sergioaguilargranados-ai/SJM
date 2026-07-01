@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { solicitudes_inscripcion, servidores, usuarios, sedes, casas_retiro, tipos_eventos, eventos, ministerios, cargos, estados_republica } from "@/lib/schema";
-import { desc, eq, count, sum, and } from "drizzle-orm";
+import { desc, eq, count, sum, and, sql } from "drizzle-orm";
 import { validarAccesoPlan } from "@/lib/permisos";
 import { getUsuarioSesion } from "@/lib/sesion";
 
