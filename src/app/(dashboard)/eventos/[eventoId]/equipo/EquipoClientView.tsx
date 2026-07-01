@@ -6,8 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { asignarEquipoEventoAction } from "@/app/actions/inscripciones";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -141,7 +139,12 @@ export default function EquipoClientView({ evento, equipoActual, servidores }: {
 
                  <div className="space-y-2">
                     <Label>Asignaciones específicas (Opcional)</Label>
-                    <Textarea placeholder="Tareas detalladas..." value={asignaciones} onChange={e => setAsignaciones(e.target.value)} />
+                    <textarea 
+                      placeholder="Tareas detalladas..." 
+                      value={asignaciones} 
+                      onChange={e => setAsignaciones(e.target.value)} 
+                      className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-[#0f1015] dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
+                    />
                  </div>
 
                  <div className="space-y-2">
@@ -157,7 +160,10 @@ export default function EquipoClientView({ evento, equipoActual, servidores }: {
                        <Label className="text-sm font-bold">Estatus del Servidor en el Evento</Label>
                        <p className="text-xs text-slate-500">{estatus ? 'Activo (Participará)' : 'Inactivo (No participará)'}</p>
                     </div>
-                    <Switch checked={estatus} onCheckedChange={setEstatus} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked={estatus} onChange={e => setEstatus(e.target.checked)} />
+                      <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
+                    </label>
                  </div>
 
                  <Button className="w-full h-12" onClick={handleGuardar} disabled={cargando}>
