@@ -4,6 +4,7 @@ import { es } from "date-fns/locale";
 import { ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import AsistentesEventoClientView from "./AsistentesEventoClientView";
 
 export default async function DetalleEventoPage({ params }: { params: Promise<{ eventoId: string }> }) {
   const { eventoId } = await params;
@@ -96,36 +97,8 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
              </div>
           </div>
           {/* LISTA DE INSCRITOS */}
-          <div className="space-y-6">
-             <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-[#2a2b3d] pb-2">Asistentes Registrados</h4>
-             {inscritos.length === 0 ? (
-                <div className="py-12 text-center bg-slate-50 dark:bg-black/10 rounded-2xl border border-dashed border-slate-200 dark:border-[#2a2b3d]">
-                   <p className="text-sm text-slate-500">Aún no hay inscripciones para este evento.</p>
-                </div>
-             ) : (
-                <div className="overflow-x-auto">
-                   <table className="w-full text-left text-sm">
-                      <thead>
-                         <tr className="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-[#2a2b3d]">
-                            <th className="py-3 px-2">Nombre</th>
-                            <th className="py-3 px-2">WhatsApp</th>
-                            <th className="py-3 px-2">Localidad</th>
-                            <th className="py-3 px-2">Ministerio</th>
-                         </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
-                         {inscritos.map((ins: any) => (
-                            <tr key={ins.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                               <td className="py-3 px-2 font-bold text-slate-700 dark:text-slate-200">{ins.nombre_asistente}</td>
-                               <td className="py-3 px-2 text-slate-500">{ins.telefono_celular}</td>
-                               <td className="py-3 px-2 text-slate-500">{ins.pais_ciudad || "N/A"}</td>
-                               <td className="py-3 px-2 text-slate-500">{ins.ministerio_actual || "N/A"}</td>
-                            </tr>
-                         ))}
-                      </tbody>
-                   </table>
-                </div>
-             )}
+          <div className="pt-4 border-t border-slate-100 dark:border-[#2a2b3d]">
+            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo} />
           </div>
         </div>
       </div>

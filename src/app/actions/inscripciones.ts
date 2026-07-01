@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos } from "@/lib/schema";
+import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos, equipo_evento, evaluaciones_evento } from "@/lib/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -428,5 +428,59 @@ export async function asignarEquipoEventoAction(datos: any) {
   } catch (error: any) {
     console.error("Error al asignar equipo:", error);
     return { success: false, error: error.message };
+  }
+}
+
+export async function validarYCrearEvaluacionAction(datos: any) {
+  try {
+    const { evento_id, identificador, evaluacion } = datos;
+    
+    // Buscar si existe en solicitudes_inscripcion
+    let solicitud = await db.query.solicitudes_inscripcion.findFirst({
+      where: (sol, { eq, and, or }) => and(
+        eq(sol.evento_id, evento_id),
+        or(
+          eq(sol.correo, identificador),
+          eq(sol.telefono_celular, identificador)
+        )
+      )
+    });
+
+    if (!solicitud) {
+      return { success: false, error: "No se encontró registro con ese correo/celular para este evento." };
+    }
+
+    // Verificar si ya evaluó
+    const existe = await db.query.evaluaciones_evento.findFirst({
+      where: (ev, { eq, and }) => and(
+        eq(ev.evento_id, evento_id),
+        eq(ev.solicitud_id, solicitud.id)
+      )
+    });
+
+    if (existe) {
+      return { success: false, error: "Ya has enviado una evaluación para este evento." };
+    }
+
+    await db.insert(evaluaciones_evento).values({
+      evento_id,
+      solicitud_id: solicitud.id,
+      cumplio_expectativas: evaluacion.cumplio_expectativas === 'si',
+      calificacion_instalaciones: Number(evaluacion.calificacion_instalaciones),
+      calificacion_alimentos: Number(evaluacion.calificacion_alimentos),
+      calificacion_organizacion: Number(evaluacion.calificacion_organizacion),
+      te_confesaste: evaluacion.te_confesaste === 'si',
+      tema_mas_gusto: evaluacion.tema_mas_gusto,
+      oracion_mas_gusto: evaluacion.oracion_mas_gusto,
+      comentarios_sugerencias: evaluacion.comentarios_sugerencias,
+      gustas_integrarte: evaluacion.gustas_integrarte === 'si',
+      gustas_apoyar_economicamente: evaluacion.gustas_apoyar_economicamente === 'si',
+      oficio_profesion: evaluacion.oficio_profesion,
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error guardando evaluación:", error);
+    return { success: false, error: error.message || "Error guardando evaluación" };
   }
 }

@@ -13,6 +13,16 @@ export default function EvaluacionesClientView({ datos }: { datos: any[] }) {
       camposFiltro={["asistente", "evento_tipo", "tema_mas_gusto", "comentarios_sugerencias", "oficio_profesion"]}
       totalLabel="Total Evaluaciones"
       nombrePDF="Reporte_Evaluaciones"
+      acciones={
+        <a 
+          href="/evaluar" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="h-9 px-4 flex items-center gap-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors shadow-sm"
+        >
+          <Star className="w-3.5 h-3.5" /> Evaluar (Público)
+        </a>
+      }
       columnas={[
         {
           header: "Asistente",

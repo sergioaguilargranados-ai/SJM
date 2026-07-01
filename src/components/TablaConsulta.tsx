@@ -1,9 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, Calendar, FileText, Download, X, Table2 } from "lucide-react";
+import { Search, Calendar, FileText, Download, X, Table2, Columns } from "lucide-react";
 import { generarReportePDF } from "@/lib/generarPDF";
 import { generarReporteExcel } from "@/lib/generarExcel";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // ============================================================
 // Componente reutilizable TablaConsulta - Patrón ERPCubox
@@ -70,6 +74,17 @@ export function TablaConsulta({
   const [fechaDesde, setFechaDesde] = useState(inicioMes());
   const [fechaHasta, setFechaHasta] = useState(hoy());
   const [viewMode, setViewMode] = useState<"table" | "grid">(renderCard ? "grid" : "table");
+  
+  // Column Visibility
+  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    columnas.forEach(col => {
+      initial[col.accessorKey] = !col.ocultarEnUI;
+    });
+    return initial;
+  });
+
+  const columnasVisibles = columnas.filter(col => columnVisibility[col.accessorKey]);
 
   // Filtrar datos
   const datosFiltrados = useMemo(() => {
@@ -100,7 +115,7 @@ export function TablaConsulta({
 
   // Exportar PDF
   const exportarPDF = () => {
-    const columnasReporte = columnas.map((col) => ({
+    const columnasReporte = columnasVisibles.map((col) => ({
       header: col.header,
       dataKey: col.pdfKey || col.accessorKey,
       halign: col.halign,
@@ -108,7 +123,7 @@ export function TablaConsulta({
 
     const datosReporte = datosFiltrados.map((row) => {
       const fila: Record<string, any> = {};
-      columnas.forEach((col) => {
+      columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
         fila[key] = row[key] ?? row[col.accessorKey] ?? "";
       });
@@ -128,14 +143,14 @@ export function TablaConsulta({
 
   // Exportar Excel
   const exportarExcel = () => {
-    const columnasReporte = columnas.map((col) => ({
+    const columnasReporte = columnasVisibles.map((col) => ({
       header: col.header,
       dataKey: col.pdfKey || col.accessorKey,
     }));
 
     const datosReporte = datosFiltrados.map((row) => {
       const fila: Record<string, any> = {};
-      columnas.forEach((col) => {
+      columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
         fila[key] = row[key] ?? row[col.accessorKey] ?? "";
       });
@@ -273,6 +288,30 @@ export function TablaConsulta({
             </div>
           )}
 
+          {/* Botón Columnas */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-9 px-3 text-xs font-bold bg-white dark:bg-[#1a1b26] border-slate-300 dark:border-[#3b3c54]">
+                <Columns className="w-3.5 h-3.5 mr-2 text-slate-400" />
+                Columnas
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 dark:bg-[#1a1b26] dark:border-[#2a2b3d]">
+              {columnas.map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col.accessorKey}
+                  className="text-xs font-medium cursor-pointer"
+                  checked={columnVisibility[col.accessorKey]}
+                  onCheckedChange={(checked) => 
+                    setColumnVisibility(prev => ({ ...prev, [col.accessorKey]: checked }))
+                  }
+                >
+                  {col.header}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {/* Botón PDF */}
           <button
             onClick={exportarPDF}
@@ -298,7 +337,7 @@ export function TablaConsulta({
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
               <thead className="bg-slate-50 dark:bg-[#151621] text-slate-800 dark:text-slate-200 font-semibold text-xs border-b border-slate-200 dark:border-[#2a2b3d]">
                 <tr>
-                  {columnas.filter(c => !c.ocultarEnUI).map((col) => (
+                  {columnasVisibles.map((col) => (
                     <th
                       key={col.accessorKey}
                       className={`px-5 py-3.5 font-semibold ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
@@ -311,7 +350,7 @@ export function TablaConsulta({
               <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
                 {datosFiltrados.length === 0 ? (
                   <tr>
-                    <td colSpan={columnas.filter(c => !c.ocultarEnUI).length} className="px-6 py-16 text-center">
+                    <td colSpan={columnasVisibles.length} className="px-6 py-16 text-center">
                       {filaVacia || (
                         <div className="space-y-2">
                           <FileText className="w-12 h-12 text-slate-300 dark:text-[#3b3c54] mx-auto" />
@@ -331,7 +370,7 @@ export function TablaConsulta({
                       key={row.id || idx}
                       className="hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/30 transition-colors"
                     >
-                      {columnas.filter(c => !c.ocultarEnUI).map((col) => (
+                      {columnasVisibles.map((col) => (
                         <td
                           key={col.accessorKey}
                           className={`px-5 py-3.5 ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}

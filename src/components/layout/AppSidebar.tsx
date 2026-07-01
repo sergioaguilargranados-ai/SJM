@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, CalendarDays, Receipt, Settings, FileText, Menu, X,
   LogOut, ChevronDown, ChevronRight, Music, Award, Tag, Home, MapPin, Wallet,
   ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck,
-  PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay
+  PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay, Building2
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -189,6 +189,27 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
                 Configuración
               </Link>
             </li>
+            {planClave === "premium" && permisos?.rol === "SUPER_ADMIN" && (
+              <li className="px-3">
+                <Link
+                  href="/configuracion/organizaciones"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                    pathname === "/configuracion/organizaciones"
+                      ? "text-white shadow-md font-bold"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                  )}
+                  style={pathname === "/configuracion/organizaciones" ? { backgroundColor: tenant.color_primario } : undefined}
+                >
+                  <Building2 className={cn(
+                    "w-4 h-4 mr-3 transition-colors",
+                    pathname === "/configuracion/organizaciones" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                  )} />
+                  Organizaciones
+                </Link>
+              </li>
+            )}
             <li className="px-3">
               <Link
                 href="/configuracion/usuarios"

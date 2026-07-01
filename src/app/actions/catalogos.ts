@@ -250,6 +250,7 @@ export async function getInscripcionesCompleto() {
         nombre_asistente: solicitudes_inscripcion.nombre_asistente,
         correo: solicitudes_inscripcion.correo,
         telefono_celular: solicitudes_inscripcion.telefono_celular,
+        edad: solicitudes_inscripcion.edad,
         sexo: solicitudes_inscripcion.sexo,
         estado_civil: solicitudes_inscripcion.estado_civil,
         es_primera_vez: solicitudes_inscripcion.es_primera_vez,
@@ -261,10 +262,12 @@ export async function getInscripcionesCompleto() {
         ministerio_actual: solicitudes_inscripcion.ministerio_actual,
         creado_en: solicitudes_inscripcion.creado_en,
         evento_tipo: tipos_eventos.nombre,
+        sede_nombre: sedes.nombre,
       })
       .from(solicitudes_inscripcion)
       .leftJoin(eventos, eq(solicitudes_inscripcion.evento_id, eventos.id))
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
+      .leftJoin(sedes, eq(eventos.sede_id, sedes.id))
       .orderBy(desc(solicitudes_inscripcion.creado_en));
     return { success: true, data: resultados };
   } catch (error) {
