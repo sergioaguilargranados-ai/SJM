@@ -247,7 +247,7 @@ export function TablaConsulta({
         </div>
 
         {/* Acciones */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center justify-end gap-3 shrink-0">
           {renderCard && (
             <div className="flex bg-slate-100 dark:bg-[#0f1015] rounded-md p-1 border border-slate-200 dark:border-[#3b3c54]">
               <button

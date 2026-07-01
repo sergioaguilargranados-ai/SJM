@@ -24,8 +24,8 @@ export default function DocumentosClientView({ datos, organizacionId }: { datos:
           campos={[
             { nombre: "nombre", label: "Nombre del Documento", requerido: true, placeholder: "Ej: Manual del Coordinador" },
             { nombre: "descripcion", label: "Descripción", placeholder: "Descripción breve" },
-            { nombre: "url_archivo", label: "URL del Archivo", requerido: true, tipo: "url", placeholder: "https://..." },
-            { nombre: "nivel_acceso_rol", label: "Nivel de Acceso (Rol)", placeholder: "SUPER_ADMIN, ADMIN_ORG, OPERATIVO_SEDE, SERVIDOR" },
+            { nombre: "url_archivo", label: "Archivo", requerido: true, tipo: "file" },
+            { nombre: "nivel_acceso_rol", label: "Niveles de Acceso", tipo: "multicheck", opciones: ["SUPER_ADMIN", "ADMIN_ORG", "OPERATIVO_SEDE", "SERVIDOR", "PUBLICO"] },
           ]}
           datosExtra={{ organizacion_id: organizacionId }}
           onSubmit={crearDocumentoAction}
@@ -67,8 +67,8 @@ export default function DocumentosClientView({ datos, organizacionId }: { datos:
           halign: "center" as const,
           cell: (val: any) =>
             val ? (
-              <a href={val} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-[#e11d48] hover:underline text-xs font-bold">
-                <ExternalLink className="w-3 h-3" /> Abrir
+              <a href={val} target="_blank" rel="noopener noreferrer" download className="inline-flex items-center gap-1 text-blue-600 dark:text-[#e11d48] hover:underline text-xs font-bold bg-blue-50 dark:bg-blue-900/10 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                <ExternalLink className="w-3.5 h-3.5" /> Descargar / Abrir
               </a>
             ) : "—",
         },

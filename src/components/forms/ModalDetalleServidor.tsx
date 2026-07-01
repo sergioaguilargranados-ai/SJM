@@ -58,9 +58,15 @@ export function ModalDetalleServidor({ servidor, open, onOpenChange }: ModalDeta
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0 dark:bg-[#1a1b26] dark:border-[#2a2b3d]">
         <DialogHeader className="p-6 pb-4 border-b border-slate-100 dark:border-[#3b3c54] flex flex-row items-start gap-4">
-           <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
-             {servidor.nombre_completo?.charAt(0) || "U"}
-           </div>
+           {servidor.foto_url ? (
+             <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-inner shrink-0 border border-slate-200 dark:border-[#3b3c54]">
+               <img src={servidor.foto_url} alt="Foto" className="w-full h-full object-cover" />
+             </div>
+           ) : (
+             <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
+               {servidor.nombre_completo?.charAt(0) || "U"}
+             </div>
+           )}
            <div className="flex-1">
              <DialogTitle className="text-2xl font-black dark:text-white flex items-center gap-3">
                {servidor.nombre_completo}

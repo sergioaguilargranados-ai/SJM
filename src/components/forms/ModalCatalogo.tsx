@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Upload } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 
 // ============================================================
 // Modal reutilizable para dar de alta registros en catálogos simples
@@ -16,9 +17,10 @@ import { Plus, X } from "lucide-react";
 interface CampoFormulario {
   nombre: string;
   label: string;
-  tipo?: "text" | "checkbox" | "number" | "url";
+  tipo?: "text" | "checkbox" | "number" | "url" | "file" | "multicheck";
   requerido?: boolean;
   placeholder?: string;
+  opciones?: string[]; // For multicheck
 }
 
 interface Props {
@@ -34,10 +36,41 @@ export function ModalCatalogo({ titulo, campos, onSubmit, textoBoton = "Nuevo", 
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [subiendoArchivo, setSubiendoArchivo] = useState(false);
   const router = useRouter();
 
   const handleChange = (nombre: string, valor: any) => {
     setFormData((prev) => ({ ...prev, [nombre]: valor }));
+  };
+
+  const handleFileUpload = async (nombre: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+    const file = event.target.files[0];
+    setSubiendoArchivo(true);
+    try {
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+      });
+      handleChange(nombre, newBlob.url);
+    } catch (error: any) {
+      alert("Error al subir el archivo: " + (error.message || "Error desconocido"));
+    } finally {
+      setSubiendoArchivo(false);
+    }
+  };
+
+  const handleMultiCheck = (nombre: string, opcion: string, checked: boolean) => {
+    setFormData((prev) => {
+      const actual = prev[nombre] ? prev[nombre].split(",") : [];
+      if (checked) {
+        if (!actual.includes(opcion)) actual.push(opcion);
+      } else {
+        const idx = actual.indexOf(opcion);
+        if (idx > -1) actual.splice(idx, 1);
+      }
+      return { ...prev, [nombre]: actual.join(",") };
+    });
   };
 
   const handleSubmit = () => {
@@ -100,6 +133,51 @@ export function ModalCatalogo({ titulo, campos, onSubmit, textoBoton = "Nuevo", 
                     />
                     <span className="text-sm font-medium text-slate-700 dark:text-[#c1c1d1]">{campo.label}</span>
                   </label>
+                ) : campo.tipo === "multicheck" ? (
+                  <>
+                    <Label className="text-slate-700 dark:text-[#c1c1d1]">
+                      {campo.label} {campo.requerido && <span className="text-red-500">*</span>}
+                    </Label>
+                    <div className="space-y-2 border border-slate-200 dark:border-[#2a2b3d] p-3 rounded-lg">
+                       {campo.opciones?.map(op => {
+                         const actual = formData[campo.nombre] ? formData[campo.nombre].split(",") : [];
+                         const isChecked = actual.includes(op);
+                         return (
+                           <label key={op} className="flex items-center gap-3 cursor-pointer">
+                             <input
+                               type="checkbox"
+                               checked={isChecked}
+                               onChange={(e) => handleMultiCheck(campo.nombre, op, e.target.checked)}
+                               className="h-4 w-4 rounded border-slate-300 dark:border-[#3b3c54] accent-blue-600 dark:accent-[#e11d48]"
+                             />
+                             <span className="text-sm text-slate-700 dark:text-slate-300">{op}</span>
+                           </label>
+                         )
+                       })}
+                    </div>
+                  </>
+                ) : campo.tipo === "file" ? (
+                  <>
+                    <Label className="text-slate-700 dark:text-[#c1c1d1]">
+                      {campo.label} {campo.requerido && <span className="text-red-500">*</span>}
+                    </Label>
+                    <div className="mt-1">
+                      <Button type="button" variant="outline" className="relative overflow-hidden w-full dark:text-slate-300 h-10 bg-slate-50 dark:bg-[#151621]">
+                        <input 
+                          type="file" 
+                          onChange={(e) => handleFileUpload(campo.nombre, e)} 
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                        <Upload className="w-4 h-4 mr-2" />
+                        {subiendoArchivo ? "Subiendo..." : formData[campo.nombre] ? "Archivo Subido (Click para cambiar)" : "Seleccionar Archivo"}
+                      </Button>
+                      {formData[campo.nombre] && (
+                        <a href={formData[campo.nombre]} target="_blank" className="text-xs text-blue-600 hover:underline mt-2 block">
+                          Ver archivo cargado
+                        </a>
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <>
                     <Label className="text-slate-700 dark:text-[#c1c1d1]">

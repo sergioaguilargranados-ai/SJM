@@ -31,7 +31,7 @@ export default async function FinanzasPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Finanzas y Rentabilidad</h1>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Finanzas</h1>
           <p className="text-slate-500 dark:text-[#8e8ea0] font-medium mt-1">Control de ingresos y egresos por evento</p>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default async function FinanzasPage() {
         <div className="p-6 border-b border-slate-100 dark:border-[#2a2b3d] flex items-center justify-between">
           <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
             <Calendar className="w-5 h-5 text-[#00B4AA]" />
-            Rentabilidad por Evento
+            Reporte Financiero
           </h2>
         </div>
         

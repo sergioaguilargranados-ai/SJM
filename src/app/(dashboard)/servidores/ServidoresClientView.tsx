@@ -37,7 +37,7 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
       totalLabel="Total Activos"
       nombrePDF="Padron_Servidores"
       acciones={
-        <>
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <ModalImportarServidores sedeId={sedeId} organizacionId={organizacionId} />
           <ModalCrearServidor 
             sedes={sedes} 
@@ -45,7 +45,7 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
             cargos={cargos} 
             estados={estados} 
           />
-        </>
+        </div>
       }
       renderCard={(row) => (
         <div key={row.id} className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col h-full relative group">

@@ -41,12 +41,18 @@ const formSchema = z.object({
   retiros_externos_detalle: z.string().optional(),
   servicios_sjm: z.string().optional(),
   nombre_gafete: z.string().optional(),
+  foto_url: z.string().optional(),
   estatus: z.boolean().default(true),
 });
+
+import { upload } from "@vercel/blob/client";
+import { Upload } from "lucide-react";
 
 export default function NuevoServidorForm({ sedes, ministerios = [], cargos = [], estados = [], onSuccess, isModal }: { sedes: any[], ministerios?: any[], cargos?: any[], estados?: any[], onSuccess?: () => void, isModal?: boolean }) {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
+  const [subiendoFoto, setSubiendoFoto] = useState(false);
+  const [fotoUrl, setFotoUrl] = useState<string | null>(null);
 
   // En demo hardcoded, en prod viene de session
   const ORGANIZACION_ID = "6fb191cc-a477-4632-9cb1-c30c33a9f9bd"; // SJM Nacional UUID de ejemplo
@@ -57,8 +63,27 @@ export default function NuevoServidorForm({ sedes, ministerios = [], cargos = []
       retiros_tomados: 0,
       sede_id: sedes[0]?.id || "",
       estatus: true,
+      foto_url: "",
     },
   });
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+    const file = event.target.files[0];
+    setSubiendoFoto(true);
+    try {
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+      });
+      setFotoUrl(newBlob.url);
+      form.setValue("foto_url", newBlob.url);
+    } catch (error: any) {
+      alert("Error al subir la foto: " + (error.message || "Error desconocido"));
+    } finally {
+      setSubiendoFoto(false);
+    }
+  };
 
   async function onSubmit(values: any) {
     setCargando(true);
@@ -112,6 +137,34 @@ export default function NuevoServidorForm({ sedes, ministerios = [], cargos = []
               <select {...form.register("sede_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
                 {sedes.map(s => <option key={s.id} value={s.id}>{s.nombre}</option>)}
               </select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Foto de Perfil</Label>
+              <div className="flex items-center gap-4">
+                {fotoUrl ? (
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-slate-200 dark:border-[#2a2b3d]">
+                    <img src={fotoUrl} alt="Foto" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-[#2a2b3d] flex items-center justify-center border-2 border-slate-200 dark:border-[#3b3c54]">
+                    <User className="w-6 h-6 text-slate-400" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <Button type="button" variant="outline" className="relative overflow-hidden w-full dark:text-slate-300 h-10">
+                    <input 
+                      type="file" 
+                      onChange={handleFileUpload} 
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      accept="image/*"
+                    />
+                    <Upload className="w-4 h-4 mr-2" />
+                    {subiendoFoto ? "Subiendo Foto..." : fotoUrl ? "Cambiar Foto" : "Subir Foto (Cámara/Galería)"}
+                  </Button>
+                  <p className="text-[10px] text-slate-500 mt-1">Formatos soportados: JPG, PNG, WEBP.</p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">

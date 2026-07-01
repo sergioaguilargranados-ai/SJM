@@ -54,7 +54,7 @@ export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmi
           </div>
         }
         acciones={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <ModalImportarEventos organizacionId={organizacionId} />
             <ModalCrearEvento sedes={sedes} casas={casas} tipos={tipos} />
           </div>

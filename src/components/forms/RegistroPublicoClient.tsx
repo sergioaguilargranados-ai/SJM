@@ -62,6 +62,13 @@ export function RegistroPublicoClient({ evento, children }: RegistroPublicoClien
         >
           Validar Acceso <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
+
+        <button 
+          onClick={() => window.location.href = '/retiros-eventos'}
+          className="w-full h-12 rounded-2xl text-slate-500 font-bold text-sm uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-[#2a2b3d] transition-all"
+        >
+          Regresar a Eventos
+        </button>
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-center gap-2 opacity-50">

@@ -143,7 +143,8 @@ export async function crearServidorAction(datos: any) {
         retiros_tomados_detalle: retiros_tomados_detalle || null,
         retiros_externos_detalle: retiros_externos_detalle || null,
         servicios_sjm: servicios_sjm || null,
-        nombre_gafete: nombre_gafete || null
+        nombre_gafete: nombre_gafete || null,
+        foto_url: datos.foto_url || null,
       }).returning();
 
       return nuevoServidor;
@@ -299,7 +300,7 @@ export async function buscarServidorPorNombreAction(nombre: string) {
     const term = `%${nombre.trim().toLowerCase()}%`;
     const result = await db.execute(sql`
       SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, s.sexo, s.fecha_nacimiento,
-              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, s.estado_civil, s.fecha_ingreso, s.retiros_tomados, s.observaciones
+              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, s.estado_civil, s.fecha_ingreso, s.retiros_tomados, s.observaciones, s.foto_url
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
        WHERE LOWER(u.nombre_completo) LIKE ${term}
@@ -395,5 +396,37 @@ export async function registrarRenaseAction(datos: any) {
   } catch (error: any) {
     console.error("Error en registrarRenaseAction:", error);
     return { success: false, error: error.message || "Error al procesar inscripción RENASE" };
+  }
+}
+
+export async function asignarEquipoEventoAction(datos: any) {
+  try {
+    // Validar si ya está asignado
+    const check = await db.execute(sql`
+      SELECT id FROM equipo_evento WHERE evento_id = ${datos.evento_id} AND servidor_id = ${datos.servidor_id}
+    `);
+    
+    if (check.rows.length > 0) {
+       await db.execute(sql`
+         UPDATE equipo_evento 
+         SET cargo_texto = ${datos.cargo_texto || null},
+             asignaciones = ${datos.asignaciones || null},
+             aportacion_economica = ${datos.aportacion_economica ? Number(datos.aportacion_economica) : 0},
+             estatus = ${datos.estatus}
+         WHERE evento_id = ${datos.evento_id} AND servidor_id = ${datos.servidor_id}
+       `);
+    } else {
+       await db.execute(sql`
+         INSERT INTO equipo_evento (evento_id, servidor_id, cargo_texto, asignaciones, aportacion_economica, estatus)
+         VALUES (${datos.evento_id}, ${datos.servidor_id}, ${datos.cargo_texto || null}, ${datos.asignaciones || null}, ${datos.aportacion_economica ? Number(datos.aportacion_economica) : 0}, ${datos.estatus})
+       `);
+    }
+    
+    revalidatePath(`/eventos/${datos.evento_id}`);
+    revalidatePath(`/eventos/${datos.evento_id}/equipo`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al asignar equipo:", error);
+    return { success: false, error: error.message };
   }
 }

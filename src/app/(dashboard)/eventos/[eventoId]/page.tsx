@@ -39,12 +39,18 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="p-8 space-y-10">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
+            <Link 
+              href={`/eventos/${evento.id}/equipo`} 
+              className="bg-white hover:bg-slate-50 dark:bg-[#1a1b26] dark:hover:bg-[#2a2b3d] text-slate-800 dark:text-white border border-slate-200 dark:border-[#3b3c54] h-12 flex items-center justify-center rounded-xl px-6 text-sm font-bold transition-all"
+            >
+               <Users className="w-5 h-5 mr-2 text-blue-600" /> Gestionar Equipo
+            </Link>
             <Link 
               href={`/registro/${evento.id}`} 
               className="bg-blue-600 hover:bg-blue-700 dark:bg-[#e11d48] dark:hover:bg-[#be123c] text-white h-12 flex items-center justify-center rounded-xl px-8 text-sm font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all"
             >
-               <Users className="w-5 h-5 mr-2" /> Registrar Asistente
+               <Heart className="w-5 h-5 mr-2" /> Registrar Asistente
             </Link>
           </div>
 

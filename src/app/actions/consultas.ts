@@ -34,7 +34,8 @@ export async function getServidores() {
          correo: usuarios.correo,
          celular: usuarios.celular,
          fecha_ingreso: servidores.fecha_ingreso,
-         sede: sedes.nombre
+         sede: sedes.nombre,
+         foto_url: servidores.foto_url
       })
       .from(servidores)
       .leftJoin(usuarios, eq(servidores.usuario_id, usuarios.id))
@@ -275,6 +276,26 @@ export async function getInscripcionesByEvento(eventoId: string) {
     return { success: true, data: resultados };
   } catch (error) {
     console.error("Error al consultar inscritos por evento:", error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function getEquipoByEvento(eventoId: string) {
+  try {
+    const { orgId } = await validarAccesoPlan("inscripciones");
+    const result = await db.execute(sql`
+      SELECT 
+        e.id, e.evento_id, e.servidor_id, e.cargo_texto, e.asignaciones, e.aportacion_economica, e.estatus,
+        s.foto_url, s.sede_id, s.ministerio_id,
+        u.nombre_completo, u.correo, u.celular
+      FROM equipo_evento e
+      INNER JOIN servidores s ON e.servidor_id = s.id
+      INNER JOIN usuarios u ON s.usuario_id = u.id
+      WHERE e.evento_id = ${eventoId}
+    `);
+    return { success: true, data: result.rows };
+  } catch (error) {
+    console.error("Error al consultar equipo por evento:", error);
     return { success: false, data: [] };
   }
 }

@@ -197,6 +197,7 @@ export const servidores = pgTable("servidores", {
   retiros_externos: integer("retiros_externos").default(0),
   observaciones: text("observaciones"),
   estatus: boolean("estatus").default(true),
+  foto_url: text("foto_url"),
 });
 
 
@@ -345,6 +346,7 @@ export const equipo_evento = pgTable("equipo_evento", {
   evento_id: uuid("evento_id").references(() => eventos.id).notNull(),
   servidor_id: uuid("servidor_id").references(() => servidores.id).notNull(),
   cargo_evento_id: uuid("cargo_evento_id").references(() => cargos.id),
+  cargo_texto: varchar("cargo_texto", { length: 255 }),
   asignaciones: text("asignaciones"),
   aportacion_economica: decimal("aportacion_economica").default('0'),
   estatus: boolean("estatus").default(true),
@@ -381,7 +383,7 @@ export const documentos_institucionales = pgTable("documentos_institucionales", 
   nombre: varchar("nombre", { length: 255 }).notNull(),
   descripcion: text("descripcion"),
   url_archivo: text("url_archivo").notNull(),
-  nivel_acceso_rol: varchar("nivel_acceso_rol", { length: 50 }),
+  nivel_acceso_rol: varchar("nivel_acceso_rol", { length: 255 }),
   fecha_subida: timestamp("fecha_subida").defaultNow(),
 });
 
