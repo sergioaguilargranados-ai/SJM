@@ -1,7 +1,7 @@
 # 🎯 AG-Contexto-Proyecto - Plataforma SJM
 
-**Última actualización:** 11 de Abril de 2026 - 09:25 CST  
-**Versión actual:** v1.091  
+**Última actualización:** 30 de Junio de 2026 - 23:14 CST  
+**Versión actual:** v1.193  
 **Actualizado por:** AntiGravity AI Assistant  
 **Propósito:** Documento maestro del proyecto. Establece las bases, reglas y estándares técnicos para el desarrollo integral de SJM.
 

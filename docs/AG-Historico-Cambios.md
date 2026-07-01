@@ -1,7 +1,18 @@
-# 📜 Histórico SJM PLATFORM • v1.192 • COMPILACIÓN: 30-06-2026 12:00 AM (CDMX)
+# 📜 Histórico SJM PLATFORM • v1.193 • COMPILACIÓN: 30-06-2026 23:14 (CDMX)
 
-**Última actualización:** 30 de Junio de 2026 - 12:00 AM (CDMX)
+**Última actualización:** 30 de Junio de 2026 - 23:14 (CDMX)
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.193 - 30 de Junio de 2026 - 23:14 (CDMX)
+
+#### 🚀 Marca Blanca, Asignación de Equipo y Evaluaciones Públicas
+- **Marca Blanca:** Módulo Configuración > Organizaciones para aislar dominios, datos y apariencia de forma multi-tenant.
+- **Selector de Columnas:** Implementación de visibilidad de columnas dinámica en `TablaConsulta` y aplicación en exportaciones PDF y Excel.
+- **Asignación de Equipo:** Nuevo modal con selección de evento, servidor, cargo y aportación económica, con grabación en `equipo_evento`.
+- **Filtros de Inscripción:** Implementación de selectores dinámicos (Sede, Evento, Rango de Edad) para segmentación de participantes y exportaciones.
+- **Evaluaciones Post-Evento:** Captura de evaluaciones de forma pública mediante validación de correo/celular contra la base de datos de inscripciones.
 
 ---
 
