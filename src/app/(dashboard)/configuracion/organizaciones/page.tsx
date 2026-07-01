@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export default async function OrganizacionesPage() {
   const permisos = await getPermisosUsuario();
   
-  if (permisos.rol !== "SUPER_ADMIN") {
+  if (!permisos.includes("*")) {
     redirect("/dashboard");
   }
 
