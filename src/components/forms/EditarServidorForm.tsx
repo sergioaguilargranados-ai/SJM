@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { actualizarServidorAction } from "@/app/actions/inscripciones";
-import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity, Share2, ScrollText } from "lucide-react";
+import { uploadFotoServidor } from "@/app/actions/upload-foto";
+import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity, Share2, ScrollText, Camera, Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   nombre_completo: z.string().min(3, "Mínimo 3 caracteres"),
@@ -38,6 +39,7 @@ const formSchema = z.object({
   retiros_tomados_detalle: z.string().optional(),
   retiros_externos_detalle: z.string().optional(),
   servicios_sjm: z.string().optional(),
+  foto_url: z.string().optional(),
 });
 
 export default function EditarServidorForm({ 
@@ -55,6 +57,28 @@ export default function EditarServidorForm({
 }) {
   const router = useRouter();
   const [cargando, setCargando] = useState(false);
+  const [subiendoFoto, setSubiendoFoto] = useState(false);
+  const [fotoUrl, setFotoUrl] = useState(servidor.foto_url || servidor.foto_perfil_url || "");
+
+  async function handleSubirFoto(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    
+    setSubiendoFoto(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("usuarioId", servidor.usuario_id);
+
+    const res = await uploadFotoServidor(formData);
+    setSubiendoFoto(false);
+
+    if (res.success && res.url) {
+      setFotoUrl(res.url);
+      form.setValue("foto_url", res.url); // Enviar también en el submit
+    } else {
+      alert("Error al subir foto: " + res.error);
+    }
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
@@ -85,6 +109,7 @@ export default function EditarServidorForm({
       retiros_tomados_detalle: servidor.retiros_tomados_detalle || "",
       retiros_externos_detalle: servidor.retiros_externos_detalle || "",
       servicios_sjm: servidor.servicios_sjm || "",
+      foto_url: servidor.foto_url || servidor.foto_perfil_url || "",
     },
   });
 
@@ -104,6 +129,37 @@ export default function EditarServidorForm({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       
+      {/* Foto de Perfil */}
+      <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-[#151621] rounded-xl border border-slate-100 dark:border-[#2a2b3d]">
+         <div className="relative group w-32 h-32 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 border-4 border-white dark:border-[#0f1015] shadow-md flex items-center justify-center">
+            {fotoUrl ? (
+               <img src={fotoUrl} alt="Foto perfil" className="w-full h-full object-cover" />
+            ) : (
+               <UserCircle className="w-16 h-16 text-slate-400" />
+            )}
+            
+            {/* Overlay de carga o hover */}
+            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+               {subiendoFoto ? (
+                  <Loader2 className="w-8 h-8 text-white animate-spin" />
+               ) : (
+                  <>
+                    <Camera className="w-8 h-8 text-white mb-1" />
+                    <span className="text-white text-xs font-bold">Cambiar</span>
+                  </>
+               )}
+               <input 
+                 type="file" 
+                 accept="image/*"
+                 className="absolute inset-0 opacity-0 cursor-pointer"
+                 onChange={handleSubirFoto}
+                 disabled={subiendoFoto}
+               />
+            </div>
+         </div>
+         <p className="text-xs text-slate-500 mt-4 text-center max-w-xs">Haz clic en la imagen para subir o actualizar la foto del servidor.</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Identidad */}
         <div className="space-y-4">

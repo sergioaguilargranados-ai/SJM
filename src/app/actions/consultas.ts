@@ -232,6 +232,9 @@ export async function getServidorById(id: string) {
     const [resultado] = await db
       .select({
          id: servidores.id,
+         usuario_id: servidores.usuario_id,
+         foto_perfil_url: usuarios.foto_perfil_url,
+         foto_url: servidores.foto_url,
          estatus: servidores.estatus,
          nombre_completo: usuarios.nombre_completo,
          correo: usuarios.correo,
