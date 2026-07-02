@@ -10,7 +10,7 @@ import { ModalImportarServidores } from "@/components/forms/ModalImportarServido
 import { ModalDetalleServidor } from "@/components/forms/ModalDetalleServidor";
 import { BotonSubirFoto } from "@/components/forms/BotonSubirFoto";
 
-export default function ServidoresClientView({ servidores, sedes, ministerios = [], cargos = [], estados = [], sedeId, organizacionId }: {
+export default function ServidoresClientView({ servidores, sedes, ministerios = [], cargos = [], estados = [], sedeId, organizacionId, esAdmin }: {
   servidores: any[];
   sedes: any[];
   ministerios?: any[];
