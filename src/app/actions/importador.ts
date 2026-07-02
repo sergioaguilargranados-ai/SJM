@@ -33,12 +33,13 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           
           let userId;
           if (!existe) {
+            const celularRaw = String(fila.Celular || fila.Telefono || "").trim();
             const [nuevo] = await tx.insert(usuarios).values({
               organizacion_id: organizacionId,
               sede_id: sedeId,
               nombre_completo: nombre,
               correo: email.toLowerCase(),
-              celular: String(fila.Celular || fila.Telefono || "")
+              celular: celularRaw === "" ? null : celularRaw
             }).returning();
             userId = nuevo.id;
           } else {
@@ -50,6 +51,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           
           if (!yaEsServidor) {
             await tx.insert(servidores).values({
+              organizacion_id: organizacionId,
               usuario_id: userId,
               sede_id: sedeId,
               estado_civil: fila.EstadoCivil || "",
