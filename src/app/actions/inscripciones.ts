@@ -104,52 +104,49 @@ export async function crearServidorAction(datos: any) {
       nombre_gafete
     } = datos;
 
-    // Transacción para asegurar que se crea el usuario y el servidor
-    const result = await db.transaction(async (tx) => {
-      // 1. Crear Usuario base (si no existe por correo)
-      const [nuevoUsuario] = await tx.insert(usuarios).values({
-        organizacion_id,
-        nombre_completo,
-        correo,
-        celular,
-        rol_id: null,
-      }).returning();
+    // 1. Crear Usuario base (si no existe por correo)
+    const [nuevoUsuario] = await db.insert(usuarios).values({
+      organizacion_id,
+      nombre_completo,
+      correo,
+      celular,
+      rol_id: null,
+    }).returning();
 
-      // 2. Crear Relación en Tabla Servidores
-      const [nuevoServidor] = await tx.insert(servidores).values({
-        usuario_id: nuevoUsuario.id,
-        sede_id,
-        ministerio_id: ministerio_id || null,
-        cargo_id: cargo_id || null,
-        estado_civil: estado_civil || null,
-        fecha_nacimiento: fecha_nacimiento || null,
-        sexo: sexo || null,
-        fecha_ingreso: fecha_ingreso || null,
-        avance_servidor: avance_servidor || null,
-        retiros_tomados: Number(retiros_tomados) || 0,
-        observaciones: observaciones || null,
-        estatus: estatus === false ? false : true,
-        domicilio_calle: domicilio_calle || null,
-        domicilio_colonia: domicilio_colonia || null,
-        domicilio_cp: domicilio_cp || null,
-        estado_id: estado_id || null,
-        contacto_emergencia: contacto_emergencia || null,
-        telefono_emergencia: tels_emergencia || null,
-        tels_emergencia: tels_emergencia || null,
-        telefono_casa_trabajo: telefono_casa_trabajo || null,
-        facebook_url: facebook_url || null,
-        instagram_url: instagram_url || null,
-        tiktok_url: tiktok_url || null,
-        youtube_url: youtube_url || null,
-        retiros_tomados_detalle: retiros_tomados_detalle || null,
-        retiros_externos_detalle: retiros_externos_detalle || null,
-        servicios_sjm: servicios_sjm || null,
-        nombre_gafete: nombre_gafete || null,
-        foto_url: datos.foto_url || null,
-      }).returning();
+    // 2. Crear Relación en Tabla Servidores
+    const [nuevoServidor] = await db.insert(servidores).values({
+      usuario_id: nuevoUsuario.id,
+      sede_id,
+      ministerio_id: ministerio_id || null,
+      cargo_id: cargo_id || null,
+      estado_civil: estado_civil || null,
+      fecha_nacimiento: fecha_nacimiento || null,
+      sexo: sexo || null,
+      fecha_ingreso: fecha_ingreso || null,
+      avance_servidor: avance_servidor || null,
+      retiros_tomados: Number(retiros_tomados) || 0,
+      observaciones: observaciones || null,
+      estatus: estatus === false ? false : true,
+      domicilio_calle: domicilio_calle || null,
+      domicilio_colonia: domicilio_colonia || null,
+      domicilio_cp: domicilio_cp || null,
+      estado_id: estado_id || null,
+      contacto_emergencia: contacto_emergencia || null,
+      telefono_emergencia: tels_emergencia || null,
+      tels_emergencia: tels_emergencia || null,
+      telefono_casa_trabajo: telefono_casa_trabajo || null,
+      facebook_url: facebook_url || null,
+      instagram_url: instagram_url || null,
+      tiktok_url: tiktok_url || null,
+      youtube_url: youtube_url || null,
+      retiros_tomados_detalle: retiros_tomados_detalle || null,
+      retiros_externos_detalle: retiros_externos_detalle || null,
+      servicios_sjm: servicios_sjm || null,
+      nombre_gafete: nombre_gafete || null,
+      foto_url: datos.foto_url || null,
+    }).returning();
 
-      return nuevoServidor;
-    });
+    const result = nuevoServidor;
 
     return { success: true, id: result.id };
   } catch (error: any) {
@@ -203,23 +200,21 @@ export async function actualizarServidorAction(id: string, datos: any) {
     const [servActual] = await db.select().from(servidores).where(eq(servidores.id, id));
     if (!servActual) throw new Error("Servidor no encontrado");
 
-    await db.transaction(async (tx) => {
-      // 2. Actualizar Usuario (Nombre y Celular)
-      await tx.update(usuarios)
-        .set({ nombre_completo, celular })
-        .where(eq(usuarios.id, servActual.usuario_id));
+    // 2. Actualizar Usuario (Nombre y Celular)
+    await db.update(usuarios)
+      .set({ nombre_completo, celular })
+      .where(eq(usuarios.id, servActual.usuario_id));
 
-      // 3. Actualizar Relación Servidor
-      await tx.update(servidores)
-        .set({ 
-           ministerio_id: ministerio_id || null, 
-           cargo_id: cargo_id || null,
-           estado_civil,
-           avance_servidor,
-           estatus: estatus === true
-        })
-        .where(eq(servidores.id, id));
-    });
+    // 3. Actualizar Relación Servidor
+    await db.update(servidores)
+      .set({ 
+         ministerio_id: ministerio_id || null, 
+         cargo_id: cargo_id || null,
+         estado_civil,
+         avance_servidor,
+         estatus: estatus === true
+      })
+      .where(eq(servidores.id, id));
 
     return { success: true };
   } catch (error: any) {

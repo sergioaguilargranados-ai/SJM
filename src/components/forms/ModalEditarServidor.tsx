@@ -13,9 +13,10 @@ import { getServidorById, getMinisterios, getCargos } from "@/app/actions/consul
 
 interface ModalEditarServidorProps {
   servidorId: string
+  trigger?: React.ReactNode
 }
 
-export function ModalEditarServidor({ servidorId }: ModalEditarServidorProps) {
+export function ModalEditarServidor({ servidorId, trigger }: ModalEditarServidorProps) {
   const [open, setOpen] = React.useState(false)
   const [cargando, setCargando] = React.useState(false)
   const [datos, setDatos] = React.useState<any>(null)
@@ -41,13 +42,19 @@ export function ModalEditarServidor({ servidorId }: ModalEditarServidorProps) {
 
   return (
     <>
-      <button 
-        onClick={handleOpen}
-        className="text-blue-600 hover:text-blue-800 dark:text-[#8e8ea0] dark:hover:text-[#e11d48] text-sm font-medium transition-colors flex items-center gap-1.5"
-      >
-        <Settings2 className="w-4 h-4" />
-        Administrar
-      </button>
+      {trigger ? (
+        <div onClick={handleOpen} className="cursor-pointer">
+          {trigger}
+        </div>
+      ) : (
+        <button 
+          onClick={handleOpen}
+          className="text-blue-600 hover:text-blue-800 dark:text-[#8e8ea0] dark:hover:text-[#e11d48] text-sm font-medium transition-colors flex items-center gap-1.5"
+        >
+          <Settings2 className="w-4 h-4" />
+          Administrar
+        </button>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent 
