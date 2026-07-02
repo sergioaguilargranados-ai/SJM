@@ -42,13 +42,31 @@ export async function importarServidoresAction(base64Data: string, organizacionI
         let userId;
         if (!existe) {
           const celularRaw = String(fila.Celular || fila.Telefono || "").trim().replace(/\s+/g, '');
-          const [nuevo] = await db.insert(usuarios).values({
-            organizacion_id: organizacionId,
-            sede_id: sedeId,
-            nombre_completo: String(nombre).trim(),
-            correo: email,
-            celular: celularRaw === "" ? null : celularRaw
-          }).returning();
+          
+          let nuevo;
+          try {
+            [nuevo] = await db.insert(usuarios).values({
+              organizacion_id: organizacionId,
+              sede_id: sedeId,
+              nombre_completo: String(nombre).trim(),
+              correo: email,
+              celular: celularRaw === "" ? null : celularRaw
+            }).returning();
+          } catch(insertErr: any) {
+            const errMsg = (insertErr.message + " " + (insertErr.cause?.message || "") + " " + (insertErr.detail || "") + " " + (insertErr.cause?.detail || "")).toLowerCase();
+            // Si el error es porque el celular ya está repetido en la DB, reintentamos dejando el celular en blanco (null)
+            if (errMsg.includes('celular') && (errMsg.includes('unique') || errMsg.includes('23505') || errMsg.includes('duplicate'))) {
+               [nuevo] = await db.insert(usuarios).values({
+                 organizacion_id: organizacionId,
+                 sede_id: sedeId,
+                 nombre_completo: String(nombre).trim(),
+                 correo: email,
+                 celular: null
+               }).returning();
+            } else {
+               throw insertErr; // Si es otro error (ej. correo duplicado), lo dejamos tronar normal
+            }
+          }
           userId = nuevo.id;
         } else {
           userId = existe.id;
