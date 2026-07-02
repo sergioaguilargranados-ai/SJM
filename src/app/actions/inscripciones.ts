@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos, equipo_evento, evaluaciones_evento } from "@/lib/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { validarAccesoPlan } from "@/lib/permisos";
 
 // Formato genérico para parsear todo lo que venga del cliente
 export async function registrarSolicitudAction(datos: any) {
