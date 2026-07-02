@@ -11,15 +11,41 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { BotonSubirFoto } from "./BotonSubirFoto";
+import { ModalEditarServidor } from "./ModalEditarServidor";
+import { eliminarServidorAction } from "@/app/actions/inscripciones";
 
 interface ModalDetalleServidorProps {
   servidor: any;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  esAdmin?: boolean;
 }
 
-export function ModalDetalleServidor({ servidor, open, onOpenChange }: ModalDetalleServidorProps) {
+export function ModalDetalleServidor({ servidor, open, onOpenChange, esAdmin }: ModalDetalleServidorProps) {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (!servidor) return null;
+
+  const handleDelete = async () => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a ${servidor.nombre_completo}?`)) return;
+    
+    setIsDeleting(true);
+    const res = await eliminarServidorAction(servidor.id);
+    setIsDeleting(false);
+    
+    if (res.success) {
+      toast.success("Servidor eliminado exitosamente");
+      onOpenChange(false);
+      router.refresh();
+    } else {
+      toast.error(res.error || "No se pudo eliminar el servidor");
+    }
+  };
 
   const DetailItem = ({ label, value, icon: Icon, span = 1 }: { label: string, value: any, icon?: any, span?: number }) => (
     <div className={`space-y-1 ${span === 2 ? 'col-span-2' : ''}`}>
@@ -58,16 +84,21 @@ export function ModalDetalleServidor({ servidor, open, onOpenChange }: ModalDeta
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0 dark:bg-[#1a1b26] dark:border-[#2a2b3d]">
         <DialogHeader className="p-6 pb-4 border-b border-slate-100 dark:border-[#3b3c54] flex flex-row items-start gap-4">
-           {servidor.foto_url ? (
-             <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-inner shrink-0 border border-slate-200 dark:border-[#3b3c54]">
-               <img src={servidor.foto_url} alt="Foto" className="w-full h-full object-cover" />
+           <div className="relative group shrink-0">
+             {servidor.foto_perfil_url || servidor.foto_url ? (
+               <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-inner border border-slate-200 dark:border-[#3b3c54]">
+                 <img src={servidor.foto_perfil_url || servidor.foto_url} alt="Foto" className="w-full h-full object-cover" />
+               </div>
+             ) : (
+               <div className="w-20 h-20 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-3xl shadow-inner border border-transparent dark:border-[#3b3c54]">
+                 {servidor.nombre_completo?.charAt(0) || "U"}
+               </div>
+             )}
+             <div className="absolute -bottom-2 -right-2 scale-75">
+               <BotonSubirFoto usuarioId={servidor.usuario_id || servidor.id} />
              </div>
-           ) : (
-             <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
-               {servidor.nombre_completo?.charAt(0) || "U"}
-             </div>
-           )}
-           <div className="flex-1">
+           </div>
+           <div className="flex-1 mt-2">
              <DialogTitle className="text-2xl font-black dark:text-white flex items-center gap-3">
                {servidor.nombre_completo}
                {servidor.estatus ? (
@@ -164,7 +195,21 @@ export function ModalDetalleServidor({ servidor, open, onOpenChange }: ModalDeta
 
           </div>
         </div>
-        <div className="p-4 border-t border-slate-100 dark:border-[#3b3c54] flex justify-end bg-slate-50 dark:bg-[#151621]">
+        <div className="p-4 border-t border-slate-100 dark:border-[#3b3c54] flex justify-between items-center bg-slate-50 dark:bg-[#151621]">
+           <div className="flex items-center gap-2">
+             <ModalEditarServidor servidorId={servidor.id} />
+             {esAdmin && (
+               <Button
+                 variant="outline"
+                 className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 border-red-200 dark:border-red-900/50"
+                 disabled={isDeleting}
+                 onClick={handleDelete}
+               >
+                 <Trash2 className="w-4 h-4 mr-1.5" />
+                 {isDeleting ? "Eliminando..." : "Eliminar"}
+               </Button>
+             )}
+           </div>
            <Button onClick={() => onOpenChange(false)} className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 font-bold">
               Cerrar
            </Button>

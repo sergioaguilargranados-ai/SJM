@@ -18,6 +18,7 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
   estados?: any[];
   sedeId: string;
   organizacionId: string;
+  esAdmin?: boolean;
 }) {
   const [servidorSeleccionado, setServidorSeleccionado] = useState<any>(null);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -182,6 +183,7 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
       servidor={servidorSeleccionado}
       open={modalAbierto}
       onOpenChange={setModalAbierto}
+      esAdmin={esAdmin}
     />
     </>
   );

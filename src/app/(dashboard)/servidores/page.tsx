@@ -42,6 +42,7 @@ export default async function CatalogoServidores() {
       estados={estados}
       sedeId={usuario.sede_id || sedes[0]?.id || ""}
       organizacionId={orgId}
+      esAdmin={usuario.rol_nombre?.toLowerCase().includes("admin") || false}
     />
   );
 }

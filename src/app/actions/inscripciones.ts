@@ -484,3 +484,30 @@ export async function validarYCrearEvaluacionAction(datos: any) {
     return { success: false, error: error.message || "Error guardando evaluación" };
   }
 }
+
+export async function eliminarServidorAction(id: string) {
+  try {
+    const { orgId, rol } = await validarAccesoPlan("servidores");
+    // Extra validación: Sólo administradores
+    if (!rol?.es_admin_sistema) {
+       return { success: false, error: "Permisos insuficientes. Sólo administradores pueden eliminar servidores." };
+    }
+    
+    // Buscar si existe
+    const [server] = await db.select().from(servidores).where(eq(servidores.id, id));
+    if (!server) {
+      return { success: false, error: "Servidor no encontrado" };
+    }
+    
+    // Eliminar servidor
+    await db.delete(servidores).where(eq(servidores.id, id));
+    
+    // Opcional: También podríamos eliminar el usuario asociado (server.usuario_id) si no tiene más roles, 
+    // pero por seguridad sólo eliminamos su perfil de servidor.
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al eliminar servidor:", error);
+    return { success: false, error: error.message || "No se pudo eliminar el servidor." };
+  }
+}
