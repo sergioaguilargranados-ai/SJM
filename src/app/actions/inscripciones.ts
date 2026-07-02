@@ -193,7 +193,7 @@ export async function actualizarServidorAction(id: string, datos: any) {
   try {
     const { 
        nombre_completo, correo, celular, sede_id, ministerio_id, cargo_id, 
-       estado_civil, fecha_nacimiento, sexo, fecha_ingreso, avance_servidor, 
+       estado_civil, fecha_nacimiento, sexo, fecha_ingreso, fecha_baja, avance_servidor, 
        retiros_tomados, observaciones, estatus,
        domicilio_calle, domicilio_colonia, domicilio_cp, estado_id,
        telefono_casa_trabajo, contacto_emergencia, tels_emergencia,
@@ -226,6 +226,7 @@ export async function actualizarServidorAction(id: string, datos: any) {
          fecha_nacimiento: fecha_nacimiento || null,
          sexo: sexo || null,
          fecha_ingreso: fecha_ingreso || null,
+         fecha_baja: fecha_baja || null,
          avance_servidor: avance_servidor || null,
          retiros_tomados: Number(retiros_tomados) || 0,
          observaciones: observaciones || null,

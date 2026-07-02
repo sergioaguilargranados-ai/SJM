@@ -23,6 +23,7 @@ const formSchema = z.object({
   fecha_nacimiento: z.string().optional(),
   sede_id: z.string().optional(),
   fecha_ingreso: z.string().optional(),
+  fecha_baja: z.string().optional(),
   domicilio_calle: z.string().optional(),
   domicilio_colonia: z.string().optional(),
   domicilio_cp: z.string().optional(),
@@ -69,6 +70,7 @@ export default function EditarServidorForm({
       fecha_nacimiento: servidor.fecha_nacimiento ? new Date(servidor.fecha_nacimiento).toISOString().split('T')[0] : "",
       sede_id: servidor.sede_id || "",
       fecha_ingreso: servidor.fecha_ingreso ? new Date(servidor.fecha_ingreso).toISOString().split('T')[0] : "",
+      fecha_baja: servidor.fecha_baja ? new Date(servidor.fecha_baja).toISOString().split('T')[0] : "",
       domicilio_calle: servidor.domicilio_calle || "",
       domicilio_colonia: servidor.domicilio_colonia || "",
       domicilio_cp: servidor.domicilio_cp || "",
@@ -223,9 +225,15 @@ export default function EditarServidorForm({
               <Label className="text-xs font-bold uppercase tracking-tight">Teléfonos de Emergencia</Label>
               <Input {...form.register("tels_emergencia")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
            </div>
-           <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-tight">Fecha de Ingreso a SJM</Label>
-              <Input type="date" {...form.register("fecha_ingreso")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+           <div className="grid grid-cols-2 gap-4">
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">Fecha de Ingreso a SJM</Label>
+                <Input type="date" {...form.register("fecha_ingreso")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">Fecha de Baja</Label>
+                <Input type="date" {...form.register("fecha_baja")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
            </div>
         </div>
       </div>
