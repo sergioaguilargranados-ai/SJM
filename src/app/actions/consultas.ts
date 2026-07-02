@@ -35,13 +35,37 @@ export async function getServidores() {
          correo: usuarios.correo,
          celular: usuarios.celular,
          fecha_ingreso: servidores.fecha_ingreso,
+         fecha_baja: servidores.fecha_baja,
+         sede_id: servidores.sede_id,
          sede: sedes.nombre,
          foto_url: servidores.foto_url,
-         foto_perfil_url: usuarios.foto_perfil_url
+         foto_perfil_url: usuarios.foto_perfil_url,
+         ministerio_id: servidores.ministerio_id,
+         ministerio: ministerios.nombre,
+         cargo_id: servidores.cargo_id,
+         cargo: cargos.nombre,
+         avance_servidor: servidores.avance_servidor,
+         domicilio_calle: servidores.domicilio_calle,
+         domicilio_colonia: servidores.domicilio_colonia,
+         domicilio_cp: servidores.domicilio_cp,
+         contacto_emergencia: servidores.contacto_emergencia,
+         tels_emergencia: servidores.tels_emergencia,
+         telefono_casa_trabajo: servidores.telefono_casa_trabajo,
+         facebook_url: servidores.facebook_url,
+         instagram_url: servidores.instagram_url,
+         tiktok_url: servidores.tiktok_url,
+         youtube_url: servidores.youtube_url,
+         retiros_tomados_detalle: servidores.retiros_tomados_detalle,
+         retiros_externos_detalle: servidores.retiros_externos_detalle,
+         servicios_sjm: servidores.servicios_sjm,
+         observaciones: servidores.observaciones,
+         fecha_nacimiento: servidores.fecha_nacimiento,
       })
       .from(servidores)
       .leftJoin(usuarios, eq(servidores.usuario_id, usuarios.id))
       .leftJoin(sedes, eq(servidores.sede_id, sedes.id))
+      .leftJoin(ministerios, eq(servidores.ministerio_id, ministerios.id))
+      .leftJoin(cargos, eq(servidores.cargo_id, cargos.id))
       .where(eq(servidores.organizacion_id, orgId))
       .orderBy(desc(servidores.id));
       
@@ -215,7 +239,25 @@ export async function getServidorById(id: string) {
          ministerio_id: servidores.ministerio_id,
          cargo_id: servidores.cargo_id,
          estado_civil: servidores.estado_civil,
-         avance_servidor: servidores.avance_servidor
+         avance_servidor: servidores.avance_servidor,
+         fecha_ingreso: servidores.fecha_ingreso,
+         fecha_baja: servidores.fecha_baja,
+         sede_id: servidores.sede_id,
+         domicilio_calle: servidores.domicilio_calle,
+         domicilio_colonia: servidores.domicilio_colonia,
+         domicilio_cp: servidores.domicilio_cp,
+         contacto_emergencia: servidores.contacto_emergencia,
+         tels_emergencia: servidores.tels_emergencia,
+         telefono_casa_trabajo: servidores.telefono_casa_trabajo,
+         facebook_url: servidores.facebook_url,
+         instagram_url: servidores.instagram_url,
+         tiktok_url: servidores.tiktok_url,
+         youtube_url: servidores.youtube_url,
+         retiros_tomados_detalle: servidores.retiros_tomados_detalle,
+         retiros_externos_detalle: servidores.retiros_externos_detalle,
+         servicios_sjm: servidores.servicios_sjm,
+         observaciones: servidores.observaciones,
+         fecha_nacimiento: servidores.fecha_nacimiento,
       })
       .from(servidores)
       .leftJoin(usuarios, eq(servidores.usuario_id, usuarios.id))

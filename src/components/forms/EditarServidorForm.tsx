@@ -19,7 +19,7 @@ const formSchema = z.object({
   cargo_id: z.string().nullable().optional(),
   estado_civil: z.string().optional(),
   avance_servidor: z.string().optional(),
-  estatus: z.boolean().default(true),
+  estatus: z.string().default("true"),
   fecha_nacimiento: z.string().optional(),
   sede_id: z.string().optional(),
   fecha_ingreso: z.string().optional(),
@@ -66,7 +66,7 @@ export default function EditarServidorForm({
       cargo_id: servidor.cargo_id || null,
       estado_civil: servidor.estado_civil || "SOLTERO(A)",
       avance_servidor: servidor.avance_servidor || "Servidor",
-      estatus: servidor.estatus ?? true,
+      estatus: servidor.estatus === false ? "false" : "true",
       fecha_nacimiento: servidor.fecha_nacimiento ? new Date(servidor.fecha_nacimiento).toISOString().split('T')[0] : "",
       sede_id: servidor.sede_id || "",
       fecha_ingreso: servidor.fecha_ingreso ? new Date(servidor.fecha_ingreso).toISOString().split('T')[0] : "",
@@ -150,7 +150,7 @@ export default function EditarServidorForm({
              </div>
              <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-tight">Estatus en la Obra</Label>
-                <select {...form.register("estatus", { setValueAs: (v) => v === "true" })} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                <select {...form.register("estatus")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
                   <option value="true">ACTIVO</option>
                   <option value="false">BAJA</option>
                 </select>

@@ -230,7 +230,7 @@ export async function actualizarServidorAction(id: string, datos: any) {
          avance_servidor: avance_servidor || null,
          retiros_tomados: Number(retiros_tomados) || 0,
          observaciones: observaciones || null,
-         estatus: estatus === true,
+         estatus: estatus === true || estatus === "true",
          domicilio_calle: domicilio_calle || null,
          domicilio_colonia: domicilio_colonia || null,
          domicilio_cp: domicilio_cp || null,
