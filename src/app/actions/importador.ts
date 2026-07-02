@@ -25,7 +25,9 @@ export async function importarServidoresAction(base64Data: string, organizacionI
       const fila = filaRaw as any;
       indexFila++; // Empezar en 2 considerando los headers
       try {
-        const email = fila.Correo || fila.email || fila.Email;
+        let rawEmail = fila.Correo || fila.email || fila.Email || "";
+        // Quitar todos los espacios del correo (incluso internos) y pasarlo a minúsculas
+        const email = String(rawEmail).replace(/\s+/g, '').toLowerCase();
         const nombre = fila.Nombre || fila.nombre_completo || fila.nombre;
         
         if (!email || !nombre) {
@@ -35,16 +37,16 @@ export async function importarServidoresAction(base64Data: string, organizacionI
         }
 
         // Revisar si ya existe
-        const [existe] = await db.select().from(usuarios).where(eq(usuarios.correo, email.toLowerCase()));
+        const [existe] = await db.select().from(usuarios).where(eq(usuarios.correo, email));
         
         let userId;
         if (!existe) {
-          const celularRaw = String(fila.Celular || fila.Telefono || "").trim();
+          const celularRaw = String(fila.Celular || fila.Telefono || "").trim().replace(/\s+/g, '');
           const [nuevo] = await db.insert(usuarios).values({
             organizacion_id: organizacionId,
             sede_id: sedeId,
-            nombre_completo: nombre,
-            correo: email.toLowerCase(),
+            nombre_completo: String(nombre).trim(),
+            correo: email,
             celular: celularRaw === "" ? null : celularRaw
           }).returning();
           userId = nuevo.id;
@@ -61,6 +63,26 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           }
         }
 
+        // Parsear fecha de ingreso segura
+        let fechaIngresoParsed = null;
+        if (fila.FechaIngreso) {
+           try {
+              let parsedDate;
+              // Si es un número (formato serial de Excel)
+              if (typeof fila.FechaIngreso === "number") {
+                 parsedDate = new Date((fila.FechaIngreso - (25567 + 2)) * 86400 * 1000); // 25567 = días entre 1900 y 1970. +2 por bugs de bisiesto en Excel
+              } else {
+                 parsedDate = new Date(fila.FechaIngreso);
+              }
+              
+              if (!isNaN(parsedDate.getTime())) {
+                 fechaIngresoParsed = parsedDate.toISOString().split('T')[0];
+              }
+           } catch(err) {
+              // Si falla el parseo, se ignora
+           }
+        }
+
         // Insertar en tabla Servidores (si no existe ya el vínculo)
         const [yaEsServidor] = await db.select().from(servidores).where(eq(servidores.usuario_id, userId));
         
@@ -71,7 +93,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             sede_id: sedeId,
             estado_civil: fila.EstadoCivil || "",
             sexo: fila.Sexo || "",
-            fecha_ingreso: fila.FechaIngreso ? new Date(fila.FechaIngreso).toISOString().split('T')[0] : null,
+            fecha_ingreso: fechaIngresoParsed,
             avance_servidor: fila.Avance || "NUEVO",
             nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
             estado_id: estadoId,
