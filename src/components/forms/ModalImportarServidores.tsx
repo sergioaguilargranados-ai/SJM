@@ -34,7 +34,7 @@ export function ModalImportarServidores({ sedeId, organizacionId }: ModalImporta
       const res = await importarServidoresAction(base64Data, organizacionId, sedeId);
       setResultado(res);
       setCargando(false);
-      if (res.success) {
+      if (res.success && res.errores === 0) {
          setTimeout(() => { if (open) window.location.reload(); }, 2000);
       }
     };
