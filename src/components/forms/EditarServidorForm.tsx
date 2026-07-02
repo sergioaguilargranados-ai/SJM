@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { actualizarServidorAction } from "@/app/actions/inscripciones";
-import { uploadFotoServidor } from "@/app/actions/upload-foto";
-import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity, Share2, ScrollText, Camera, Loader2 } from "lucide-react";
+import { uploadFotoServidor, deleteFotoServidor } from "@/app/actions/upload-foto";
+import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity, Share2, ScrollText, Camera, Loader2, Trash2 } from "lucide-react";
 
 const formSchema = z.object({
   nombre_completo: z.string().min(3, "Mínimo 3 caracteres"),
@@ -77,6 +77,21 @@ export default function EditarServidorForm({
       form.setValue("foto_url", res.url); // Enviar también en el submit
     } else {
       alert("Error al subir foto: " + res.error);
+    }
+  }
+
+  async function handleEliminarFoto() {
+    if (!confirm("¿Seguro que deseas eliminar la foto?")) return;
+    
+    setSubiendoFoto(true); // Reusamos el estado para el loader
+    const res = await deleteFotoServidor(servidor.usuario_id);
+    setSubiendoFoto(false);
+
+    if (res.success) {
+      setFotoUrl("");
+      form.setValue("foto_url", ""); 
+    } else {
+      alert("Error al eliminar foto: " + res.error);
     }
   }
 
@@ -158,6 +173,20 @@ export default function EditarServidorForm({
             </div>
          </div>
          <p className="text-xs text-slate-500 mt-4 text-center max-w-xs">Haz clic en la imagen para subir o actualizar la foto del servidor.</p>
+         
+         {fotoUrl && (
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              className="mt-3 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900/50"
+              onClick={handleEliminarFoto}
+              disabled={subiendoFoto}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Quitar Foto
+            </Button>
+         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
