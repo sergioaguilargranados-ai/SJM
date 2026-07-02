@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { actualizarServidorAction } from "@/app/actions/inscripciones";
-import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity } from "lucide-react";
+import { Save, UserCircle, Shield, Briefcase, Heart, MapPin, Mail, Phone, FileText, Activity, Share2, ScrollText } from "lucide-react";
 
 const formSchema = z.object({
   nombre_completo: z.string().min(3, "Mínimo 3 caracteres"),
@@ -30,6 +30,13 @@ const formSchema = z.object({
   tels_emergencia: z.string().optional(),
   telefono_casa_trabajo: z.string().optional(),
   observaciones: z.string().optional(),
+  facebook_url: z.string().optional(),
+  instagram_url: z.string().optional(),
+  tiktok_url: z.string().optional(),
+  youtube_url: z.string().optional(),
+  retiros_tomados_detalle: z.string().optional(),
+  retiros_externos_detalle: z.string().optional(),
+  servicios_sjm: z.string().optional(),
 });
 
 export default function EditarServidorForm({ 
@@ -69,6 +76,13 @@ export default function EditarServidorForm({
       tels_emergencia: servidor.tels_emergencia || "",
       telefono_casa_trabajo: servidor.telefono_casa_trabajo || "",
       observaciones: servidor.observaciones || "",
+      facebook_url: servidor.facebook_url || "",
+      instagram_url: servidor.instagram_url || "",
+      tiktok_url: servidor.tiktok_url || "",
+      youtube_url: servidor.youtube_url || "",
+      retiros_tomados_detalle: servidor.retiros_tomados_detalle || "",
+      retiros_externos_detalle: servidor.retiros_externos_detalle || "",
+      servicios_sjm: servidor.servicios_sjm || "",
     },
   });
 
@@ -212,6 +226,68 @@ export default function EditarServidorForm({
            <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-tight">Fecha de Ingreso a SJM</Label>
               <Input type="date" {...form.register("fecha_ingreso")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+           </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Redes Sociales */}
+        <div className="space-y-4">
+           <Label className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+              <Share2 className="w-4 h-4" /> Redes Sociales
+           </Label>
+           <div className="grid grid-cols-2 gap-4">
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">Facebook</Label>
+                <Input placeholder="URL del perfil" {...form.register("facebook_url")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">Instagram</Label>
+                <Input placeholder="Usuario / URL" {...form.register("instagram_url")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">TikTok</Label>
+                <Input placeholder="Usuario / URL" {...form.register("tiktok_url")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
+             <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-tight">YouTube</Label>
+                <Input placeholder="Canal / URL" {...form.register("youtube_url")} className="dark:bg-[#0f1015] dark:border-[#2a2b3d]" />
+             </div>
+           </div>
+        </div>
+
+        {/* Historial y Observaciones */}
+        <div className="space-y-4">
+           <Label className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+              <ScrollText className="w-4 h-4" /> Historial de Servicio y Retiros
+           </Label>
+           <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-tight">Retiros Tomados en SJM (Detalle)</Label>
+              <textarea 
+                {...form.register("retiros_tomados_detalle")} 
+                className="w-full rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none resize-y min-h-[60px]" 
+              />
+           </div>
+           <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-tight">Retiros Externos (Otras Comunidades)</Label>
+              <textarea 
+                {...form.register("retiros_externos_detalle")} 
+                className="w-full rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none resize-y min-h-[60px]" 
+              />
+           </div>
+           <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-tight">Servicios en SJM</Label>
+              <textarea 
+                {...form.register("servicios_sjm")} 
+                className="w-full rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none resize-y min-h-[60px]" 
+              />
+           </div>
+           <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-tight">Observaciones</Label>
+              <textarea 
+                {...form.register("observaciones")} 
+                className="w-full rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none resize-y min-h-[60px]" 
+              />
            </div>
         </div>
       </div>
