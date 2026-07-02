@@ -104,7 +104,15 @@ export async function importarServidoresAction(base64Data: string, organizacionI
       } catch (e: any) {
         console.error("Error procesando fila:", e);
         errores++;
-        erroresDetalles.push(`Fila ${indexFila}: ${e.message || "Error desconocido"}`);
+        
+        let errorMsg = e.message;
+        if (e.cause?.message) {
+           errorMsg = e.cause.message;
+        } else if (e.code === '23505') { // Postgres unique violation
+           errorMsg = `El dato ya existe en otro registro (posible celular o correo duplicado). Detalle: ${e.detail || ''}`;
+        }
+
+        erroresDetalles.push(`Fila ${indexFila}: ${errorMsg}`);
       }
     }
 
