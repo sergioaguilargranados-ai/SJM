@@ -17,15 +17,22 @@ export async function importarServidoresAction(base64Data: string, organizacionI
 
     let procesados = 0;
     let errores = 0;
+    let erroresDetalles: string[] = [];
 
     // 2. Procesar cada fila en una transacción (o por lotes para velocidad)
+    let indexFila = 1;
     for (const filaRaw of rawData) {
       const fila = filaRaw as any;
+      indexFila++; // Empezar en 2 considerando los headers
       try {
         const email = fila.Correo || fila.email || fila.Email;
         const nombre = fila.Nombre || fila.nombre_completo || fila.nombre;
         
-        if (!email || !nombre) continue;
+        if (!email || !nombre) {
+          errores++;
+          erroresDetalles.push(`Fila ${indexFila}: Falta nombre o correo.`);
+          continue;
+        }
 
         await db.transaction(async (tx) => {
           // Revisar si ya existe
@@ -74,13 +81,14 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           }
         });
         procesados++;
-      } catch (e) {
+      } catch (e: any) {
         console.error("Error procesando fila:", e);
         errores++;
+        erroresDetalles.push(`Fila ${indexFila}: ${e.message || "Error desconocido"}`);
       }
     }
 
-    return { success: true, procesados, errores };
+    return { success: true, procesados, errores, detalles: erroresDetalles };
   } catch (error: any) {
     console.error("Error en importación masiva:", error);
     return { success: false, error: error.message };

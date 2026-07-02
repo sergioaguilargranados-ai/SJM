@@ -112,7 +112,7 @@ export function ModalImportarServidores({ sedeId, organizacionId }: ModalImporta
                      <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
                         <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                      </div>
-                     <div>
+                     <div className="w-full">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Importación Completada</h3>
                         <div className="grid grid-cols-2 gap-4 mt-6">
                            <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-[#2a2b3d]">
@@ -124,6 +124,17 @@ export function ModalImportarServidores({ sedeId, organizacionId }: ModalImporta
                               <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-1">Con errores</p>
                            </div>
                         </div>
+
+                        {resultado.errores > 0 && resultado.detalles && resultado.detalles.length > 0 && (
+                          <div className="mt-6 text-left border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-900/10 rounded-xl p-4">
+                            <p className="text-xs font-bold text-rose-600 dark:text-rose-400 mb-2 uppercase tracking-wider">Detalles de Errores DB</p>
+                            <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                              {resultado.detalles.map((detalle: string, idx: number) => (
+                                <li key={idx} className="border-b border-rose-100 dark:border-rose-900/30 pb-1 last:border-0">{detalle}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                      </div>
                    </>
                  ) : (
