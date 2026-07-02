@@ -2,7 +2,7 @@
 
 import * as XLSX from "xlsx";
 import { db } from "@/lib/db";
-import { usuarios, servidores, eventos, sedes, casas_retiro, tipos_eventos } from "@/lib/schema";
+import { usuarios, servidores, eventos, sedes, casas_retiro, tipos_eventos, estados_republica } from "@/lib/schema";
 import { eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -46,6 +46,15 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             userId = existe.id;
           }
 
+          // Buscar el estado si se proporcionó
+          let estadoId = null;
+          if (fila.Estado) {
+            const [estadoEncontrado] = await tx.select().from(estados_republica).where(ilike(estados_republica.nombre, String(fila.Estado).trim()));
+            if (estadoEncontrado) {
+              estadoId = estadoEncontrado.id;
+            }
+          }
+
           // Insertar en tabla Servidores (si no existe ya el vínculo)
           const [yaEsServidor] = await tx.select().from(servidores).where(eq(servidores.usuario_id, userId));
           
@@ -58,6 +67,8 @@ export async function importarServidoresAction(base64Data: string, organizacionI
               sexo: fila.Sexo || "",
               fecha_ingreso: fila.FechaIngreso ? new Date(fila.FechaIngreso).toISOString().split('T')[0] : null,
               avance_servidor: fila.Avance || "NUEVO",
+              nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
+              estado_id: estadoId,
               estatus: true
             });
           }
