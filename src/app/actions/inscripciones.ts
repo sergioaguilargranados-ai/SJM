@@ -488,9 +488,9 @@ export async function validarYCrearEvaluacionAction(datos: any) {
 
 export async function eliminarServidorAction(id: string) {
   try {
-    const { orgId, rol } = await validarAccesoPlan("servidores");
+    const { orgId, session } = await validarAccesoPlan("servidores");
     // Extra validación: Sólo administradores
-    if (!rol?.es_admin_sistema) {
+    if (!session?.user?.rol_nombre?.toLowerCase().includes("admin")) {
        return { success: false, error: "Permisos insuficientes. Sólo administradores pueden eliminar servidores." };
     }
     
