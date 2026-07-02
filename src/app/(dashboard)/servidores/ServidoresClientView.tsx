@@ -8,6 +8,7 @@ import { es } from "date-fns/locale";
 import { ModalCrearServidor } from "@/components/forms/ModalCrearServidor";
 import { ModalImportarServidores } from "@/components/forms/ModalImportarServidores";
 import { ModalDetalleServidor } from "@/components/forms/ModalDetalleServidor";
+import { BotonSubirFoto } from "@/components/forms/BotonSubirFoto";
 
 export default function ServidoresClientView({ servidores, sedes, ministerios = [], cargos = [], estados = [], sedeId, organizacionId }: {
   servidores: any[];
@@ -50,19 +51,24 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
       renderCard={(row) => (
         <div key={row.id} className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col h-full relative group">
           <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <BotonSubirFoto usuarioId={row.usuario_id || row.id} />
             <button
               onClick={() => verDetalle(row)}
-              className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+              className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
               title="Ver detalle completo"
             >
-              <Eye className="w-4 h-4" />
+              <Eye className="w-5 h-5" />
             </button>
           </div>
           
           <div className="flex items-center gap-4 mb-4">
-             <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-[#2a2b3d] text-blue-700 dark:text-slate-300 flex items-center justify-center font-black text-lg shadow-inner shrink-0">
-               {row.nombre_completo?.charAt(0) || "U"}
-             </div>
+             {row.foto_perfil_url ? (
+               <img src={row.foto_perfil_url} alt="Foto" className="w-12 h-12 rounded-full object-cover shadow-inner shrink-0" />
+             ) : (
+               <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-[#2a2b3d] text-blue-700 dark:text-slate-300 flex items-center justify-center font-black text-lg shadow-inner shrink-0">
+                 {row.nombre_completo?.charAt(0) || "U"}
+               </div>
+             )}
              <div>
                <h3 className="font-bold text-slate-900 dark:text-white leading-tight">{row.nombre_completo || "Usuario Sin Nombre"}</h3>
                <div className="flex items-center gap-2 mt-1">
@@ -99,9 +105,13 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
           pdfKey: "nombre_completo",
           cell: (val: any, row: any) => (
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 dark:bg-[#2a2b3d] dark:text-slate-300 flex items-center justify-center font-bold shadow-inner">
-                {val?.charAt(0) || "U"}
-              </div>
+              {row.foto_perfil_url ? (
+                <img src={row.foto_perfil_url} alt="Foto" className="w-9 h-9 rounded-full object-cover shadow-inner shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 dark:bg-[#2a2b3d] dark:text-slate-300 flex items-center justify-center font-bold shadow-inner shrink-0">
+                  {val?.charAt(0) || "U"}
+                </div>
+              )}
               <div>
                 <div className="font-bold text-slate-900 dark:text-white leading-none">{val || "Usuario Sin Nombre"}</div>
                 <div className="text-[11px] font-mono text-slate-500 dark:text-[#8e8ea0] mt-1">ID: {row.id?.substring(0, 8)}</div>
@@ -152,13 +162,18 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
           ocultarEnUI: false, // It's visible in UI
           halign: "center" as const,
           cell: (val: any, row: any) => (
-            <button
-              onClick={() => verDetalle(row)}
-              className="p-1.5 rounded-md text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-              title="Ver detalle completo"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
+            <div className="flex items-center justify-center gap-2">
+              <div className="scale-75 origin-center">
+                <BotonSubirFoto usuarioId={row.usuario_id || row.id} />
+              </div>
+              <button
+                onClick={() => verDetalle(row)}
+                className="p-1.5 rounded-md text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                title="Ver detalle completo"
+              >
+                <Eye className="w-4 h-4" />
+              </button>
+            </div>
           ),
         },
       ]}
