@@ -29,13 +29,15 @@ export async function getServidores() {
     const resultados = await db
       .select({
          id: servidores.id,
+         usuario_id: servidores.usuario_id,
          estatus: servidores.estatus,
          nombre_completo: usuarios.nombre_completo,
          correo: usuarios.correo,
          celular: usuarios.celular,
          fecha_ingreso: servidores.fecha_ingreso,
          sede: sedes.nombre,
-         foto_url: servidores.foto_url
+         foto_url: servidores.foto_url,
+         foto_perfil_url: usuarios.foto_perfil_url
       })
       .from(servidores)
       .leftJoin(usuarios, eq(servidores.usuario_id, usuarios.id))
