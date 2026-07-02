@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import EditarServidorForm from "./EditarServidorForm"
-import { getServidorById, getMinisterios, getCargos } from "@/app/actions/consultas"
+import { getServidorById, getMinisterios, getCargos, getSedes } from "@/app/actions/consultas"
 
 interface ModalEditarServidorProps {
   servidorId: string
@@ -26,16 +26,18 @@ export function ModalEditarServidor({ servidorId, trigger }: ModalEditarServidor
     setCargando(true)
     
     // Cargamos datos del servidor y catálogos
-    const [servRes, minRes, carRes] = await Promise.all([
+    const [servRes, minRes, carRes, sedesRes] = await Promise.all([
       getServidorById(servidorId),
       getMinisterios(),
-      getCargos()
+      getCargos(),
+      getSedes()
     ])
     
     setDatos({
       servidor: servRes.data,
       ministerios: minRes.data || [],
-      cargos: carRes.data || []
+      cargos: carRes.data || [],
+      sedes: sedesRes.data || []
     })
     setCargando(false)
   }
@@ -76,6 +78,7 @@ export function ModalEditarServidor({ servidorId, trigger }: ModalEditarServidor
                  servidor={datos.servidor} 
                  ministerios={datos.ministerios}
                  cargos={datos.cargos}
+                 sedes={datos.sedes}
                  onSuccess={() => setOpen(false)} 
                />
             )}

@@ -192,8 +192,14 @@ export async function crearEventoAction(datos: any) {
 export async function actualizarServidorAction(id: string, datos: any) {
   try {
     const { 
-       nombre_completo, celular, ministerio_id, cargo_id, 
-       estado_civil, avance_servidor, estatus 
+       nombre_completo, correo, celular, sede_id, ministerio_id, cargo_id, 
+       estado_civil, fecha_nacimiento, sexo, fecha_ingreso, avance_servidor, 
+       retiros_tomados, observaciones, estatus,
+       domicilio_calle, domicilio_colonia, domicilio_cp, estado_id,
+       telefono_casa_trabajo, contacto_emergencia, tels_emergencia,
+       facebook_url, instagram_url, tiktok_url, youtube_url,
+       retiros_tomados_detalle, retiros_externos_detalle, servicios_sjm,
+       nombre_gafete, foto_url
     } = datos;
 
     // 1. Obtener registro actual para sacar el usuario_id
@@ -202,17 +208,44 @@ export async function actualizarServidorAction(id: string, datos: any) {
 
     // 2. Actualizar Usuario (Nombre y Celular)
     await db.update(usuarios)
-      .set({ nombre_completo, celular })
+      .set({ 
+        nombre_completo, 
+        celular,
+        ...(correo ? { correo } : {}), // Opcional, por si queremos dejar cambiar correo
+        ...(fecha_nacimiento ? { fecha_nacimiento: fecha_nacimiento } : {})
+      })
       .where(eq(usuarios.id, servActual.usuario_id));
 
     // 3. Actualizar Relación Servidor
     await db.update(servidores)
       .set({ 
+         sede_id: sede_id || servActual.sede_id,
          ministerio_id: ministerio_id || null, 
          cargo_id: cargo_id || null,
-         estado_civil,
-         avance_servidor,
-         estatus: estatus === true
+         estado_civil: estado_civil || null,
+         fecha_nacimiento: fecha_nacimiento || null,
+         sexo: sexo || null,
+         fecha_ingreso: fecha_ingreso || null,
+         avance_servidor: avance_servidor || null,
+         retiros_tomados: Number(retiros_tomados) || 0,
+         observaciones: observaciones || null,
+         estatus: estatus === true,
+         domicilio_calle: domicilio_calle || null,
+         domicilio_colonia: domicilio_colonia || null,
+         domicilio_cp: domicilio_cp || null,
+         estado_id: estado_id || null,
+         contacto_emergencia: contacto_emergencia || null,
+         telefono_emergencia: tels_emergencia || null,
+         tels_emergencia: tels_emergencia || null,
+         telefono_casa_trabajo: telefono_casa_trabajo || null,
+         facebook_url: facebook_url || null,
+         instagram_url: instagram_url || null,
+         tiktok_url: tiktok_url || null,
+         youtube_url: youtube_url || null,
+         retiros_tomados_detalle: retiros_tomados_detalle || null,
+         retiros_externos_detalle: retiros_externos_detalle || null,
+         servicios_sjm: servicios_sjm || null,
+         nombre_gafete: nombre_gafete || null,
       })
       .where(eq(servidores.id, id));
 
