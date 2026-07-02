@@ -34,52 +34,50 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           continue;
         }
 
-        await db.transaction(async (tx) => {
-          // Revisar si ya existe
-          const [existe] = await tx.select().from(usuarios).where(eq(usuarios.correo, email.toLowerCase()));
-          
-          let userId;
-          if (!existe) {
-            const celularRaw = String(fila.Celular || fila.Telefono || "").trim();
-            const [nuevo] = await tx.insert(usuarios).values({
-              organizacion_id: organizacionId,
-              sede_id: sedeId,
-              nombre_completo: nombre,
-              correo: email.toLowerCase(),
-              celular: celularRaw === "" ? null : celularRaw
-            }).returning();
-            userId = nuevo.id;
-          } else {
-            userId = existe.id;
-          }
+        // Revisar si ya existe
+        const [existe] = await db.select().from(usuarios).where(eq(usuarios.correo, email.toLowerCase()));
+        
+        let userId;
+        if (!existe) {
+          const celularRaw = String(fila.Celular || fila.Telefono || "").trim();
+          const [nuevo] = await db.insert(usuarios).values({
+            organizacion_id: organizacionId,
+            sede_id: sedeId,
+            nombre_completo: nombre,
+            correo: email.toLowerCase(),
+            celular: celularRaw === "" ? null : celularRaw
+          }).returning();
+          userId = nuevo.id;
+        } else {
+          userId = existe.id;
+        }
 
-          // Buscar el estado si se proporcionó
-          let estadoId = null;
-          if (fila.Estado) {
-            const [estadoEncontrado] = await tx.select().from(estados_republica).where(ilike(estados_republica.nombre, String(fila.Estado).trim()));
-            if (estadoEncontrado) {
-              estadoId = estadoEncontrado.id;
-            }
+        // Buscar el estado si se proporcionó
+        let estadoId = null;
+        if (fila.Estado) {
+          const [estadoEncontrado] = await db.select().from(estados_republica).where(ilike(estados_republica.nombre, String(fila.Estado).trim()));
+          if (estadoEncontrado) {
+            estadoId = estadoEncontrado.id;
           }
+        }
 
-          // Insertar en tabla Servidores (si no existe ya el vínculo)
-          const [yaEsServidor] = await tx.select().from(servidores).where(eq(servidores.usuario_id, userId));
-          
-          if (!yaEsServidor) {
-            await tx.insert(servidores).values({
-              organizacion_id: organizacionId,
-              usuario_id: userId,
-              sede_id: sedeId,
-              estado_civil: fila.EstadoCivil || "",
-              sexo: fila.Sexo || "",
-              fecha_ingreso: fila.FechaIngreso ? new Date(fila.FechaIngreso).toISOString().split('T')[0] : null,
-              avance_servidor: fila.Avance || "NUEVO",
-              nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
-              estado_id: estadoId,
-              estatus: true
-            });
-          }
-        });
+        // Insertar en tabla Servidores (si no existe ya el vínculo)
+        const [yaEsServidor] = await db.select().from(servidores).where(eq(servidores.usuario_id, userId));
+        
+        if (!yaEsServidor) {
+          await db.insert(servidores).values({
+            organizacion_id: organizacionId,
+            usuario_id: userId,
+            sede_id: sedeId,
+            estado_civil: fila.EstadoCivil || "",
+            sexo: fila.Sexo || "",
+            fecha_ingreso: fila.FechaIngreso ? new Date(fila.FechaIngreso).toISOString().split('T')[0] : null,
+            avance_servidor: fila.Avance || "NUEVO",
+            nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
+            estado_id: estadoId,
+            estatus: true
+          });
+        }
         procesados++;
       } catch (e: any) {
         console.error("Error procesando fila:", e);
