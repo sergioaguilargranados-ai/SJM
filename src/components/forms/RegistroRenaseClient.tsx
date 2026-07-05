@@ -232,6 +232,12 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
               placeholder="Tu nombre completo..." 
               value={termBusqueda} 
               onChange={e => setTermBusqueda(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  buscarServidor();
+                }
+              }}
               className="h-12 dark:bg-[#0f1015] dark:border-[#2a2b3d]"
             />
             <Button onClick={buscarServidor} disabled={cargando} className="h-12">
