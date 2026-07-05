@@ -329,8 +329,13 @@ export async function buscarServidorPorNombreAction(nombre: string) {
   try {
     const term = `%${nombre.trim().toLowerCase()}%`;
     const result = await db.execute(sql`
-      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, s.sexo, s.fecha_nacimiento,
-              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, s.estado_civil, s.fecha_ingreso, s.retiros_tomados, s.observaciones, s.foto_url
+      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, u.foto_perfil_url, 
+              s.sexo, s.fecha_nacimiento, s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, 
+              s.estado_civil, s.fecha_ingreso, s.fecha_baja, s.retiros_tomados, s.observaciones, s.foto_url,
+              s.domicilio_calle, s.domicilio_colonia, s.domicilio_cp, s.estado_id,
+              s.contacto_emergencia, s.tels_emergencia, s.telefono_casa_trabajo,
+              s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
+              s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
        WHERE LOWER(u.nombre_completo) LIKE ${term}
@@ -375,11 +380,27 @@ export async function registrarRenaseAction(datos: any) {
               ministerio_id = ${datos.ministerio_id || null}, 
               cargo_id = ${datos.cargo_id || null},
               estado_civil = ${datos.estado_civil || null},
-           sexo = ${datos.sexo?.trim() ? datos.sexo : null},
-           fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null},
-           avance_servidor = ${datos.avance_servidor || null},
-           retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
-           observaciones = ${datos.observaciones || null}
+              sexo = ${datos.sexo?.trim() ? datos.sexo : null},
+              fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null},
+              fecha_baja = ${datos.fecha_baja?.trim() ? datos.fecha_baja : null},
+              avance_servidor = ${datos.avance_servidor || null},
+              retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
+              observaciones = ${datos.observaciones || null},
+              domicilio_calle = ${datos.domicilio_calle || null},
+              domicilio_colonia = ${datos.domicilio_colonia || null},
+              domicilio_cp = ${datos.domicilio_cp || null},
+              contacto_emergencia = ${datos.contacto_emergencia || null},
+              tels_emergencia = ${datos.tels_emergencia || null},
+              telefono_casa_trabajo = ${datos.telefono_casa_trabajo || null},
+              facebook_url = ${datos.facebook_url || null},
+              instagram_url = ${datos.instagram_url || null},
+              tiktok_url = ${datos.tiktok_url || null},
+              youtube_url = ${datos.youtube_url || null},
+              retiros_tomados_detalle = ${datos.retiros_tomados_detalle || null},
+              retiros_externos_detalle = ${datos.retiros_externos_detalle || null},
+              servicios_sjm = ${datos.servicios_sjm || null},
+              estatus = ${datos.estatus === "false" || datos.estatus === false ? false : true},
+              foto_url = ${datos.foto_url || null}
         WHERE id = ${servidorId}
       `);
    } else {
@@ -391,13 +412,28 @@ export async function registrarRenaseAction(datos: any) {
         estado_civil: datos.estado_civil?.trim() ? datos.estado_civil : null,
         sexo: datos.sexo?.trim() ? datos.sexo : null,
         fecha_ingreso: datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null,
+        fecha_baja: datos.fecha_baja?.trim() ? datos.fecha_baja : null,
         avance_servidor: datos.avance_servidor || null,
-           retiros_tomados: datos.retiros_tomados ? Number(datos.retiros_tomados) : 0,
-           observaciones: datos.observaciones || null,
-           estatus: true
-         }).returning({ id: servidores.id });
-         servidorId = nuevoServ.id;
-      }
+        retiros_tomados: datos.retiros_tomados ? Number(datos.retiros_tomados) : 0,
+        observaciones: datos.observaciones || null,
+        domicilio_calle: datos.domicilio_calle || null,
+        domicilio_colonia: datos.domicilio_colonia || null,
+        domicilio_cp: datos.domicilio_cp || null,
+        contacto_emergencia: datos.contacto_emergencia || null,
+        tels_emergencia: datos.tels_emergencia || null,
+        telefono_casa_trabajo: datos.telefono_casa_trabajo || null,
+        facebook_url: datos.facebook_url || null,
+        instagram_url: datos.instagram_url || null,
+        tiktok_url: datos.tiktok_url || null,
+        youtube_url: datos.youtube_url || null,
+        retiros_tomados_detalle: datos.retiros_tomados_detalle || null,
+        retiros_externos_detalle: datos.retiros_externos_detalle || null,
+        servicios_sjm: datos.servicios_sjm || null,
+        estatus: datos.estatus === "false" || datos.estatus === false ? false : true,
+        foto_url: datos.foto_url || null
+      }).returning({ id: servidores.id });
+      servidorId = nuevoServ.id;
+   }
       
       // 3. Crear inscripción
       await db.insert(solicitudes_inscripcion).values({

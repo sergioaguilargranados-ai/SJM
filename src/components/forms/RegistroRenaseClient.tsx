@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { 
-  User, CheckCircle2, Search, Plane, ShieldCheck, Upload
+  User, CheckCircle2, Search, Plane, ShieldCheck, Upload,
+  MapPin, Activity, Share2, ScrollText, Camera, Loader2, Trash2, UserCircle
 } from "lucide-react";
 import { registrarRenaseAction, buscarServidorPorNombreAction } from "@/app/actions/inscripciones";
 
@@ -41,6 +42,22 @@ const servidorSchema = z.object({
   avance_servidor: z.string().optional(),
   retiros_tomados: z.coerce.number().optional(),
   observaciones: z.string().optional(),
+  fecha_baja: z.string().optional(),
+  domicilio_calle: z.string().optional(),
+  domicilio_colonia: z.string().optional(),
+  domicilio_cp: z.string().optional(),
+  contacto_emergencia: z.string().optional(),
+  tels_emergencia: z.string().optional(),
+  telefono_casa_trabajo: z.string().optional(),
+  facebook_url: z.string().optional(),
+  instagram_url: z.string().optional(),
+  tiktok_url: z.string().optional(),
+  youtube_url: z.string().optional(),
+  retiros_tomados_detalle: z.string().optional(),
+  retiros_externos_detalle: z.string().optional(),
+  servicios_sjm: z.string().optional(),
+  estatus: z.string().default("true"),
+  foto_url: z.string().optional(),
 });
 
 const formSchema = z.intersection(itinerarioSchema, servidorSchema);
@@ -55,6 +72,9 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
 
   const [subiendoArchivo, setSubiendoArchivo] = useState(false);
   const [paseUrl, setPaseUrl] = useState("");
+
+  const [subiendoFotoPerfil, setSubiendoFotoPerfil] = useState(false);
+  const [fotoPerfilUrl, setFotoPerfilUrl] = useState("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as any,
@@ -75,6 +95,9 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
 
   const seleccionarServidor = (serv: any) => {
     setServidorSeleccionado(serv);
+    const fotoUrlInicial = serv.foto_url || serv.foto_perfil_url || "";
+    setFotoPerfilUrl(fotoUrlInicial);
+
     form.reset({
        ...form.getValues(),
        nombre_completo: serv.nombre_completo || "",
@@ -87,9 +110,25 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
        sexo: serv.sexo || "",
        fecha_nacimiento: serv.fecha_nacimiento ? serv.fecha_nacimiento.toString().slice(0, 10) : "",
        fecha_ingreso: serv.fecha_ingreso ? serv.fecha_ingreso.toString().slice(0, 10) : "",
+       fecha_baja: serv.fecha_baja ? serv.fecha_baja.toString().slice(0, 10) : "",
        avance_servidor: serv.avance_servidor || "",
        retiros_tomados: serv.retiros_tomados || 0,
        observaciones: serv.observaciones || "",
+       domicilio_calle: serv.domicilio_calle || "",
+       domicilio_colonia: serv.domicilio_colonia || "",
+       domicilio_cp: serv.domicilio_cp || "",
+       contacto_emergencia: serv.contacto_emergencia || "",
+       tels_emergencia: serv.tels_emergencia || "",
+       telefono_casa_trabajo: serv.telefono_casa_trabajo || "",
+       facebook_url: serv.facebook_url || "",
+       instagram_url: serv.instagram_url || "",
+       tiktok_url: serv.tiktok_url || "",
+       youtube_url: serv.youtube_url || "",
+       retiros_tomados_detalle: serv.retiros_tomados_detalle || "",
+       retiros_externos_detalle: serv.retiros_externos_detalle || "",
+       servicios_sjm: serv.servicios_sjm || "",
+       estatus: serv.estatus === false ? "false" : "true",
+       foto_url: fotoUrlInicial,
     });
     setPaso("CAPTURA");
   };
@@ -104,9 +143,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files || event.target.files.length === 0) {
-      return;
-    }
+    if (!event.target.files || event.target.files.length === 0) return;
     const file = event.target.files[0];
     setSubiendoArchivo(true);
     try {
@@ -121,6 +158,32 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
     } finally {
       setSubiendoArchivo(false);
     }
+  };
+
+  const handleSubirFotoPerfil = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+    const file = event.target.files[0];
+    
+    setSubiendoFotoPerfil(true);
+    try {
+      const blob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+      });
+      setFotoPerfilUrl(blob.url);
+      form.setValue("foto_url", blob.url);
+    } catch (error) {
+      console.error(error);
+      alert("Error al subir la foto de perfil.");
+    } finally {
+      setSubiendoFotoPerfil(false);
+    }
+  };
+
+  const handleEliminarFotoPerfil = () => {
+    if (!confirm("¿Seguro que deseas quitar la foto?")) return;
+    setFotoPerfilUrl("");
+    form.setValue("foto_url", "");
   };
 
   async function onSubmit(values: FormValues) {
@@ -292,7 +355,44 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                  </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-[#151621] rounded-xl border border-slate-100 dark:border-[#2a2b3d] mb-8">
+                  <div className="relative group w-32 h-32 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 border-4 border-white dark:border-[#0f1015] shadow-md flex items-center justify-center">
+                    {subiendoFotoPerfil ? (
+                      <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                    ) : fotoPerfilUrl ? (
+                      <img src={fotoPerfilUrl} alt="Foto" className="w-full h-full object-cover" />
+                    ) : (
+                      <UserCircle className="w-16 h-16 text-slate-400" />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSubirFotoPerfil}
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                      disabled={subiendoFotoPerfil}
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <Camera className="w-6 h-6 text-white mb-1" />
+                      <span className="text-white text-[10px] font-bold">Cambiar</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-4 text-center max-w-xs">Haz clic en la imagen para subir o actualizar tu foto.</p>
+                  {fotoPerfilUrl && (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900/50"
+                      onClick={handleEliminarFotoPerfil}
+                      disabled={subiendoFotoPerfil}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Quitar Foto
+                    </Button>
+                  )}
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2 md:col-span-2">
                    <Label className="dark:text-slate-300">Nombre Completo *</Label>
                    <Input {...form.register("nombre_completo")} className="dark:bg-[#0f1015]" />
@@ -374,6 +474,95 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                  <div className="space-y-2 md:col-span-2">
                    <Label className="dark:text-slate-300">Observaciones Internas</Label>
                    <textarea {...form.register("observaciones")} placeholder="Notas adicionales sobre el perfil del servidor..." className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none" />
+                 </div>
+              </div>
+
+              {/* SECCIÓN: DOMICILIO Y EMERGENCIA */}
+              <div className="mt-12 mb-8 flex items-center gap-4">
+                 <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                    <MapPin className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                 </div>
+                 <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200">Domicilio y Contacto de Emergencia</h4>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                 <div className="space-y-2 md:col-span-2">
+                    <Label className="dark:text-slate-300">Calle y Número</Label>
+                    <Input {...form.register("domicilio_calle")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Colonia</Label>
+                    <Input {...form.register("domicilio_colonia")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Código Postal</Label>
+                    <Input {...form.register("domicilio_cp")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Contacto de Emergencia (Nombre)</Label>
+                    <Input {...form.register("contacto_emergencia")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Teléfonos de Emergencia</Label>
+                    <Input {...form.register("tels_emergencia")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Teléfono Casa/Trabajo</Label>
+                    <Input {...form.register("telefono_casa_trabajo")} className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Fecha de Baja</Label>
+                    <Input type="date" {...form.register("fecha_baja")} className="dark:bg-[#0f1015]" />
+                 </div>
+              </div>
+
+              {/* SECCIÓN: REDES SOCIALES */}
+              <div className="mt-12 mb-8 flex items-center gap-4">
+                 <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded-xl">
+                    <Share2 className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+                 </div>
+                 <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200">Redes Sociales</h4>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Facebook URL</Label>
+                    <Input {...form.register("facebook_url")} placeholder="https://facebook.com/..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Instagram URL</Label>
+                    <Input {...form.register("instagram_url")} placeholder="https://instagram.com/..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">TikTok URL</Label>
+                    <Input {...form.register("tiktok_url")} placeholder="https://tiktok.com/..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">YouTube URL</Label>
+                    <Input {...form.register("youtube_url")} placeholder="https://youtube.com/..." className="dark:bg-[#0f1015]" />
+                 </div>
+              </div>
+
+              {/* SECCIÓN: HISTORIAL DE SERVICIO Y RETIROS */}
+              <div className="mt-12 mb-8 flex items-center gap-4">
+                 <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+                    <ScrollText className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                 </div>
+                 <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200">Historial de Servicio y Retiros</h4>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Retiros SJM Tomados (Detalle)</Label>
+                    <textarea {...form.register("retiros_tomados_detalle")} placeholder="Ej. Retiro de Sanación 2019, Matrimonios 2021..." className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Retiros Externos Tomados</Label>
+                    <textarea {...form.register("retiros_externos_detalle")} placeholder="Ej. Retiro de Juan Pablo II, Retiro de Emaús..." className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none" />
+                 </div>
+                 <div className="space-y-2">
+                    <Label className="dark:text-slate-300">Historial de Servicios en SJM</Label>
+                    <textarea {...form.register("servicios_sjm")} placeholder="Ej. Coordinador de Acogida 2022, Servidor en Alabanza..." className="w-full min-h-[80px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none" />
                  </div>
               </div>
            </div>
