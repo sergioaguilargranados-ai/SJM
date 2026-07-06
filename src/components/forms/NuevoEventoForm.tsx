@@ -44,24 +44,30 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       sede_id: eventoToEdit?.sede_id || sedes[0]?.id || "",
       tipo_evento_id: eventoToEdit?.tipo_evento_id || tipos[0]?.id || "",
       casa_retiro_id: eventoToEdit?.casa_retiro_id || casas[0]?.id || "",
-      fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(new Date(eventoToEdit.fecha_inicio).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
-      fecha_fin: eventoToEdit?.fecha_fin ? new Date(new Date(eventoToEdit.fecha_fin).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
+      fecha_inicio: eventoToEdit?.fecha_inicio ? new Date(eventoToEdit.fecha_inicio).toLocaleString('sv-SE', { timeZone: 'America/Mexico_City' }).replace(' ', 'T').slice(0, 16) : "",
+      fecha_fin: eventoToEdit?.fecha_fin ? new Date(eventoToEdit.fecha_fin).toLocaleString('sv-SE', { timeZone: 'America/Mexico_City' }).replace(' ', 'T').slice(0, 16) : "",
       recomendaciones: eventoToEdit?.recomendaciones || "",
       politica_cancelacion: eventoToEdit?.politica_cancelacion || "",
       contrasena_inscripcion: eventoToEdit?.contrasena_inscripcion || "",
       es_evento_servidores: eventoToEdit?.es_evento_servidores || false,
       nombre_evento: eventoToEdit?.nombre_evento || "",
       descripcion: eventoToEdit?.descripcion || "",
-      fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(new Date(eventoToEdit.fecha_inicio_promocion).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
+      fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(eventoToEdit.fecha_inicio_promocion).toLocaleString('sv-SE', { timeZone: 'America/Mexico_City' }).replace(' ', 'T').slice(0, 16) : "",
       estatus: eventoToEdit?.estatus || "PLANEACION",
     },
   });
 
   async function onSubmit(values: any) {
     setCargando(true);
+    const parsedValues = { ...values };
+    // Asegurar que las fechas se guarden en UTC basándose en que el input es hora de CDMX
+    if (parsedValues.fecha_inicio) parsedValues.fecha_inicio = new Date(parsedValues.fecha_inicio + "-06:00").toISOString();
+    if (parsedValues.fecha_fin) parsedValues.fecha_fin = new Date(parsedValues.fecha_fin + "-06:00").toISOString();
+    if (parsedValues.fecha_inicio_promocion) parsedValues.fecha_inicio_promocion = new Date(parsedValues.fecha_inicio_promocion + "-06:00").toISOString();
+
     const res = eventoToEdit 
-      ? await actualizarEventoAction(eventoToEdit.id, values) 
-      : await crearEventoAction(values);
+      ? await actualizarEventoAction(eventoToEdit.id, parsedValues) 
+      : await crearEventoAction(parsedValues);
     setCargando(false);
 
     if (res.success) {
