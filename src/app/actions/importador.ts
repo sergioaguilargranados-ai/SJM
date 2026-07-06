@@ -120,7 +120,8 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           if (cargoEncontrado) cargoId = cargoEncontrado.id;
         }
 
-        const fechaIngresoParsed = parseDateExcel(fila.FechaIngreso || fila.FechaInicioServicio || fila['Fecha Inicio Servicio'] || fila['fecha inicio servicio']);
+        const fechaIngresoParsed = parseDateExcel(fila.FechaIngreso);
+        const fechaInicioServicioParsed = parseDateExcel(fila.FechaInicioServicio || fila['Fecha Inicio Servicio'] || fila['fecha inicio servicio']);
         const fechaBajaParsed = parseDateExcel(fila.FechaBaja || fila['Fecha Baja'] || fila['fecha baja']);
 
         const [yaEsServidor] = await db.select().from(servidores).where(eq(servidores.usuario_id, userId));
@@ -136,6 +137,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             sexo: fila.Sexo || "",
             fecha_nacimiento: fechaNacimientoParsed,
             fecha_ingreso: fechaIngresoParsed,
+            fecha_inicio_servicio: fechaInicioServicioParsed,
             fecha_baja: fechaBajaParsed,
             avance_servidor: fila.AvanceServidor || fila.Avance || "NUEVO",
             nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
