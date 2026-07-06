@@ -28,6 +28,7 @@ const formSchema = z.object({
   nombre_evento: z.string().min(1, "Obligatorio"),
   descripcion: z.string().optional(),
   fecha_inicio_promocion: z.string().optional(),
+  estatus: z.string().optional(),
 });
 
 
@@ -52,6 +53,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       nombre_evento: eventoToEdit?.nombre_evento || "",
       descripcion: eventoToEdit?.descripcion || "",
       fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(new Date(eventoToEdit.fecha_inicio_promocion).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "",
+      estatus: eventoToEdit?.estatus || "PLANEACION",
     },
   });
 
@@ -109,6 +111,18 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
               <Label className="dark:text-slate-300">Sede Responsable (Organiza) *</Label>
               <select {...form.register("sede_id")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
                 {sedes.map(s => <option key={s.id} value={s.id}>{s.nombre}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Estatus del Evento</Label>
+              <select {...form.register("estatus")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
+                <option value="PLANEACION">En Planeación</option>
+                <option value="PROXIMA">Próximo a Iniciar (Confirmado)</option>
+                <option value="ABIERTO">Inscripciones Abiertas</option>
+                <option value="EN_CURSO">En Curso</option>
+                <option value="CERRADO">Cerrado / Finalizado</option>
+                <option value="CANCELADO">Cancelado</option>
               </select>
             </div>
 

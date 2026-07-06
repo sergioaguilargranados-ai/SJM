@@ -279,7 +279,7 @@ export async function eliminarEventoAction(id: string) {
 
 export async function actualizarEventoAction(id: string, datos: any) {
   try {
-    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores } = datos;
+    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores, estatus } = datos;
     
     await db.update(eventos)
       .set({
@@ -294,6 +294,7 @@ export async function actualizarEventoAction(id: string, datos: any) {
         politica_cancelacion,
         contrasena_inscripcion: contrasena_inscripcion || null,
         es_evento_servidores: es_evento_servidores === true,
+        ...(estatus ? { estatus } : {})
       })
       .where(eq(eventos.id, id));
     revalidatePath("/retiros-eventos", "page");

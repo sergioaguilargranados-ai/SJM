@@ -18,9 +18,12 @@ export default async function RetirosEventosPage() {
     retiros = await obtenerAgendaRetiros(orgId);
   }
 
-  const formatFecha = (fecha: any) => {
+  const formatFechaHora = (fecha: any) => {
     if (!fecha) return "Por confirmar";
-    return new Date(fecha).toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric" });
+    const d = new Date(fecha);
+    const datePart = d.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric", timeZone: "America/Mexico_City" });
+    const timePart = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "America/Mexico_City" });
+    return `${datePart} - ${timePart}`;
   };
 
   return (
@@ -56,8 +59,8 @@ export default async function RetirosEventosPage() {
                 <div className="flex flex-col md:flex-row items-start gap-6">
                   {/* Fecha visual */}
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 flex flex-col items-center justify-center text-white shrink-0 shadow-lg">
-                    <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short" }) : "TBD"}</span>
-                    <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).getDate() : "?"}</span>
+                    <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short", timeZone: "America/Mexico_City" }) : "TBD"}</span>
+                    <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { day: "numeric", timeZone: "America/Mexico_City" }) : "?"}</span>
                   </div>
 
                   <div className="flex-1">
@@ -67,9 +70,13 @@ export default async function RetirosEventosPage() {
                       {r.sede_nombre && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-slate-400" /> {r.sede_nombre}</span>}
                       {r.cupo_maximo && <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-slate-400" /> Cupo: {r.cupo_maximo}</span>}
                       {r.costo && <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-slate-400" /> ${r.costo}</span>}
-                      {r.hora_entrada && <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-400" /> {new Date(r.hora_entrada).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })} - {r.hora_salida ? new Date(r.hora_salida).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "TBD"}</span>}
                     </div>
-                    <p className="text-xs text-slate-400 mt-3 font-medium">{formatFecha(r.fecha_inicio)} → {formatFecha(r.fecha_fin)}</p>
+                    <div className="flex items-center gap-2 mt-3 text-sm text-slate-500 font-medium bg-slate-50 dark:bg-slate-800/50 w-fit px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                      <Clock className="w-4 h-4 text-blue-500" />
+                      <span>{formatFechaHora(r.fecha_inicio)}</span>
+                      <span className="text-slate-300 dark:text-slate-600 px-1">→</span>
+                      <span>{formatFechaHora(r.fecha_fin)}</span>
+                    </div>
                   </div>
 
                   <div className="shrink-0 flex flex-col items-end gap-3 w-full md:w-auto">
