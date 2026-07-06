@@ -2,7 +2,7 @@
 
 import * as XLSX from "xlsx";
 import { db } from "@/lib/db";
-import { usuarios, servidores, eventos, sedes, casas_retiro, tipos_eventos, estados_republica } from "@/lib/schema";
+import { usuarios, servidores, eventos, sedes, casas_retiro, tipos_eventos, estados_republica, ministerios, cargos } from "@/lib/schema";
 import { eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
