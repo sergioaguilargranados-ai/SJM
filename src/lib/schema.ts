@@ -177,6 +177,7 @@ export const servidores = pgTable("servidores", {
   contacto_emergencia: varchar("contacto_emergencia", { length: 255 }),
   
   fecha_ingreso: date("fecha_ingreso"),
+  fecha_inicio_servicio: date("fecha_inicio_servicio"),
   fecha_baja: date("fecha_baja"),
   nombre_gafete: varchar("nombre_gafete", { length: 150 }),
   avance_servidor: varchar("avance_servidor", { length: 255 }),
