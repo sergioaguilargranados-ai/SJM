@@ -131,6 +131,11 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           const tCasaTrabajo = fila.TelefonoCasaTrabajo ? String(fila.TelefonoCasaTrabajo).trim() : (fila.Telefonos ? String(fila.Telefonos).trim() : null);
           const tEmergencia = fila.TelsEmergencia ? String(fila.TelsEmergencia).trim() : (fila['Tels Emergencia'] ? String(fila['Tels Emergencia']).trim() : null);
           const civilRaw = String(fila.EstadoCivil || fila['Edo Civil'] || "").trim();
+          
+          let avanceRaw = String(fila.AvanceServidor || fila.Avance || "").trim().toUpperCase();
+          let avanceFinal = "Aspirante";
+          if (avanceRaw === "SERVIDOR") avanceFinal = "Servidor";
+          else if (avanceRaw === "APOYO") avanceFinal = "Apoyo";
 
           await db.insert(servidores).values({
             organizacion_id: organizacionId,
@@ -144,7 +149,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             fecha_ingreso: fechaIngresoParsed,
             fecha_inicio_servicio: fechaInicioServicioParsed,
             fecha_baja: fechaBajaParsed,
-            avance_servidor: fila.AvanceServidor || fila.Avance || "NUEVO",
+            avance_servidor: avanceFinal,
             nombre_gafete: fila.Gafete ? String(fila.Gafete).trim().substring(0, 150) : null,
             estado_id: estadoId,
             domicilio_calle: fila.DomicilioCalle || fila.Domicilio || null,
