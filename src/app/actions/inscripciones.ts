@@ -381,6 +381,7 @@ export async function registrarRenaseAction(datos: any) {
               cargo_id = ${datos.cargo_id || null},
               estado_civil = ${datos.estado_civil || null},
               sexo = ${datos.sexo?.trim() ? datos.sexo : null},
+              fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null},
               fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null},
               fecha_baja = ${datos.fecha_baja?.trim() ? datos.fecha_baja : null},
               avance_servidor = ${datos.avance_servidor || null},
@@ -411,6 +412,7 @@ export async function registrarRenaseAction(datos: any) {
         cargo_id: datos.cargo_id?.trim() ? datos.cargo_id : null,
         estado_civil: datos.estado_civil?.trim() ? datos.estado_civil : null,
         sexo: datos.sexo?.trim() ? datos.sexo : null,
+        fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
         fecha_ingreso: datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null,
         fecha_baja: datos.fecha_baja?.trim() ? datos.fecha_baja : null,
         avance_servidor: datos.avance_servidor || null,
@@ -443,6 +445,7 @@ export async function registrarRenaseAction(datos: any) {
         nombre_gafete: datos.nombre_gafete || null,
         telefono_celular: datos.celular || null,
         correo: datos.correo || null,
+        fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
         
         // Itinerario y Logística
         fecha_hora_llegada: datos.fecha_hora_llegada ? new Date(datos.fecha_hora_llegada) : null,

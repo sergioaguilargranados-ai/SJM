@@ -62,3 +62,26 @@ export async function deleteFotoServidor(usuarioId: string) {
     return { success: false, error: error.message || "Error al borrar la imagen." };
   }
 }
+
+export async function uploadArchivoAction(formData: FormData) {
+  try {
+    const file = formData.get("file") as File;
+    const folder = (formData.get("folder") as string) || "general";
+
+    if (!file) {
+      return { success: false, error: "Faltan datos requeridos (archivo)." };
+    }
+
+    const filename = `${folder}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "")}`;
+    
+    const blob = await put(filename, file, {
+      access: "public",
+      addRandomSuffix: false,
+    });
+    
+    return { success: true, url: blob.url };
+  } catch (error: any) {
+    console.error("Error al subir archivo:", error);
+    return { success: false, error: error.message || "Error al procesar el archivo." };
+  }
+}

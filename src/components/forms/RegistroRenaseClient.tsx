@@ -12,9 +12,7 @@ import {
   MapPin, Activity, Share2, ScrollText, Camera, Loader2, Trash2, UserCircle
 } from "lucide-react";
 import { registrarRenaseAction, buscarServidorPorNombreAction } from "@/app/actions/inscripciones";
-
-// Componente para manejar la subida usando vercel/blob
-import { upload } from "@vercel/blob/client";
+import { uploadArchivoAction } from "@/app/actions/upload-foto";
 
 const itinerarioSchema = z.object({
   fecha_hora_llegada: z.string().optional(),
@@ -145,14 +143,21 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) return;
     const file = event.target.files[0];
+    
     setSubiendoArchivo(true);
     try {
-      const newBlob = await upload(file.name, file, {
-        access: 'public',
-        handleUploadUrl: '/api/upload',
-      });
-      setPaseUrl(newBlob.url);
-      form.setValue("pase_abordar_url", newBlob.url);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "boletos");
+      
+      const res = await uploadArchivoAction(formData);
+      
+      if (res.success && res.url) {
+         setPaseUrl(res.url);
+         form.setValue("pase_abordar_url", res.url);
+      } else {
+         alert("Error al subir el archivo: " + res.error);
+      }
     } catch (error: any) {
       alert("Error al subir el archivo: " + (error.message || "Error desconocido"));
     } finally {
@@ -166,12 +171,18 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
     
     setSubiendoFotoPerfil(true);
     try {
-      const blob = await upload(file.name, file, {
-        access: 'public',
-        handleUploadUrl: '/api/upload',
-      });
-      setFotoPerfilUrl(blob.url);
-      form.setValue("foto_url", blob.url);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "servidores");
+      
+      const res = await uploadArchivoAction(formData);
+      
+      if (res.success && res.url) {
+         setFotoPerfilUrl(res.url);
+         form.setValue("foto_url", res.url);
+      } else {
+         alert("Error al subir la foto de perfil: " + res.error);
+      }
     } catch (error) {
       console.error(error);
       alert("Error al subir la foto de perfil.");
@@ -471,7 +482,12 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                  </div>
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Avance / Nivel</Label>
-                   <Input placeholder="Ej. Servidor I" {...form.register("avance_servidor")} className="dark:bg-[#0f1015]" />
+                   <select {...form.register("avance_servidor")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
+                     <option value="">Selecciona...</option>
+                     <option value="Servidor">Servidor</option>
+                     <option value="Apoyo">Apoyo</option>
+                     <option value="Aspirante">Aspirante</option>
+                   </select>
                  </div>
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Retiros Tomados</Label>

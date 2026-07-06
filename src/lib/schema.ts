@@ -326,6 +326,9 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   pase_abordar_url: text("pase_abordar_url"),
   participa_salida_paseo: boolean("participa_salida_paseo").default(false),
   
+  num_cuarto: varchar("num_cuarto", { length: 50 }),
+  equipo: varchar("equipo", { length: 100 }),
+  
   estatus_solicitud: varchar("estatus_solicitud", { length: 50 }).default('PENDIENTE_PAGO'),
 
   pago_deposito: decimal("pago_deposito").default('0'),
