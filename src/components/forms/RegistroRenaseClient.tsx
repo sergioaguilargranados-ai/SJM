@@ -23,6 +23,8 @@ const itinerarioSchema = z.object({
   medio_transporte_salida: z.string().optional(),
   pase_abordar_url: z.string().optional(),
   participa_salida_paseo: z.boolean().default(false),
+  num_cuarto: z.string().optional(),
+  equipo: z.string().optional(),
 });
 
 const servidorSchema = z.object({
@@ -127,6 +129,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
        servicios_sjm: serv.servicios_sjm || "",
        estatus: serv.estatus === false ? "false" : "true",
        foto_url: fotoUrlInicial,
+       num_cuarto: "",
+       equipo: "",
     });
     setPaso("CAPTURA");
   };
@@ -325,6 +329,16 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                    <Input placeholder="Ej. Camión ETN" {...form.register("medio_transporte_salida")} className="dark:bg-[#0f1015]" />
                  </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Número de Cuarto</Label>
+                   <Input {...form.register("num_cuarto")} placeholder="Ej. 101, Compartido..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Equipo Asignado</Label>
+                   <Input {...form.register("equipo")} placeholder="Ej. Equipo 1, Logística..." className="dark:bg-[#0f1015]" />
+                 </div>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-50 dark:bg-black/20 p-6 rounded-2xl border border-dashed border-slate-300 dark:border-[#2a2b3d]">
                  <div className="space-y-2">
@@ -484,9 +498,9 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                    <Label className="dark:text-slate-300">Avance / Nivel</Label>
                    <select {...form.register("avance_servidor")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none">
                      <option value="">Selecciona...</option>
-                     <option value="Servidor">Servidor</option>
-                     <option value="Apoyo">Apoyo</option>
-                     <option value="Aspirante">Aspirante</option>
+                     <option value="SERVIDOR">SERVIDOR</option>
+                     <option value="APOYO">APOYO</option>
+                     <option value="ASPIRANTE">ASPIRANTE</option>
                    </select>
                  </div>
                  <div className="space-y-2">

@@ -358,7 +358,7 @@ export async function registrarRenaseAction(datos: any) {
       // 1. Crear o Actualizar usuario
       if (usuarioId) {
          await db.execute(sql`
-           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo?.trim() ? datos.correo : null}, fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null} WHERE id = ${usuarioId}
+           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo?.trim() ? datos.correo : null}, fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date WHERE id = ${usuarioId}
          `);
       } else {
          const [nuevoUsu] = await db.insert(usuarios).values({
@@ -381,9 +381,9 @@ export async function registrarRenaseAction(datos: any) {
               cargo_id = ${datos.cargo_id || null},
               estado_civil = ${datos.estado_civil || null},
               sexo = ${datos.sexo?.trim() ? datos.sexo : null},
-              fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null},
-              fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null},
-              fecha_baja = ${datos.fecha_baja?.trim() ? datos.fecha_baja : null},
+              fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
+              fecha_ingreso = ${datos.fecha_ingreso?.trim() ? datos.fecha_ingreso : null}::date,
+              fecha_baja = ${datos.fecha_baja?.trim() ? datos.fecha_baja : null}::date,
               avance_servidor = ${datos.avance_servidor || null},
               retiros_tomados = ${datos.retiros_tomados ? Number(datos.retiros_tomados) : 0},
               observaciones = ${datos.observaciones || null},
@@ -456,6 +456,10 @@ export async function registrarRenaseAction(datos: any) {
         medio_transporte_salida: datos.medio_transporte_salida || null,
         pase_abordar_url: datos.pase_abordar_url || null,
         participa_salida_paseo: datos.participa_salida_paseo === true,
+        
+        // Cuarto y Equipo
+        num_cuarto: datos.num_cuarto || null,
+        equipo: datos.equipo || null,
         
         // Set default
         estatus_solicitud: "PENDIENTE_PAGO"
