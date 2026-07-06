@@ -183,7 +183,7 @@ export async function crearEventoAction(datos: any) {
 
     revalidatePath("/retiros-eventos", "page");
     revalidatePath("/");
-    return { success: true, id: nuevoEvento[0].id };
+    return { success: true, id: nuevoEvento.id };
   } catch (error: any) {
     console.error("Error al crear evento:", error);
     return { success: false, error: error.message || "Error al crear evento" };
