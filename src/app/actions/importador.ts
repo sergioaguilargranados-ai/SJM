@@ -65,13 +65,13 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           continue;
         }
 
-        const fechaNacimientoParsed = parseDateExcel(fila.FechaNacimiento);
+        const fechaNacimientoParsed = parseDateExcel(fila.FechaNacimiento || fila['Fecha Nacimiento']);
 
         const [existe] = await db.select().from(usuarios).where(eq(usuarios.correo, email));
         
         let userId;
         if (!existe) {
-          const celularRaw = String(fila.Celular || fila.Telefono || "").trim().replace(/\s+/g, '');
+          const celularRaw = String(fila.Celular || fila.Celulares || fila.Telefono || "").trim().replace(/\s+/g, '');
           let nuevo;
           try {
             [nuevo] = await db.insert(usuarios).values({
@@ -109,8 +109,9 @@ export async function importarServidoresAction(base64Data: string, organizacionI
         }
 
         let ministerioId = null;
-        if (fila.Ministerio) {
-          const [minEncontrado] = await db.select().from(ministerios).where(ilike(ministerios.nombre, String(fila.Ministerio).trim()));
+        const nombreMinisterio = fila.Ministerio || fila['Ministerio Actual'];
+        if (nombreMinisterio) {
+          const [minEncontrado] = await db.select().from(ministerios).where(ilike(ministerios.nombre, String(nombreMinisterio).trim()));
           if (minEncontrado) ministerioId = minEncontrado.id;
         }
 
@@ -120,7 +121,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           if (cargoEncontrado) cargoId = cargoEncontrado.id;
         }
 
-        const fechaIngresoParsed = parseDateExcel(fila.FechaIngreso);
+        const fechaIngresoParsed = parseDateExcel(fila.FechaIngreso || fila['Fecha Ingreso']);
         const fechaInicioServicioParsed = parseDateExcel(fila.FechaInicioServicio || fila['Fecha Inicio Servicio'] || fila['fecha inicio servicio']);
         const fechaBajaParsed = parseDateExcel(fila.FechaBaja || fila['Fecha Baja'] || fila['fecha baja']);
 
@@ -133,7 +134,7 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             sede_id: sedeId,
             ministerio_id: ministerioId,
             cargo_id: cargoId,
-            estado_civil: fila.EstadoCivil || "",
+            estado_civil: fila.EstadoCivil || fila['Edo Civil'] || "",
             sexo: fila.Sexo || "",
             fecha_nacimiento: fechaNacimientoParsed,
             fecha_ingreso: fechaIngresoParsed,
@@ -142,19 +143,20 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             avance_servidor: fila.AvanceServidor || fila.Avance || "NUEVO",
             nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
             estado_id: estadoId,
-            domicilio_calle: fila.DomicilioCalle || null,
+            domicilio_calle: fila.DomicilioCalle || fila.Domicilio || null,
             domicilio_colonia: fila.Colonia || null,
-            domicilio_cp: fila.CodigoPostal ? String(fila.CodigoPostal).trim() : null,
-            telefono_casa_trabajo: fila.TelefonoCasaTrabajo ? String(fila.TelefonoCasaTrabajo).trim() : null,
-            facebook_url: fila.Facebook || null,
+            domicilio_cp: fila.CodigoPostal ? String(fila.CodigoPostal).trim() : (fila.CP ? String(fila.CP).trim() : null),
+            telefono_casa_trabajo: fila.TelefonoCasaTrabajo ? String(fila.TelefonoCasaTrabajo).trim() : (fila.Telefonos ? String(fila.Telefonos).trim() : null),
+            facebook_url: fila.Facebook || fila.Redes || null,
             instagram_url: fila.Instagram || null,
             tiktok_url: fila.TikTok || null,
             youtube_url: fila.YouTube || null,
-            telefono_emergencia: fila.TelsEmergencia ? String(fila.TelsEmergencia).trim() : null,
-            contacto_emergencia: fila.ContactoEmergencia || null,
-            retiros_tomados_detalle: fila['RetirosTomados (Detalle)'] || fila.RetirosTomados || null,
-            retiros_externos_detalle: fila['RetirosOtrasComunidades (Detalle)'] || fila.RetirosOtrasComunidades || null,
-            servicios_sjm: fila.ServiciosSJM || null,
+            telefono_emergencia: fila.TelsEmergencia ? String(fila.TelsEmergencia).trim() : (fila['Tels Emergencia'] ? String(fila['Tels Emergencia']).trim() : null),
+            tels_emergencia: fila.TelsEmergencia ? String(fila.TelsEmergencia).trim() : (fila['Tels Emergencia'] ? String(fila['Tels Emergencia']).trim() : null),
+            contacto_emergencia: fila.ContactoEmergencia || fila['Contacto Emergencia'] || null,
+            retiros_tomados_detalle: fila['RetirosTomados (Detalle)'] || fila.RetirosTomados || fila['Retiros Tomados'] || null,
+            retiros_externos_detalle: fila['RetirosOtrasComunidades (Detalle)'] || fila.RetirosOtrasComunidades || fila['Retiros Otras Comunidades'] || null,
+            servicios_sjm: fila.ServiciosSJM || fila['Servicios en SJM'] || null,
             observaciones: fila.Observaciones || null,
             estatus: parseEstatus(fila.Estatus)
           });
