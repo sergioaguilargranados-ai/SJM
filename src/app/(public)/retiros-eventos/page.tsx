@@ -21,8 +21,8 @@ export default async function RetirosEventosPage() {
   const formatFechaHora = (fecha: any) => {
     if (!fecha) return "Por confirmar";
     const d = new Date(fecha);
-    const datePart = d.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric", timeZone: "America/Mexico_City" });
-    const timePart = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "America/Mexico_City" });
+    const datePart = d.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
+    const timePart = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "UTC" });
     return `${datePart} - ${timePart}`;
   };
 
@@ -59,8 +59,8 @@ export default async function RetirosEventosPage() {
                 <div className="flex flex-col md:flex-row items-start gap-6">
                   {/* Fecha visual */}
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 flex flex-col items-center justify-center text-white shrink-0 shadow-lg">
-                    <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short", timeZone: "America/Mexico_City" }) : "TBD"}</span>
-                    <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { day: "numeric", timeZone: "America/Mexico_City" }) : "?"}</span>
+                    <span className="text-xs font-bold uppercase">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { month: "short", timeZone: "UTC" }) : "TBD"}</span>
+                    <span className="text-3xl font-black leading-none">{r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString("es-MX", { day: "numeric", timeZone: "UTC" }) : "?"}</span>
                   </div>
 
                   <div className="flex-1">
