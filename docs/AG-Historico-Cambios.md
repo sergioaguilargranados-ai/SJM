@@ -1,7 +1,18 @@
-# 📜 Histórico SJM PLATFORM • v1.193 • COMPILACIÓN: 30-06-2026 23:14 (CDMX)
+# 📜 Histórico SJM PLATFORM • v1.194 • COMPILACIÓN: 05-07-2026 22:00 (CDMX)
 
-**Última actualización:** 30 de Junio de 2026 - 23:14 (CDMX)
+**Última actualización:** 05 de Julio de 2026 - 22:00 (CDMX)
 **Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.194 - 05 de Julio de 2026 - 22:00 (CDMX)
+
+#### 🚀 Mejoras en Importación y Sincronización de Catálogos
+- **Catálogo de Servidores (Vaciado e Importación):** Creación de script directo con controlador PostgreSQL nativo (`pg`) para limpiar eficientemente la tabla de servidores superando límites de caché de ORM.
+- **Soporte de Nuevos Campos en Importación Excel:** Inclusión y mapeo de las columnas de `fecha_inicio_servicio` y `fecha_baja` para la importación desde la plantilla base, soportando distintas nomenclaturas para evitar errores de sintaxis en el parsing.
+- **Modificación de Base de Datos:** Incorporación formal del campo `fecha_inicio_servicio` al esquema de Drizzle `servidores` con su posterior migración (`drizzle-kit push`).
+- **Sincronización de Flujo RENASE:** Ajuste del proceso de inscripción RENASE (Servidores) para integrar campos faltantes (Foto, `fecha_nacimiento`, etc.) y garantizar un planchado bidireccional exacto.
+- **Correcciones de Caché:** Reparación de desincronización en la descripción de los eventos (Landing Page) retirando `revalidateTag` mal implementado en Next.js 16 y actualizando la desestructuración del array resultante de Drizzle.
 
 ---
 
