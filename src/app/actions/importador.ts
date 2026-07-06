@@ -8,7 +8,6 @@ import { revalidatePath } from "next/cache";
 
 export async function importarServidoresAction(base64Data: string, organizacionId: string, sedeId: string) {
   try {
-    // 1. Decodificar el Excel
     const buffer = Buffer.from(base64Data, 'base64');
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
@@ -19,14 +18,44 @@ export async function importarServidoresAction(base64Data: string, organizacionI
     let errores = 0;
     let erroresDetalles: string[] = [];
 
-    // 2. Procesar cada fila en una transacción (o por lotes para velocidad)
+    const parseDateExcel = (val: any) => {
+        if (!val) return null;
+        try {
+            if (typeof val === "number") {
+                const date = new Date((val - (25567 + 2)) * 86400 * 1000);
+                if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+                return null;
+            }
+            const str = String(val).trim();
+            const parts = str.split(/[/-]/);
+            if (parts.length === 3) {
+                if (parts[2].length === 4) {
+                   const date = new Date(Number(parts[2]), Number(parts[1])-1, Number(parts[0]));
+                   if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+                } else if (parts[0].length === 4) {
+                   const date = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+                   if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+                }
+            }
+            const date = new Date(str);
+            if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+        } catch (e) {}
+        return null;
+    };
+
+    const parseEstatus = (val: any) => {
+        if (val === undefined || val === null) return true; // Default a activo si no viene la columna
+        const s = String(val).trim().toUpperCase();
+        if (s === 'BAJA' || s === 'INACTIVO' || s === 'NO' || s === '0' || s === 'FALSE' || s === '') return false;
+        return true;
+    };
+
     let indexFila = 1;
     for (const filaRaw of rawData) {
       const fila = filaRaw as any;
-      indexFila++; // Empezar en 2 considerando los headers
+      indexFila++; 
       try {
         let rawEmail = fila.Correo || fila.email || fila.Email || "";
-        // Quitar todos los espacios del correo (incluso internos) y pasarlo a minúsculas
         const email = String(rawEmail).replace(/\s+/g, '').toLowerCase();
         const nombre = fila.Nombre || fila.nombre_completo || fila.nombre;
         
@@ -36,13 +65,13 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           continue;
         }
 
-        // Revisar si ya existe
+        const fechaNacimientoParsed = parseDateExcel(fila.FechaNacimiento);
+
         const [existe] = await db.select().from(usuarios).where(eq(usuarios.correo, email));
         
         let userId;
         if (!existe) {
           const celularRaw = String(fila.Celular || fila.Telefono || "").trim().replace(/\s+/g, '');
-          
           let nuevo;
           try {
             [nuevo] = await db.insert(usuarios).values({
@@ -50,21 +79,22 @@ export async function importarServidoresAction(base64Data: string, organizacionI
               sede_id: sedeId,
               nombre_completo: String(nombre).trim(),
               correo: email,
-              celular: celularRaw === "" ? null : celularRaw
+              celular: celularRaw === "" ? null : celularRaw,
+              fecha_nacimiento: fechaNacimientoParsed
             }).returning();
           } catch(insertErr: any) {
             const errMsg = (insertErr.message + " " + (insertErr.cause?.message || "") + " " + (insertErr.detail || "") + " " + (insertErr.cause?.detail || "")).toLowerCase();
-            // Si el error es porque el celular ya está repetido en la DB, reintentamos dejando el celular en blanco (null)
             if (errMsg.includes('celular') && (errMsg.includes('unique') || errMsg.includes('23505') || errMsg.includes('duplicate'))) {
                [nuevo] = await db.insert(usuarios).values({
                  organizacion_id: organizacionId,
                  sede_id: sedeId,
                  nombre_completo: String(nombre).trim(),
                  correo: email,
-                 celular: null
+                 celular: null,
+                 fecha_nacimiento: fechaNacimientoParsed
                }).returning();
             } else {
-               throw insertErr; // Si es otro error (ej. correo duplicado), lo dejamos tronar normal
+               throw insertErr; 
             }
           }
           userId = nuevo.id;
@@ -72,36 +102,26 @@ export async function importarServidoresAction(base64Data: string, organizacionI
           userId = existe.id;
         }
 
-        // Buscar el estado si se proporcionó
         let estadoId = null;
         if (fila.Estado) {
           const [estadoEncontrado] = await db.select().from(estados_republica).where(ilike(estados_republica.nombre, String(fila.Estado).trim()));
-          if (estadoEncontrado) {
-            estadoId = estadoEncontrado.id;
-          }
+          if (estadoEncontrado) estadoId = estadoEncontrado.id;
         }
 
-        // Parsear fecha de ingreso segura
-        let fechaIngresoParsed = null;
-        if (fila.FechaIngreso) {
-           try {
-              let parsedDate;
-              // Si es un número (formato serial de Excel)
-              if (typeof fila.FechaIngreso === "number") {
-                 parsedDate = new Date((fila.FechaIngreso - (25567 + 2)) * 86400 * 1000); // 25567 = días entre 1900 y 1970. +2 por bugs de bisiesto en Excel
-              } else {
-                 parsedDate = new Date(fila.FechaIngreso);
-              }
-              
-              if (!isNaN(parsedDate.getTime())) {
-                 fechaIngresoParsed = parsedDate.toISOString().split('T')[0];
-              }
-           } catch(err) {
-              // Si falla el parseo, se ignora
-           }
+        let ministerioId = null;
+        if (fila.Ministerio) {
+          const [minEncontrado] = await db.select().from(ministerios).where(ilike(ministerios.nombre, String(fila.Ministerio).trim()));
+          if (minEncontrado) ministerioId = minEncontrado.id;
         }
 
-        // Insertar en tabla Servidores (si no existe ya el vínculo)
+        let cargoId = null;
+        if (fila.Cargo) {
+          const [cargoEncontrado] = await db.select().from(cargos).where(ilike(cargos.nombre, String(fila.Cargo).trim()));
+          if (cargoEncontrado) cargoId = cargoEncontrado.id;
+        }
+
+        const fechaIngresoParsed = parseDateExcel(fila.FechaIngreso);
+
         const [yaEsServidor] = await db.select().from(servidores).where(eq(servidores.usuario_id, userId));
         
         if (!yaEsServidor) {
@@ -109,27 +129,42 @@ export async function importarServidoresAction(base64Data: string, organizacionI
             organizacion_id: organizacionId,
             usuario_id: userId,
             sede_id: sedeId,
+            ministerio_id: ministerioId,
+            cargo_id: cargoId,
             estado_civil: fila.EstadoCivil || "",
             sexo: fila.Sexo || "",
+            fecha_nacimiento: fechaNacimientoParsed,
             fecha_ingreso: fechaIngresoParsed,
-            avance_servidor: fila.Avance || "NUEVO",
+            avance_servidor: fila.AvanceServidor || fila.Avance || "NUEVO",
             nombre_gafete: fila.Gafete ? String(fila.Gafete).trim() : null,
             estado_id: estadoId,
-            estatus: true
+            domicilio_calle: fila.DomicilioCalle || null,
+            domicilio_colonia: fila.Colonia || null,
+            domicilio_cp: fila.CodigoPostal ? String(fila.CodigoPostal).trim() : null,
+            telefono_casa_trabajo: fila.TelefonoCasaTrabajo ? String(fila.TelefonoCasaTrabajo).trim() : null,
+            facebook_url: fila.Facebook || null,
+            instagram_url: fila.Instagram || null,
+            tiktok_url: fila.TikTok || null,
+            youtube_url: fila.YouTube || null,
+            telefono_emergencia: fila.TelsEmergencia ? String(fila.TelsEmergencia).trim() : null,
+            contacto_emergencia: fila.ContactoEmergencia || null,
+            retiros_tomados_detalle: fila['RetirosTomados (Detalle)'] || fila.RetirosTomados || null,
+            retiros_externos_detalle: fila['RetirosOtrasComunidades (Detalle)'] || fila.RetirosOtrasComunidades || null,
+            servicios_sjm: fila.ServiciosSJM || null,
+            observaciones: fila.Observaciones || null,
+            estatus: parseEstatus(fila.Estatus)
           });
         }
         procesados++;
       } catch (e: any) {
         console.error("Error procesando fila:", e);
         errores++;
-        
         let errorMsg = e.message;
         if (e.cause?.message) {
            errorMsg = e.cause.message;
-        } else if (e.code === '23505') { // Postgres unique violation
+        } else if (e.code === '23505') { 
            errorMsg = `El dato ya existe en otro registro (posible celular o correo duplicado). Detalle: ${e.detail || ''}`;
         }
-
         erroresDetalles.push(`Fila ${indexFila}: ${errorMsg}`);
       }
     }
