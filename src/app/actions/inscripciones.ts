@@ -435,6 +435,7 @@ export async function registrarRenaseAction(datos: any) {
               retiros_externos_detalle = ${datos.retiros_externos_detalle || null},
               servicios_sjm = ${datos.servicios_sjm || null},
               estatus = ${datos.estatus === "false" || datos.estatus === false ? false : true},
+              nombre_gafete = ${datos.nombre_gafete || null},
               foto_url = ${datos.foto_url || null}
         WHERE id = ${servidorId}
       `);
@@ -466,6 +467,7 @@ export async function registrarRenaseAction(datos: any) {
         retiros_externos_detalle: datos.retiros_externos_detalle || null,
         servicios_sjm: datos.servicios_sjm || null,
         estatus: datos.estatus === "false" || datos.estatus === false ? false : true,
+        nombre_gafete: datos.nombre_gafete || null,
         foto_url: datos.foto_url || null
       }).returning({ id: servidores.id });
       servidorId = nuevoServ.id;
