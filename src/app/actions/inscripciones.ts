@@ -390,8 +390,8 @@ export async function registrarRenaseAction(datos: any) {
       let servidorId = datos.servidor_id;
 
       // 1. Obtener el rol "Servidor"
-      const [rolServidor] = await db.execute(sql`SELECT id FROM roles_sistema WHERE nombre = 'Servidor' AND organizacion_id = '6fb191cc-a477-4632-9cb1-c30c33a9f9bd' LIMIT 1`);
-      const rolServidorId = rolServidor?.id || null;
+      const resRol = await db.execute(sql`SELECT id FROM roles_sistema WHERE nombre = 'Servidor' AND organizacion_id = '6fb191cc-a477-4632-9cb1-c30c33a9f9bd' LIMIT 1`);
+      const rolServidorId = (resRol.rows[0] as any)?.id || null;
 
       // 2. Crear o Actualizar usuario
       if (usuarioId) {
