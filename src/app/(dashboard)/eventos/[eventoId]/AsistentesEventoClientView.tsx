@@ -14,7 +14,7 @@ export default function AsistentesEventoClientView({ inscritos, eventoNombre, is
     }
   };
 
-  const columnasBase = [
+  const columnasBase: any[] = [
     {
       header: "Nombre",
       accessorKey: "nombre_asistente",
