@@ -146,7 +146,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         
         // Verificar si existe la cookie de vinculación
         const { cookies } = await import("next/headers");
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const userIdToLink = cookieStore.get("link_google_to_user_id")?.value;
 
         if (userIdToLink) {
