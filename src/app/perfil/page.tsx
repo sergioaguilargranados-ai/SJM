@@ -32,7 +32,7 @@ export default async function PerfilPage() {
       usuario={{
         id: usuario.id,
         nombre_completo: usuario.nombre_completo,
-        correo: usuario.correo,
+        correo: usuario.correo || "",
         celular: usuario.celular || "",
         fecha_nacimiento: usuario.fecha_nacimiento || "",
         foto_perfil_url: usuario.foto_perfil_url || "",
