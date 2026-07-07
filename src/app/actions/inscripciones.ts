@@ -443,8 +443,15 @@ export async function registrarRenaseAction(datos: any) {
       servidorId = nuevoServ.id;
    }
       
-      // 3. Crear inscripción
-      await db.insert(solicitudes_inscripcion).values({
+      // 3. Crear o Actualizar inscripción
+      const existingInsc = await db.query.solicitudes_inscripcion.findFirst({
+        where: (si, { eq, and }) => and(
+          eq(si.evento_id, datos.evento_id),
+          eq(si.usuario_id, usuarioId)
+        )
+      });
+      
+      const inscData = {
         evento_id: datos.evento_id,
         usuario_id: usuarioId,
         nombre_asistente: datos.nombre_completo,
@@ -468,10 +475,18 @@ export async function registrarRenaseAction(datos: any) {
         equipo: datos.equipo || null,
         comparte_cuarto_con: datos.comparte_cuarto_con || null,
         dificultad_escaleras: datos.dificultad_escaleras === true,
-        
-        // Set default
-        estatus_solicitud: "PENDIENTE_PAGO"
-      });
+      };
+
+      if (existingInsc) {
+        await db.update(solicitudes_inscripcion)
+          .set(inscData)
+          .where(eq(solicitudes_inscripcion.id, existingInsc.id));
+      } else {
+        await db.insert(solicitudes_inscripcion).values({
+          ...inscData,
+          estatus_solicitud: "PENDIENTE_PAGO"
+        });
+      }
 
     return { success: true };
   } catch (error: any) {
@@ -590,5 +605,23 @@ export async function eliminarServidorAction(id: string) {
   } catch (error: any) {
     console.error("Error al eliminar servidor:", error);
     return { success: false, error: error.message || "No se pudo eliminar el servidor." };
+  }
+}
+
+export async function eliminarInscripcionAction(id: string) {
+  try {
+    const { getUsuarioSesion } = await import("@/lib/sesion");
+    const session = await getUsuarioSesion();
+    
+    if (!session.rol_nombre?.toLowerCase().includes("admin")) {
+       return { success: false, error: "Permisos insuficientes. Sólo administradores pueden eliminar inscripciones." };
+    }
+    
+    await db.delete(solicitudes_inscripcion).where(eq(solicitudes_inscripcion.id, id));
+    revalidatePath("/eventos/[eventoId]", "page");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al eliminar inscripcion:", error);
+    return { success: false, error: error.message || "No se puede eliminar la inscripción." };
   }
 }

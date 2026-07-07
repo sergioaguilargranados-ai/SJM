@@ -5,9 +5,13 @@ import { ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AsistentesEventoClientView from "./AsistentesEventoClientView";
+import { getUsuarioSesion } from "@/lib/sesion";
 
 export default async function DetalleEventoPage({ params }: { params: Promise<{ eventoId: string }> }) {
   const { eventoId } = await params;
+  const sesion = await getUsuarioSesion();
+  const isAdmin = sesion?.rol_nombre?.toLowerCase().includes("admin") || false;
+
   const { data: evento } = await getEventoById(eventoId);
   const { data: inscritos = [] } = await getInscripcionesByEvento(eventoId);
 
@@ -98,7 +102,7 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
           </div>
           {/* LISTA DE INSCRITOS */}
           <div className="pt-4 border-t border-slate-100 dark:border-[#2a2b3d]">
-            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo || "Evento"} />
+            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo || "Evento"} isAdmin={isAdmin} />
           </div>
         </div>
       </div>
