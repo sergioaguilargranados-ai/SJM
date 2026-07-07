@@ -544,3 +544,7 @@
 ### v1.020 - 16 de Junio de 2026
 - **Soporte Multimedia CMS:** Integraci√≥n de Vercel Blob para subir im√°genes y actualizaci√≥n de base de datos para soportar imagen_url, ideo_url y oto_url en secciones, testimonios y responsables.
 - **Galer√≠a de Fotos:** Nueva pesta√±a y CRUD implementado en el CMS para gestionar una galer√≠a de fotos multi-tenant en diferentes p√°ginas.
+
+### v1.021 - 07 de Julio de 2026
+- **CorrecciÛn Bug Im·genes CMS:** Se solucionÛ el problema por el cual la subida de im·genes a Vercel Blob se quedaba colgada, pasando directamente el archivo File en lugar de un Buffer (incompatible con Edge Actions).
+- **Formulario RENASE (Captura de Solicitudes):** Se agregaron los campos 'Compartir habitaciÛn con (nombre y razÛn)' y 'Problema fÌsico para subir escaleras' exclusivamente para el Itinerario de Viaje de la Solicitud (RegistroRenaseClient.tsx), mapeados a solicitudes_inscripcion sin alterar el cat·logo de servidores.

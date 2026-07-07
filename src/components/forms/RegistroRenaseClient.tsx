@@ -25,6 +25,8 @@ const itinerarioSchema = z.object({
   participa_salida_paseo: z.boolean().default(false),
   num_cuarto: z.string().optional(),
   equipo: z.string().optional(),
+  comparte_cuarto_con: z.string().optional(),
+  dificultad_escaleras: z.boolean().default(false),
 });
 
 const servidorSchema = z.object({
@@ -80,6 +82,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
       participa_salida_paseo: false,
+      dificultad_escaleras: false,
     }
   });
 
@@ -131,6 +134,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
        foto_url: fotoUrlInicial,
        num_cuarto: "",
        equipo: "",
+       comparte_cuarto_con: "",
     });
     setPaso("CAPTURA");
   };
@@ -329,6 +333,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                    <Input placeholder="Ej. Camión ETN" {...form.register("medio_transporte_salida")} className="dark:bg-[#0f1015]" />
                  </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Número de Cuarto</Label>
@@ -337,6 +342,22 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Equipo Asignado</Label>
                    <Input {...form.register("equipo")} placeholder="Ej. Equipo 1, Logística..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2">
+                   <Label className="dark:text-slate-300">Compartir habitación con (nombre y razón)</Label>
+                   <Input {...form.register("comparte_cuarto_con")} placeholder="Ej. Con mi hermana por motivos médicos..." className="dark:bg-[#0f1015]" />
+                 </div>
+                 <div className="space-y-2 flex items-center">
+                   <label className="flex items-center gap-3 cursor-pointer p-3 w-full border border-slate-200 dark:border-[#2a2b3d] rounded-xl bg-white dark:bg-[#151621] hover:bg-slate-50 transition-colors h-[42px] mt-6">
+                     <input 
+                       type="checkbox" 
+                       {...form.register("dificultad_escaleras")}
+                       className="w-5 h-5 rounded text-blue-600 dark:bg-[#0f1015]"
+                     />
+                     <div>
+                       <span className="text-sm font-bold block text-slate-800 dark:text-slate-200">Problema físico para subir escaleras</span>
+                     </div>
+                   </label>
                  </div>
               </div>
 

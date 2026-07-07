@@ -23,11 +23,7 @@ export async function subirImagen(formData: FormData) {
     const extension = file.name.split('.').pop() || 'png';
     const filename = `uploads/${uuidv4()}.${extension}`;
 
-    // Convertir File a Buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const blob = await put(filename, buffer, {
+    const blob = await put(filename, file, {
       access: 'public',
       contentType: file.type,
       addRandomSuffix: false

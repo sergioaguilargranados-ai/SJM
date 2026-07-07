@@ -463,6 +463,8 @@ export async function registrarRenaseAction(datos: any) {
         // Cuarto y Equipo
         num_cuarto: datos.num_cuarto || null,
         equipo: datos.equipo || null,
+        comparte_cuarto_con: datos.comparte_cuarto_con || null,
+        dificultad_escaleras: datos.dificultad_escaleras === true,
         
         // Set default
         estatus_solicitud: "PENDIENTE_PAGO"
