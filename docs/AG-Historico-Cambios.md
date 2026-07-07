@@ -552,3 +552,6 @@
 ### v1.022 - 07 de Julio de 2026
 - **Prevención de Registros Duplicados:** Se implementó una lógica de UPSERT en egistrarRenaseAction para evitar múltiples inscripciones del mismo usuario en un mismo evento.
 - **Gestión de Inscripciones (Admins):** Se habilitó la columna de acciones en la pantalla de asistentes para Super Admins, permitiendo eliminar y editar registros de inscripciones rápidamente.
+
+### v1.196 - 07 de Julio de 2026 - 11:45 (CST)
+- **Control de Versiones y Documentación:** Sincronización de la versión y fecha de compilación de la plataforma en landing, login y footer del intranet según lineamientos del contexto del proyecto.
