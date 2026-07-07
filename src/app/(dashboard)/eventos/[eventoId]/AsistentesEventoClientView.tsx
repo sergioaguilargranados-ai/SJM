@@ -56,8 +56,8 @@ export default function AsistentesEventoClientView({ inscritos, eventoNombre, is
       accessorKey: "id",
       halign: "center",
       cell: (val: any, row: any) => (
-        <div className="flex items-center justify-center gap-2">
-          <a href={`/registro/${row.evento_id}`} title="Editar en Registro" className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-800/50 rounded-lg transition-colors">
+        <div className="flex items-center gap-2">
+          <a href={`/registro/${row.evento_id}?editId=${val}&returnTo=/eventos/${row.evento_id}`} title="Editar en Registro" className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-800/50 rounded-lg transition-colors">
             <Pencil className="w-4 h-4" />
           </a>
           <button onClick={() => handleEliminar(val)} title="Eliminar Registro" className="p-2 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-800/50 rounded-lg transition-colors">

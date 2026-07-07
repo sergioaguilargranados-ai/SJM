@@ -339,7 +339,7 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
               s.contacto_emergencia, s.tels_emergencia, s.telefono_casa_trabajo,
               s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
               s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
-              s.nombre_gafete
+              COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
               ${evento_id ? sql`, si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras` : sql``}
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
@@ -350,6 +350,34 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
     return { success: true, data: result.rows };
   } catch (error: any) {
     console.error("Error en buscarServidorPorNombreAction:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function buscarServidorPorInscripcionIdAction(inscripcion_id: string) {
+  try {
+    const result = await db.execute(sql`
+      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, u.foto_perfil_url, 
+              s.sexo, s.fecha_nacimiento, s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, 
+              s.estado_civil, s.fecha_ingreso, s.fecha_baja, s.retiros_tomados, s.observaciones, s.foto_url,
+              s.domicilio_calle, s.domicilio_colonia, s.domicilio_cp, s.estado_id,
+              s.contacto_emergencia, s.tels_emergencia, s.telefono_casa_trabajo,
+              s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
+              s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
+              COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
+              , si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras
+       FROM solicitudes_inscripcion si
+       INNER JOIN usuarios u ON si.usuario_id = u.id
+       LEFT JOIN servidores s ON s.usuario_id = u.id
+       WHERE si.id = ${inscripcion_id}
+       LIMIT 1
+    `);
+    if (result.rows.length > 0) {
+      return { success: true, data: result.rows[0] };
+    }
+    return { success: false, message: "No encontrado" };
+  } catch (error: any) {
+    console.error("Error en buscarServidorPorInscripcionIdAction:", error);
     return { success: false, error: error.message };
   }
 }

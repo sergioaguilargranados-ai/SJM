@@ -5,9 +5,13 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { eventos, sedes, ministerios, cargos, tipos_eventos } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { buscarServidorPorInscripcionIdAction } from "@/app/actions/inscripciones";
 
-export default async function RegistroPage({ params }: { params: Promise<{ eventoId: string }> }) {
-  const { eventoId } = await params;
+export default async function RegistroPage(props: { params: Promise<{ eventoId: string }>, searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const { eventoId } = await props.params;
+  const searchParams = await props.searchParams;
+  const editId = searchParams?.editId as string | undefined;
+  const returnTo = searchParams?.returnTo as string | undefined;
   
   const [eventoData] = await db
     .select({
@@ -46,11 +50,19 @@ export default async function RegistroPage({ params }: { params: Promise<{ event
     db.select().from(cargos).orderBy(cargos.nombre)
   ]);
 
+  let initialData = null;
+  if (editId) {
+    const res = await buscarServidorPorInscripcionIdAction(editId);
+    if (res.success && res.data) {
+      initialData = res.data;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1015] py-12 px-4 sm:px-6 lg:px-8 transition-colors">
-      <RegistroPublicoClient evento={eventoData}>
+      <RegistroPublicoClient evento={eventoData} bypassPassword={!!initialData}>
         {eventoData.es_evento_servidores ? (
-          <RegistroRenaseClient evento={eventoData} sedes={sedesList} ministerios={ministeriosList} cargos={cargosList} />
+          <RegistroRenaseClient evento={eventoData} sedes={sedesList} ministerios={ministeriosList} cargos={cargosList} initialData={initialData} returnTo={returnTo} />
         ) : (
           <RegistroForm eventoId={eventoId} esMatrimonial={eventoData.es_matrimonial ?? false} />
         )}

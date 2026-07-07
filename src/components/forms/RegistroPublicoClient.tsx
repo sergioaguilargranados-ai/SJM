@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input";
 interface RegistroPublicoClientProps {
   evento: any;
   children: React.ReactNode;
+  bypassPassword?: boolean;
 }
 
-export function RegistroPublicoClient({ evento, children }: RegistroPublicoClientProps) {
+export function RegistroPublicoClient({ evento, children, bypassPassword }: RegistroPublicoClientProps) {
   const [password, setPassword] = useState("");
-  const [autorizado, setAutorizado] = useState(!evento.contrasena_inscripcion);
+  const [autorizado, setAutorizado] = useState(!evento.contrasena_inscripcion || bypassPassword);
   const [error, setError] = useState(false);
 
   const handleValidar = () => {

@@ -65,12 +65,12 @@ const servidorSchema = z.object({
 const formSchema = z.intersection(itinerarioSchema, servidorSchema);
 type FormValues = z.infer<typeof formSchema>;
 
-export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { evento: any, sedes: any[], ministerios: any[], cargos: any[] }) {
-  const [paso, setPaso] = useState<"BUSCADOR" | "CAPTURA" | "EXITO">("BUSCADOR");
+export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initialData, returnTo }: { evento: any, sedes: any[], ministerios: any[], cargos: any[], initialData?: any, returnTo?: string }) {
+  const [paso, setPaso] = useState<"BUSCADOR" | "CAPTURA" | "EXITO">(initialData ? "CAPTURA" : "BUSCADOR");
   const [cargando, setCargando] = useState(false);
   const [termBusqueda, setTermBusqueda] = useState("");
   const [servidoresEncontrados, setServidoresEncontrados] = useState<any[]>([]);
-  const [servidorSeleccionado, setServidorSeleccionado] = useState<any>(null);
+  const [servidorSeleccionado, setServidorSeleccionado] = useState<any>(initialData || null);
 
   const [subiendoArchivo, setSubiendoArchivo] = useState(false);
   const [paseUrl, setPaseUrl] = useState("");
@@ -85,6 +85,30 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
       dificultad_escaleras: false,
     }
   });
+
+  React.useEffect(() => {
+    if (initialData) {
+      form.reset({
+         ...initialData,
+         nombre_gafete: initialData.nombre_gafete || "",
+         fecha_nacimiento: initialData.fecha_nacimiento ? new Date(initialData.fecha_nacimiento).toISOString().split('T')[0] : "",
+         fecha_hora_llegada: initialData.fecha_hora_llegada ? new Date(initialData.fecha_hora_llegada).toISOString().slice(0, 16) : "",
+         fecha_hora_salida: initialData.fecha_hora_salida ? new Date(initialData.fecha_hora_salida).toISOString().slice(0, 16) : "",
+         lugar_llegada: initialData.lugar_llegada || "",
+         medio_transporte_llegada: initialData.medio_transporte_llegada || "",
+         lugar_salida: initialData.lugar_salida || "",
+         medio_transporte_salida: initialData.medio_transporte_salida || "",
+         pase_abordar_url: initialData.pase_abordar_url || "",
+         num_cuarto: initialData.num_cuarto || "",
+         equipo: initialData.equipo || "",
+         comparte_cuarto_con: initialData.comparte_cuarto_con || "",
+         dificultad_escaleras: initialData.dificultad_escaleras === true,
+         participa_salida_paseo: initialData.participa_salida_paseo === true,
+      });
+      if (initialData.pase_abordar_url) setPaseUrl(initialData.pase_abordar_url);
+      if (initialData.foto_url) setFotoPerfilUrl(initialData.foto_url);
+    }
+  }, [initialData, form]);
 
   const buscarServidor = async () => {
     if (!termBusqueda || termBusqueda.length < 3) return;
@@ -245,8 +269,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
           Tus datos de itinerario y perfil han sido guardados. Nos vemos pronto.
         </p>
         <div className="mt-10">
-          <Button onClick={() => window.location.href = '/'} className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold w-full md:w-auto">
-            Aceptar y Volver al Inicio
+          <Button onClick={() => window.location.href = returnTo || '/'} className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold w-full md:w-auto">
+            {returnTo ? "Aceptar y Volver" : "Aceptar y Volver al Inicio"}
           </Button>
         </div>
       </div>
