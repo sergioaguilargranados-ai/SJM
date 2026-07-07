@@ -71,9 +71,10 @@ export async function asignarRolUsuarioAction(usuarioId: string, rolId: string) 
 
 /**
  * Obtiene la estructura completa de módulos -> funciones -> acciones
+ * Si se proporciona planId, filtra para retornar SOLO los permitidos por ese plan.
  */
-export async function getEstructuraPermisos() {
-  const modulos = await db.query.modulos_sistema.findMany({
+export async function getEstructuraPermisos(planId?: string) {
+  let modulos = await db.query.modulos_sistema.findMany({
     with: {
       funciones: {
         with: {
@@ -82,6 +83,24 @@ export async function getEstructuraPermisos() {
       }
     }
   });
+
+  if (planId) {
+    const { plan_permisos } = await import("@/lib/schema");
+    const permisosPlan = await db.select({ funcion_id: plan_permisos.funcion_id })
+      .from(plan_permisos)
+      .where(eq(plan_permisos.plan_id, planId));
+      
+    const funcionesPermitidas = new Set(permisosPlan.map(p => p.funcion_id));
+    
+    // Filtrar módulos y funciones en memoria
+    modulos = modulos.map(modulo => {
+      return {
+        ...modulo,
+        funciones: modulo.funciones.filter(f => funcionesPermitidas.has(f.id))
+      };
+    }).filter(modulo => modulo.funciones.length > 0);
+  }
+
   return modulos;
 }
 

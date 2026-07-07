@@ -389,19 +389,30 @@ export async function registrarRenaseAction(datos: any) {
       let usuarioId = datos.usuario_id;
       let servidorId = datos.servidor_id;
 
-      // 1. Crear o Actualizar usuario
+      // 1. Obtener el rol "Servidor"
+      const [rolServidor] = await db.execute(sql`SELECT id FROM roles_sistema WHERE nombre = 'Servidor' AND organizacion_id = '6fb191cc-a477-4632-9cb1-c30c33a9f9bd' LIMIT 1`);
+      const rolServidorId = rolServidor?.id || null;
+
+      // 2. Crear o Actualizar usuario
       if (usuarioId) {
          await db.execute(sql`
-           UPDATE usuarios SET nombre_completo = ${datos.nombre_completo}, celular = ${datos.celular}, correo = ${datos.correo?.trim() ? datos.correo : null}, fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date WHERE id = ${usuarioId}
+           UPDATE usuarios SET 
+            nombre_completo = ${datos.nombre_completo}, 
+            celular = ${datos.celular}, 
+            correo = ${datos.correo?.trim() ? datos.correo : null}, 
+            fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
+            rol_id = COALESCE(rol_id, ${rolServidorId})
+           WHERE id = ${usuarioId}
          `);
       } else {
          const [nuevoUsu] = await db.insert(usuarios).values({
            organizacion_id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
            nombre_completo: datos.nombre_completo,
            celular: datos.celular,
-           correo: datos.correo?.trim() ? datos.correo : `${Date.now()}@temporal.com`,
+           correo: datos.correo?.trim() ? datos.correo : null,
            fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
-           es_servidor: true
+           es_servidor: true,
+           rol_id: rolServidorId as string | null
          }).returning({ id: usuarios.id });
          usuarioId = nuevoUsu.id;
       }

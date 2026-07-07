@@ -16,6 +16,7 @@ interface RegistroInput {
   celular?: string;
   contrasena: string;
   fecha_nacimiento?: string;
+  origen?: "tienda" | "general";
 }
 
 interface RegistroResult {
@@ -25,7 +26,7 @@ interface RegistroResult {
 
 /**
  * Registra un nuevo usuario con correo o celular + contraseña.
- * Asigna automáticamente el rol "General".
+ * Asigna automáticamente el rol "General" o "Usuario Tienda" según el origen.
  */
 export async function registrarUsuarioAction(
   datos: RegistroInput
@@ -76,23 +77,25 @@ export async function registrarUsuarioAction(
       }
     }
 
-    // 3. Obtener o crear el rol General
-    let [rolGeneral] = await db
+    // 3. Obtener o crear el rol correspondiente
+    const nombreRolBuscado = datos.origen === "tienda" ? "Usuario Tienda" : "General";
+    
+    let [rolAsignar] = await db
       .select({ id: roles_sistema.id })
       .from(roles_sistema)
       .where(
         and(
           eq(roles_sistema.organizacion_id, ORG_NACIONAL_ID),
-          eq(roles_sistema.nombre, "General")
+          eq(roles_sistema.nombre, nombreRolBuscado)
         )
       );
 
-    if (!rolGeneral) {
-      [rolGeneral] = await db
+    if (!rolAsignar) {
+      [rolAsignar] = await db
         .insert(roles_sistema)
         .values({
           organizacion_id: ORG_NACIONAL_ID,
-          nombre: "General",
+          nombre: nombreRolBuscado,
           es_admin_sistema: false,
         })
         .returning({ id: roles_sistema.id });
@@ -118,7 +121,7 @@ export async function registrarUsuarioAction(
       nombre_completo: datos.nombre_completo.trim(),
       contrasena_hash: contrasenaHash,
       fecha_nacimiento: datos.fecha_nacimiento || null,
-      rol_id: rolGeneral.id,
+      rol_id: rolAsignar.id,
     });
 
     // 6. Enviar notificaciones de bienvenida (no bloqueantes)

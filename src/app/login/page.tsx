@@ -24,11 +24,26 @@ export default function LoginPage() {
   const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Aquí se conectará con el API de NextAuth
-    setTimeout(() => {
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: viewMode === "email" ? formData.email : formData.phone,
+        password: formData.password,
+      });
+
+      if (result?.error) {
+        alert("Credenciales inválidas. Por favor intenta de nuevo.");
+        setIsLoading(false);
+      } else {
+        // Redirección manejada por el middleware o NextAuth, 
+        // pero podemos forzar el router si redirect es false.
+        window.location.href = "/dashboard";
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al iniciar sesión.");
       setIsLoading(false);
-      alert("Autenticación por credenciales próximamente habilitada en v1.085");
-    }, 1500);
+    }
   };
 
   return (
@@ -139,17 +154,34 @@ export default function LoginPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-2 animate-in slide-in-from-bottom-2">
-                    <Label htmlFor="phone">Número de Celular</Label>
-                    <Input 
-                      id="phone" 
-                      type="tel" 
-                      placeholder="55-1234-5678"
-                      className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA]"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                    />
+                  <div className="space-y-4 animate-in slide-in-from-bottom-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Número de Celular</Label>
+                      <Input 
+                        id="phone" 
+                        type="tel" 
+                        placeholder="55-1234-5678"
+                        className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA]"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <Label htmlFor="password-phone">Contraseña</Label>
+                        <Link href="/recuperar" className="text-[10px] text-[#00B4AA] font-bold hover:underline">¿Olvidaste tu contraseña?</Link>
+                      </div>
+                      <Input 
+                        id="password-phone" 
+                        type="password" 
+                        placeholder="••••••••"
+                        className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA]"
+                        value={formData.password}
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                        required
+                      />
+                    </div>
                   </div>
                 )}
 
@@ -181,7 +213,7 @@ export default function LoginPage() {
              <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Seguridad Fin a Fin Habilitada</span>
           </div>
           <p className="text-center text-[10px] text-slate-400 dark:text-[#5e5e72] font-black uppercase tracking-[0.2em]">
-            SJM PLATFORM &bull; v1.196 &bull; COMPILACIÓN: 07-07-2026 11:45 (CDMX)
+            SJM PLATFORM &bull; v1.197 &bull; COMPILACIÓN: 07-07-2026 14:35 (CDMX)
           </p>
         </div>
       </div>

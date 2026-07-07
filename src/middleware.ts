@@ -50,6 +50,10 @@ export default auth((req) => {
   // Verificar si la ruta actual es protegida
   const esRutaProtegida = RUTAS_PROTEGIDAS.some((ruta) => path.startsWith(ruta));
 
+  // Obtener permisos
+  const permisos = (req.auth?.user as any)?.permisos || [];
+  const tieneAccesoDashboard = permisos.includes("*") || permisos.includes("dashboard.view") || permisos.some((p: string) => p.startsWith("dashboard."));
+
   // Si es ruta protegida y no hay sesión, redirigir a login
   if (esRutaProtegida && !isLoggedIn) {
     const loginUrl = new URL("/login", req.url);
@@ -57,9 +61,18 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Si ya está logueado y visita /login, redirigir al dashboard
+  // Si trata de entrar a /dashboard o rutas administrativas y no tiene permisos de dashboard
+  if (esRutaProtegida && isLoggedIn && path.startsWith("/dashboard") && !tieneAccesoDashboard) {
+    return NextResponse.redirect(new URL("/perfil", req.url));
+  }
+
+  // Si ya está logueado y visita /login, redirigir según permisos
   if (path === "/login" && isLoggedIn) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    if (tieneAccesoDashboard) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/perfil", req.url));
+    }
   }
 
   return NextResponse.next();

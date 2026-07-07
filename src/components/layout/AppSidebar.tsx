@@ -7,31 +7,38 @@ import {
   LayoutDashboard, Users, CalendarDays, Receipt, Settings, FileText, Menu, X,
   LogOut, ChevronDown, ChevronRight, Music, Award, Tag, Home, MapPin, Wallet,
   ClipboardList, Star, Landmark, BookOpen, UsersRound, ShieldCheck,
-  PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay, Building2
+  PanelLeftClose, ShoppingBag, Newspaper, Megaphone, Palette, MonitorPlay, Building2, Shield
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/components/TenantProvider";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, planes: ["landing", "admin", "premium"], clave: "dashboard" },
-  { name: "Servidores", href: "/servidores", icon: Users, planes: ["admin", "premium"], clave: "servidores" },
-  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays, planes: ["admin", "premium"], clave: "eventos" },
-  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList, planes: ["admin", "premium"], clave: "inscripciones" },
-  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound, planes: ["admin", "premium"], clave: "equipo" },
-  { name: "Finanzas", href: "/finanzas", icon: Receipt, planes: ["premium"], clave: "finanzas" },
-  { name: "Documentos", href: "/documentos", icon: FileText, planes: ["premium"], clave: "documentos" },
-  { name: "Evaluaciones", href: "/evaluaciones", icon: Star, planes: ["premium"], clave: "evaluaciones" },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, clave: "dashboard" },
+  { name: "Servidores", href: "/servidores", icon: Users, clave: "servidores" },
+  { name: "Retiros y Eventos", href: "/eventos", icon: CalendarDays, clave: "eventos" },
+  { name: "Inscripciones", href: "/inscripciones", icon: ClipboardList, clave: "inscripciones" },
+  { name: "Equipo por Evento", href: "/equipo", icon: UsersRound, clave: "equipo" },
+  { name: "Finanzas", href: "/finanzas", icon: Receipt, clave: "finanzas" },
+  { name: "Documentos", href: "/documentos", icon: FileText, clave: "documentos" },
+  { name: "Evaluaciones", href: "/evaluaciones", icon: Star, clave: "evaluaciones" },
 ];
 
 const catalogos = [
-  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark, planes: ["admin", "premium"], clave: "sedes" },
-  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music, planes: ["admin", "premium"], clave: "ministerios" },
-  { name: "Cargos", href: "/catalogos/cargos", icon: Award, planes: ["admin", "premium"], clave: "cargos" },
-  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag, planes: ["admin", "premium"], clave: "tipos-eventos" },
-  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home, planes: ["admin", "premium"], clave: "casas-retiro" },
-  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet, planes: ["premium"], clave: "clasificaciones-gasto" },
-  { name: "Estados", href: "/catalogos/estados", icon: MapPin, planes: ["admin", "premium"], clave: "estados" },
+  { name: "Sedes", href: "/catalogos/sedes", icon: Landmark, clave: "sedes" },
+  { name: "Ministerios", href: "/catalogos/ministerios", icon: Music, clave: "ministerios" },
+  { name: "Cargos", href: "/catalogos/cargos", icon: Award, clave: "cargos" },
+  { name: "Tipos de Eventos", href: "/catalogos/tipos-eventos", icon: Tag, clave: "tipos-eventos" },
+  { name: "Casas de Retiro", href: "/catalogos/casas-retiro", icon: Home, clave: "casas-retiro" },
+  { name: "Clasif. Gasto", href: "/catalogos/clasificaciones-gasto", icon: Wallet, clave: "clasificaciones-gasto" },
+  { name: "Estados", href: "/catalogos/estados", icon: MapPin, clave: "estados" },
+];
+
+const cms = [
+  { name: "Contenido", href: "/configuracion/contenido", icon: Palette, clave: "contenido" },
+  { name: "Tienda Online", href: "/configuracion/tienda", icon: ShoppingBag, clave: "tienda" },
+  { name: "Blog", href: "/configuracion/blog", icon: Newspaper, clave: "blog" },
+  { name: "Media", href: "/configuracion/media", icon: MonitorPlay, clave: "media" },
 ];
 
 interface AppSidebarProps {
@@ -44,21 +51,15 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [catalogosOpen, setCatalogosOpen] = useState(pathname.startsWith("/catalogos"));
 
-  const planClave = tenant.plan?.clave || "landing";
-
   // Función para validar si tiene permiso (view)
   const tienePermiso = (clave: string) => {
     if (permisos.includes("*")) return true;
     return permisos.includes(`${clave}.view`) || permisos.includes(clave);
   };
 
-  const navFiltrada = navigation.filter(item => 
-    (item as any).planes.includes(planClave) && tienePermiso(item.clave)
-  );
-  
-  const catFiltrados = catalogos.filter(item => 
-    (item as any).planes.includes(planClave) && tienePermiso(item.clave)
-  );
+  const navFiltrada = navigation.filter(item => tienePermiso(item.clave));
+  const catFiltrados = catalogos.filter(item => tienePermiso(item.clave));
+  const cmsFiltrado = cms.filter(item => tienePermiso(item.clave));
 
   useEffect(() => {
     const handleToggle = () => setMobileMenuOpen(prev => !prev);
@@ -82,36 +83,41 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
 
         {/* Menu Items */}
         <div className="flex-1 overflow-y-auto py-4">
+          
           {/* Sección Principal */}
-          <div className="px-4 mb-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Operación</p>
-          </div>
-          <ul className="space-y-0.5">
-            {navFiltrada.map((item) => {
-              const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-              return (
-                <li key={item.name} className="px-3">
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                      isActive
-                        ? "text-white shadow-md font-bold"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
-                    )}
-                    style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
-                  >
-                    <item.icon className={cn(
-                      "w-4 h-4 mr-3 transition-colors",
-                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                    )} />
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          {navFiltrada.length > 0 && (
+            <>
+              <div className="px-4 mb-2">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Operación</p>
+              </div>
+              <ul className="space-y-0.5">
+                {navFiltrada.map((item) => {
+                  const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                  return (
+                    <li key={item.name} className="px-3">
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={cn(
+                          "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                          isActive
+                            ? "text-white shadow-md font-bold"
+                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                        )}
+                        style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
+                      >
+                        <item.icon className={cn(
+                          "w-4 h-4 mr-3 transition-colors",
+                          isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                        )} />
+                        {item.name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
           {/* Sección Catálogos */}
           {catFiltrados.length > 0 && (
@@ -164,129 +170,156 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
             </>
           )}
 
-
           {/* Configuración */}
-          <div className="px-4 mt-5 mb-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sistema</p>
-          </div>
-          <ul className="space-y-0.5">
-            <li className="px-3">
-              <Link
-                href="/configuracion"
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                  pathname === "/configuracion"
-                    ? "text-white shadow-md font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+          {(tienePermiso("configuracion") || tienePermiso("usuarios") || tienePermiso("permisos") || permisos.includes("*")) && (
+            <>
+              <div className="px-4 mt-5 mb-2">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sistema</p>
+              </div>
+              <ul className="space-y-0.5">
+                {tienePermiso("configuracion") && (
+                  <li className="px-3">
+                    <Link
+                      href="/configuracion"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                        pathname === "/configuracion"
+                          ? "text-white shadow-md font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      style={pathname === "/configuracion" ? { backgroundColor: tenant.color_primario } : undefined}
+                    >
+                      <Settings className={cn(
+                        "w-4 h-4 mr-3 transition-colors",
+                        pathname === "/configuracion" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      )} />
+                      Configuración
+                    </Link>
+                  </li>
                 )}
-                style={pathname === "/configuracion" ? { backgroundColor: tenant.color_primario } : undefined}
-              >
-                <Settings className={cn(
-                  "w-4 h-4 mr-3 transition-colors",
-                  pathname === "/configuracion" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                )} />
-                Configuración
-              </Link>
-            </li>
-            {planClave === "premium" && permisos?.includes("*") && (
-              <li className="px-3">
-                <Link
-                  href="/configuracion/organizaciones"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                    pathname === "/configuracion/organizaciones"
-                      ? "text-white shadow-md font-bold"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
-                  )}
-                  style={pathname === "/configuracion/organizaciones" ? { backgroundColor: tenant.color_primario } : undefined}
-                >
-                  <Building2 className={cn(
-                    "w-4 h-4 mr-3 transition-colors",
-                    pathname === "/configuracion/organizaciones" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                  )} />
-                  Organizaciones
-                </Link>
-              </li>
-            )}
-            <li className="px-3">
-              <Link
-                href="/configuracion/usuarios"
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                  pathname === "/configuracion/usuarios"
-                    ? "text-white shadow-md font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                {permisos.includes("*") && (
+                  <li className="px-3">
+                    <Link
+                      href="/configuracion/organizaciones"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                        pathname === "/configuracion/organizaciones"
+                          ? "text-white shadow-md font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      style={pathname === "/configuracion/organizaciones" ? { backgroundColor: tenant.color_primario } : undefined}
+                    >
+                      <Building2 className={cn(
+                        "w-4 h-4 mr-3 transition-colors",
+                        pathname === "/configuracion/organizaciones" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      )} />
+                      Organizaciones
+                    </Link>
+                  </li>
                 )}
-                style={pathname === "/configuracion/usuarios" ? { backgroundColor: tenant.color_primario } : undefined}
-              >
-                <Users className={cn(
-                  "w-4 h-4 mr-3 transition-colors",
-                  pathname === "/configuracion/usuarios" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                )} />
-                Equipo y Usuarios
-              </Link>
-            </li>
-            {planClave === "premium" && (
-              <li className="px-3">
-                <Link
-                  href="/configuracion/permisos"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                    pathname === "/configuracion/permisos"
-                      ? "text-white shadow-md font-bold"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
-                  )}
-                  style={pathname === "/configuracion/permisos" ? { backgroundColor: tenant.color_primario } : undefined}
-                >
-                  <ShieldCheck className={cn(
-                    "w-4 h-4 mr-3 transition-colors",
-                    pathname === "/configuracion/permisos" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                  )} />
-                  Roles y Permisos
-                </Link>
-              </li>
-            )}
-          </ul>
+                {permisos.includes("*") && (
+                  <li className="px-3">
+                    <Link
+                      href="/configuracion/modulos"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                        pathname === "/configuracion/modulos"
+                          ? "text-white shadow-md font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      style={pathname === "/configuracion/modulos" ? { backgroundColor: tenant.color_primario } : undefined}
+                    >
+                      <Shield className={cn(
+                        "w-4 h-4 mr-3 transition-colors",
+                        pathname === "/configuracion/modulos" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      )} />
+                      Gestor de Módulos
+                    </Link>
+                  </li>
+                )}
+                {tienePermiso("usuarios") && (
+                  <li className="px-3">
+                    <Link
+                      href="/configuracion/usuarios"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                        pathname === "/configuracion/usuarios"
+                          ? "text-white shadow-md font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      style={pathname === "/configuracion/usuarios" ? { backgroundColor: tenant.color_primario } : undefined}
+                    >
+                      <Users className={cn(
+                        "w-4 h-4 mr-3 transition-colors",
+                        pathname === "/configuracion/usuarios" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      )} />
+                      Equipo y Usuarios
+                    </Link>
+                  </li>
+                )}
+                {tienePermiso("permisos") && (
+                  <li className="px-3">
+                    <Link
+                      href="/configuracion/permisos"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                        pathname === "/configuracion/permisos"
+                          ? "text-white shadow-md font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      style={pathname === "/configuracion/permisos" ? { backgroundColor: tenant.color_primario } : undefined}
+                    >
+                      <ShieldCheck className={cn(
+                        "w-4 h-4 mr-3 transition-colors",
+                        pathname === "/configuracion/permisos" ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                      )} />
+                      Roles y Permisos
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </>
+          )}
 
           {/* Sección CMS — Administración de Contenido Web */}
-          <div className="px-4 mt-5 mb-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sitio Web</p>
-          </div>
-          <ul className="space-y-0.5">
-            {[
-              { name: "Contenido", href: "/configuracion/contenido", icon: Palette },
-              { name: "Tienda Online", href: "/configuracion/tienda", icon: ShoppingBag },
-              { name: "Blog", href: "/configuracion/blog", icon: Newspaper },
-              { name: "Media", href: "/configuracion/media", icon: MonitorPlay },
-            ].map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <li key={item.name} className="px-3">
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
-                      isActive
-                        ? "text-white shadow-md font-bold"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
-                    )}
-                    style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
-                  >
-                    <item.icon className={cn(
-                      "w-4 h-4 mr-3 transition-colors",
-                      isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
-                    )} />
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          {cmsFiltrado.length > 0 && (
+            <>
+              <div className="px-4 mt-5 mb-2">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-[#5e5e72] uppercase tracking-widest px-3">Sitio Web</p>
+              </div>
+              <ul className="space-y-0.5">
+                {cmsFiltrado.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <li key={item.name} className="px-3">
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={cn(
+                          "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group",
+                          isActive
+                            ? "text-white shadow-md font-bold"
+                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2a2b3d] hover:text-slate-900 dark:hover:text-white"
+                        )}
+                        style={isActive ? { backgroundColor: tenant.color_primario } : undefined}
+                      >
+                        <item.icon className={cn(
+                          "w-4 h-4 mr-3 transition-colors",
+                          isActive ? "text-white" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300"
+                        )} />
+                        {item.name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
         </div>
 

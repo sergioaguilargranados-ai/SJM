@@ -22,6 +22,8 @@ export async function getUsuarioSesion() {
     nombre_completo: session.user.nombre_completo,
     correo: session.user.email,
     foto: session.user.image,
+    es_admin_sistema: session.user.es_admin_sistema,
+    permisos: session.user.permisos || [],
   };
 }
 
@@ -40,5 +42,7 @@ export async function getUsuarioSesionOpcional() {
     nombre_completo: session.user.nombre_completo || session.user.name || "",
     correo: session.user.email || "",
     foto: session.user.image || "",
+    es_admin_sistema: session.user.es_admin_sistema || false,
+    permisos: session.user.permisos || [],
   };
 }

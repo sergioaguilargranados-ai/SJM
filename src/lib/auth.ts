@@ -23,6 +23,8 @@ declare module "next-auth" {
       rol_id: string | null;
       rol_nombre: string | null;
       nombre_completo: string;
+      es_admin_sistema: boolean;
+      permisos: string[];
     };
   }
 }
@@ -138,10 +140,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      if (!user.email) return false;
-
-      // Para Google: auto-crear si no existe
+      // Para Google: auto-crear si no existe o vincular si se pide
       if (account?.provider === "google") {
+        if (!user.email) return false;
+        
+        // Verificar si existe la cookie de vinculación
+        const { cookies } = await import("next/headers");
+        const cookieStore = cookies();
+        const userIdToLink = cookieStore.get("link_google_to_user_id")?.value;
+
+        if (userIdToLink) {
+          // Vincular cuenta existente
+          await db
+            .update(usuarios)
+            .set({ google_id: account.providerAccountId })
+            .where(eq(usuarios.id, userIdToLink));
+            
+          // Limpiar la cookie de vinculación
+          cookieStore.set("link_google_to_user_id", "", { maxAge: 0 });
+          return true; // Permitir el inicio de sesión que sobreescribirá la sesión con la de google (está bien porque apuntará al mismo user)
+        }
+
         const [usuarioExistente] = await db
           .select()
           .from(usuarios)
@@ -179,9 +198,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     async jwt({ token, user, trigger, account }) {
       // En el primer login o cuando se refresca el token
-      if (user?.email || trigger === "signIn") {
-        const correo = user?.email || token.email;
-        if (correo) {
+      if (user?.id || token.sub || trigger === "signIn") {
+        const usuarioId = user?.id || token.sub;
+        if (usuarioId) {
           const [usr] = await db
             .select({
               id: usuarios.id,
@@ -192,7 +211,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               foto_perfil_url: usuarios.foto_perfil_url,
             })
             .from(usuarios)
-            .where(eq(usuarios.correo, correo as string));
+            .where(eq(usuarios.id, usuarioId as string));
 
           if (usr) {
             token.usuario_id = usr.id;
@@ -202,13 +221,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.nombre_completo = usr.nombre_completo;
             token.foto_url = usr.foto_perfil_url;
 
-            // Obtener nombre del rol
+            // Obtener nombre del rol y permisos
             if (usr.rol_id) {
               const [rol] = await db
-                .select({ nombre: roles_sistema.nombre })
+                .select({ 
+                  nombre: roles_sistema.nombre,
+                  es_admin_sistema: roles_sistema.es_admin_sistema 
+                })
                 .from(roles_sistema)
                 .where(eq(roles_sistema.id, usr.rol_id));
+              
               token.rol_nombre = rol?.nombre || null;
+              token.es_admin_sistema = rol?.es_admin_sistema || false;
+
+              if (rol?.es_admin_sistema) {
+                token.permisos = ["*"];
+              } else {
+                // Obtener permisos operativos granulares
+                const { rol_permisos, acciones_sistema, funciones_sistema, modulos_sistema } = await import("./schema");
+                
+                const permisosDB = await db
+                  .select({
+                    modulo: modulos_sistema.clave,
+                    funcion: funciones_sistema.clave,
+                    accion: acciones_sistema.clave
+                  })
+                  .from(rol_permisos)
+                  .innerJoin(acciones_sistema, eq(rol_permisos.accion_id, acciones_sistema.id))
+                  .innerJoin(funciones_sistema, eq(acciones_sistema.funcion_id, funciones_sistema.id))
+                  .innerJoin(modulos_sistema, eq(funciones_sistema.modulo_id, modulos_sistema.id))
+                  .where(eq(rol_permisos.rol_id, usr.rol_id));
+
+                token.permisos = permisosDB.map(p => `${p.modulo}.${p.funcion}.${p.accion}`);
+              }
+            } else {
+              token.es_admin_sistema = false;
+              token.permisos = [];
             }
           }
         }
@@ -225,6 +273,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.rol_id = (token.rol_id as string) || null;
         session.user.rol_nombre = (token.rol_nombre as string) || null;
         session.user.nombre_completo = (token.nombre_completo as string) || session.user.name || "";
+        session.user.es_admin_sistema = (token.es_admin_sistema as boolean) || false;
+        session.user.permisos = (token.permisos as string[]) || [];
         if (token.foto_url) {
           session.user.image = token.foto_url as string;
         }

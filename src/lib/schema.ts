@@ -108,7 +108,7 @@ export const usuarios = pgTable("usuarios", {
   organizacion_id: uuid("organizacion_id").references(() => organizaciones.id).notNull(),
   sede_id: uuid("sede_id").references(() => sedes.id),
   rol_id: uuid("rol_id").references(() => roles_sistema.id),
-  correo: varchar("correo", { length: 255 }).unique().notNull(),
+  correo: varchar("correo", { length: 255 }).unique(),
   celular: varchar("celular", { length: 20 }).unique(),
   contrasena_hash: text("contrasena_hash"),
   google_id: varchar("google_id", { length: 255 }),

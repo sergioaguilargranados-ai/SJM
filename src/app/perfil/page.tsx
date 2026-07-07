@@ -38,6 +38,7 @@ export default async function PerfilPage() {
         foto_perfil_url: usuario.foto_perfil_url || "",
         es_servidor: usuario.es_servidor || false,
         sede_id: usuario.sede_id || "",
+        tiene_google_vinculado: !!usuario.google_id,
       }}
       sedes={listaSedes}
     />

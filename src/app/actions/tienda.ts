@@ -85,6 +85,7 @@ export async function obtenerMediosPago(organizacionId: string) {
 
 export async function crearPedidoWeb(datos: {
   organizacion_id: string;
+  usuario_id?: string;
   nombre_cliente: string;
   correo_cliente?: string;
   telefono_cliente?: string;
