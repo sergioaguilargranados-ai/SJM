@@ -93,12 +93,14 @@ export async function solicitarRecuperacionAction(identificador: string) {
       `,
     });
 
-    // Enviar enlace por email
-    enviarEmail({
-      para: usuario.correo,
-      asunto: "Recuperar Contraseña — SJM",
-      html,
-    }).catch((err) => console.error("Error enviando email de recuperación:", err));
+    // Enviar enlace por email si tiene correo
+    if (usuario.correo) {
+      enviarEmail({
+        para: usuario.correo,
+        asunto: "Recuperar Contraseña — SJM",
+        html,
+      }).catch((err) => console.error("Error enviando email de recuperación:", err));
+    }
 
     // Si buscaron por celular, también enviar por WhatsApp
     if (busquedaPorCelular && usuario.celular) {
