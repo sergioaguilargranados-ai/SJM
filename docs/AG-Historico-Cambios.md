@@ -548,3 +548,7 @@
 ### v1.021 - 07 de Julio de 2026
 - **Corrección Bug Imágenes CMS:** Se solucionó el problema por el cual la subida de imágenes a Vercel Blob se quedaba colgada, pasando directamente el archivo File en lugar de un Buffer (incompatible con Edge Actions).
 - **Formulario RENASE (Captura de Solicitudes):** Se agregaron los campos 'Compartir habitación con (nombre y razón)' y 'Problema físico para subir escaleras' exclusivamente para el Itinerario de Viaje de la Solicitud (RegistroRenaseClient.tsx), mapeados a solicitudes_inscripcion sin alterar el catálogo de servidores.
+
+### v1.022 - 07 de Julio de 2026
+- **Prevención de Registros Duplicados:** Se implementó una lógica de UPSERT en egistrarRenaseAction para evitar múltiples inscripciones del mismo usuario en un mismo evento.
+- **Gestión de Inscripciones (Admins):** Se habilitó la columna de acciones en la pantalla de asistentes para Super Admins, permitiendo eliminar y editar registros de inscripciones rápidamente.
