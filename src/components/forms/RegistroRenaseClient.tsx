@@ -89,7 +89,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
   const buscarServidor = async () => {
     if (!termBusqueda || termBusqueda.length < 3) return;
     setCargando(true);
-    const res = await buscarServidorPorNombreAction(termBusqueda);
+    const res = await buscarServidorPorNombreAction(termBusqueda, evento.id);
     setCargando(false);
     if (res.success && res.data) {
        setServidoresEncontrados(res.data);
@@ -100,6 +100,12 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
     setServidorSeleccionado(serv);
     const fotoUrlInicial = serv.foto_url || serv.foto_perfil_url || "";
     setFotoPerfilUrl(fotoUrlInicial);
+    
+    if (serv.pase_abordar_url) {
+      setPaseUrl(serv.pase_abordar_url);
+    } else {
+      setPaseUrl("");
+    }
 
     form.reset({
        ...form.getValues(),
@@ -132,9 +138,19 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos }: { e
        servicios_sjm: serv.servicios_sjm || "",
        estatus: serv.estatus === false ? "false" : "true",
        foto_url: fotoUrlInicial,
-       num_cuarto: "",
-       equipo: "",
-       comparte_cuarto_con: "",
+       nombre_gafete: serv.nombre_gafete || "",
+       num_cuarto: serv.num_cuarto || "",
+       equipo: serv.equipo || "",
+       comparte_cuarto_con: serv.comparte_cuarto_con || "",
+       dificultad_escaleras: serv.dificultad_escaleras || false,
+       participa_salida_paseo: serv.participa_salida_paseo || false,
+       fecha_hora_llegada: serv.fecha_hora_llegada ? new Date(serv.fecha_hora_llegada).toISOString().slice(0, 16) : "",
+       lugar_llegada: serv.lugar_llegada || "",
+       medio_transporte_llegada: serv.medio_transporte_llegada || "",
+       fecha_hora_salida: serv.fecha_hora_salida ? new Date(serv.fecha_hora_salida).toISOString().slice(0, 16) : "",
+       lugar_salida: serv.lugar_salida || "",
+       medio_transporte_salida: serv.medio_transporte_salida || "",
+       pase_abordar_url: serv.pase_abordar_url || "",
     });
     setPaso("CAPTURA");
   };
