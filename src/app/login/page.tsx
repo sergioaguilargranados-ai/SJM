@@ -7,7 +7,7 @@ import { useTenant } from "@/components/TenantProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, ArrowLeft, Loader2, UserPlus, ShieldCheck } from "lucide-react";
+import { Mail, Phone, ArrowLeft, Loader2, UserPlus, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [viewMode, setViewMode] = useState<"social" | "email" | "phone">("social");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "", phone: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSocialLogin = (provider: string) => {
     setIsLoading(true);
@@ -142,15 +143,24 @@ export default function LoginPage() {
                         <Label htmlFor="password">Contraseña</Label>
                         <Link href="/recuperar" className="text-[10px] text-[#00B4AA] font-bold hover:underline">¿Olvidaste tu contraseña?</Link>
                       </div>
-                      <Input 
-                        id="password" 
-                        type="password" 
-                        placeholder="••••••••"
-                        className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA]"
-                        value={formData.password}
-                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                        required
-                      />
+                      <div className="relative">
+                        <Input 
+                          id="password" 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="••••••••"
+                          className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA] pr-10"
+                          value={formData.password}
+                          onChange={(e) => setFormData({...formData, password: e.target.value})}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#00B4AA] transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -172,15 +182,24 @@ export default function LoginPage() {
                         <Label htmlFor="password-phone">Contraseña</Label>
                         <Link href="/recuperar" className="text-[10px] text-[#00B4AA] font-bold hover:underline">¿Olvidaste tu contraseña?</Link>
                       </div>
-                      <Input 
-                        id="password-phone" 
-                        type="password" 
-                        placeholder="••••••••"
-                        className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA]"
-                        value={formData.password}
-                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                        required
-                      />
+                      <div className="relative">
+                        <Input 
+                          id="password-phone" 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="••••••••"
+                          className="rounded-xl h-12 bg-white/50 dark:bg-[#0f1015]/50 border-slate-200 dark:border-[#2a2b3d] focus:ring-[#00B4AA] focus:border-[#00B4AA] pr-10"
+                          value={formData.password}
+                          onChange={(e) => setFormData({...formData, password: e.target.value})}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#00B4AA] transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
