@@ -197,10 +197,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async jwt({ token, user, trigger, account }) {
-      // En el primer login o cuando se refresca el token
-      if (user?.id || token.sub || trigger === "signIn") {
-        const usuarioId = user?.id || token.sub;
-        if (usuarioId) {
+        // En el primer login o cuando se refresca el token
+        const email = user?.email || token.email;
+        if (email) {
           const [usr] = await db
             .select({
               id: usuarios.id,
@@ -211,7 +210,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               foto_perfil_url: usuarios.foto_perfil_url,
             })
             .from(usuarios)
-            .where(eq(usuarios.id, usuarioId as string));
+            .where(eq(usuarios.correo, email as string));
 
           if (usr) {
             token.usuario_id = usr.id;
@@ -260,7 +259,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
           }
         }
-      }
       return token;
     },
 
