@@ -79,8 +79,37 @@ export default function PermisosClient({ rolesInitial, planesInitial, estructura
             <Fingerprint className="w-4 h-4 mr-2" />
             Auditoría
           </Button>
-          <Button size="sm" className="bg-[#00B4AA] hover:bg-[#009a96] text-white font-bold">
-            <UserPlus className="w-4 h-4 mr-2" />
+          <Button 
+            size="sm" 
+            className="bg-[#00B4AA] hover:bg-[#009a96] text-white font-bold"
+            onClick={async () => {
+              const nombre = window.prompt("Ingresa el nombre del nuevo rol:");
+              if (!nombre) return;
+              
+              // Asumimos que podemos sacar el organizacionId del primer rol de la lista
+              // o que la action lo saca de la sesion idealmente. 
+              // En este caso lo sacaremos del primer rol.
+              const orgId = rolesInitial[0]?.organizacion_id;
+              if (!orgId) {
+                sjmToast("Error", "No se encontró la organización.", "error");
+                return;
+              }
+              
+              setGuardando(true);
+              const { upsertRolAction } = await import("@/app/actions/permisos");
+              const res = await upsertRolAction(orgId, { nombre });
+              setGuardando(false);
+              
+              if (res.success) {
+                sjmToast("¡Creado!", "El rol se ha creado exitosamente.", "success");
+                window.location.reload();
+              } else {
+                sjmToast("Error", res.error || "No se pudo crear el rol.", "error");
+              }
+            }}
+            disabled={guardando}
+          >
+            {guardando ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <UserPlus className="w-4 h-4 mr-2" />}
             Nuevo Rol
           </Button>
         </div>
