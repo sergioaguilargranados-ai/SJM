@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Phone, ArrowLeft, Loader2, UserPlus, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { sjmToast } from "@/components/ui/SjmToast";
 
 export default function LoginPage() {
   const tenant = useTenant();
@@ -33,7 +34,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        alert("Credenciales inválidas. Por favor intenta de nuevo.");
+        sjmToast("Error de Acceso", "Credenciales inválidas. Por favor intenta de nuevo.", "error");
         setIsLoading(false);
       } else {
         // Redirección manejada por el middleware o NextAuth, 
@@ -42,7 +43,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error(err);
-      alert("Error al iniciar sesión.");
+      sjmToast("Error", "Error al iniciar sesión.", "error");
       setIsLoading(false);
     }
   };
