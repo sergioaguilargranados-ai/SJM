@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "react-hot-toast";
+import { sjmToast } from "@/components/ui/SjmToast";
 import { 
   upsertModuloAction, 
   deleteModuloAction, 
@@ -48,11 +48,11 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await upsertModuloAction(currentModulo);
     setLoading(false);
     if (res.success) {
-      toast.success("Módulo guardado");
+      sjmToast("Éxito", "Módulo guardado");
       setModuloModalOpen(false);
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al guardar");
+      sjmToast("Error", res.error || "Error al guardar", "error");
     }
   };
 
@@ -62,10 +62,10 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await deleteModuloAction(id);
     setLoading(false);
     if (res.success) {
-      toast.success("Módulo eliminado");
+      sjmToast("Éxito", "Módulo eliminado");
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al eliminar");
+      sjmToast("Error", res.error || "Error al eliminar", "error");
     }
   };
 
@@ -81,11 +81,11 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await upsertFuncionAction(currentFuncion);
     setLoading(false);
     if (res.success) {
-      toast.success("Función guardada");
+      sjmToast("Éxito", "Función guardada");
       setFuncionModalOpen(false);
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al guardar");
+      sjmToast("Error", res.error || "Error al guardar", "error");
     }
   };
 
@@ -95,10 +95,10 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await deleteFuncionAction(id);
     setLoading(false);
     if (res.success) {
-      toast.success("Función eliminada");
+      sjmToast("Éxito", "Función eliminada");
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al eliminar");
+      sjmToast("Error", res.error || "Error al eliminar", "error");
     }
   };
 
@@ -114,11 +114,11 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await upsertAccionAction(currentAccion);
     setLoading(false);
     if (res.success) {
-      toast.success("Acción guardada");
+      sjmToast("Éxito", "Acción guardada");
       setAccionModalOpen(false);
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al guardar");
+      sjmToast("Error", res.error || "Error al guardar", "error");
     }
   };
 
@@ -128,10 +128,10 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await deleteAccionAction(id);
     setLoading(false);
     if (res.success) {
-      toast.success("Acción eliminada");
+      sjmToast("Éxito", "Acción eliminada");
       window.location.reload();
     } else {
-      toast.error(res.error || "Error al eliminar");
+      sjmToast("Error", res.error || "Error al eliminar", "error");
     }
   };
 
@@ -158,10 +158,10 @@ export default function ModulosClient({ modulosInitial, planes }: { modulosIniti
     const res = await actualizarPlanPermisosAction(currentPlan.id, planFuncionesIds);
     setLoading(false);
     if (res.success) {
-      toast.success("Permisos del plan actualizados");
+      sjmToast("Éxito", "Permisos del plan actualizados");
       setPlanesModalOpen(false);
     } else {
-      toast.error(res.error || "Error al guardar");
+      sjmToast("Error", res.error || "Error al guardar", "error");
     }
   };
 
