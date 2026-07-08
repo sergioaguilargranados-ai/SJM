@@ -90,15 +90,17 @@ export async function getEstructuraPermisos(planId?: string) {
       .from(plan_permisos)
       .where(eq(plan_permisos.plan_id, planId));
       
-    const funcionesPermitidas = new Set(permisosPlan.map(p => p.funcion_id));
-    
-    // Filtrar módulos y funciones en memoria
-    modulos = modulos.map(modulo => {
-      return {
-        ...modulo,
-        funciones: modulo.funciones.filter(f => funcionesPermitidas.has(f.id))
-      };
-    }).filter(modulo => modulo.funciones.length > 0);
+    if (permisosPlan.length > 0) {
+      const funcionesPermitidas = new Set(permisosPlan.map(p => p.funcion_id));
+      
+      // Filtrar módulos y funciones en memoria
+      modulos = modulos.map(modulo => {
+        return {
+          ...modulo,
+          funciones: modulo.funciones.filter(f => funcionesPermitidas.has(f.id))
+        };
+      }).filter(modulo => modulo.funciones.length > 0);
+    }
   }
 
   return modulos;
