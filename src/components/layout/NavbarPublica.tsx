@@ -36,19 +36,19 @@ export function NavbarPublica() {
 
         {/* Links de navegación — Desktop */}
         <div className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-400">
-          <a href="#carisma" className="hover:text-slate-900 dark:hover:text-white transition-colors">Carisma</a>
-          <a href="#ministerios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Ministerios</a>
-          <a href="#programas" className="hover:text-slate-900 dark:hover:text-white transition-colors">Programas</a>
-          <a href="#retiros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Retiros</a>
-          <a href="#testimonios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Testimonios</a>
-          <a href="#centros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Centros</a>
+          <Link href="/#carisma" className="hover:text-slate-900 dark:hover:text-white transition-colors">Carisma</Link>
+          <Link href="/#ministerios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Ministerios</Link>
+          <Link href="/#programas" className="hover:text-slate-900 dark:hover:text-white transition-colors">Programas</Link>
+          <Link href="/#retiros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Retiros</Link>
+          <Link href="/#testimonios" className="hover:text-slate-900 dark:hover:text-white transition-colors">Testimonios</Link>
+          <Link href="/#centros" className="hover:text-slate-900 dark:hover:text-white transition-colors">Centros</Link>
           <Link href="/blog" className="hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> Blog</Link>
           <Link href="/tienda" className="hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1"><ShoppingBag className="w-3.5 h-3.5" /> Tienda</Link>
           <Link href="/donativos" className="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> Donativos</Link>
         </div>
 
         {/* Acciones */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative">
           <Link href="/donativos" className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700 transition-colors">
             <Heart className="w-3 h-3" /> Donar
           </Link>
@@ -66,7 +66,7 @@ export function NavbarPublica() {
                     alt={session.user.nombre_completo || session.user.name || ""}
                     width={32}
                     height={32}
-                    className="rounded-full border-2 border-[#00B4AA]"
+                    className="rounded-full border-2 border-[#00B4AA] object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4AA] to-[#1E3A5F] flex items-center justify-center text-white font-bold text-xs">
@@ -83,7 +83,7 @@ export function NavbarPublica() {
               {userMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                  <div className="absolute right-0 top-full mt-2 w-56 z-50 bg-white dark:bg-[#1a1b26] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#2a2b3d] py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute right-0 top-full mt-2 w-56 z-50 bg-white dark:bg-[#1a1b26] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#2a2b3d] py-2 animate-in fade-in slide-in-from-top-2 duration-200 origin-top-right">
                     {/* Info del usuario */}
                     <div className="px-4 py-3 border-b border-slate-100 dark:border-[#2a2b3d]">
                       <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
