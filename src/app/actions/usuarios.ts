@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { usuarios, roles_sistema, organizaciones } from "@/lib/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 

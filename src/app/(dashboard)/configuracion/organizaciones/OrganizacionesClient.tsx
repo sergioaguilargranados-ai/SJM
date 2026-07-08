@@ -1,9 +1,71 @@
 "use client";
 
+import { useState } from "react";
 import { TablaConsulta } from "@/components/TablaConsulta";
 import { ModalCatalogo } from "@/components/forms/ModalCatalogo";
-import { Building2 } from "lucide-react";
-import { crearOrganizacionAction } from "@/app/actions/configuracion";
+import { Building2, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { crearOrganizacionAction, updateOrganizacionAction, deleteOrganizacionAction } from "@/app/actions/configuracion";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { sjmToast } from "@/components/ui/SjmToast";
+import { useRouter } from "next/navigation";
+
+function AccionesFilaOrganizacion({ row }: { row: any }) {
+  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleEliminar = async () => {
+    if (confirm(`¿Estás seguro de que deseas eliminar la organización "${row.nombre}"?`)) {
+      const res = await deleteOrganizacionAction(row.id);
+      if (res.success) {
+        sjmToast("Éxito", "Organización eliminada", "success");
+        router.refresh();
+      } else {
+        sjmToast("Error", res.error || "Error al eliminar", "error");
+      }
+    }
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setModalOpen(true)} className="cursor-pointer">
+            <Pencil className="mr-2 h-4 w-4 text-blue-500" />
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEliminar} className="cursor-pointer text-red-600 focus:text-red-600">
+            <Trash2 className="mr-2 h-4 w-4" />
+            Eliminar
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ModalCatalogo
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        titulo="Editar Organización"
+        textoBoton="Guardar Cambios"
+        datosIniciales={row}
+        campos={[
+          { nombre: "nombre", label: "Nombre del Grupo/Movimiento", requerido: true, placeholder: "Ej: Jóvenes de la Luz" },
+          { nombre: "dominio_tenant", label: "Dominio (Sin http/www)", placeholder: "Ej: jovenesdelaluz.org" },
+          { nombre: "logo_url", label: "Logo", tipo: "file" },
+          { nombre: "color_primario", label: "Color Primario (Hex)", placeholder: "#00B4AA" },
+          { nombre: "color_secundario", label: "Color Secundario (Hex)", placeholder: "#1E3A5F" },
+        ]}
+        onSubmit={async (datos) => {
+          return await updateOrganizacionAction(row.id, datos);
+        }}
+      />
+    </>
+  );
+}
 
 export default function OrganizacionesClient({ datos }: { datos: any[] }) {
   return (
@@ -69,6 +131,13 @@ export default function OrganizacionesClient({ datos }: { datos: any[] }) {
           )
         },
         { header: "Contacto", accessorKey: "telefono_contacto" },
+        {
+          header: "",
+          accessorKey: "acciones",
+          halign: "right",
+          ocultarEnUI: false,
+          cell: (val: any, row: any) => <AccionesFilaOrganizacion row={row} />
+        }
       ]}
     />
   );

@@ -67,3 +67,13 @@ export async function crearOrganizacionAction(data: any) {
     return { success: false, error: error.message || "Error al crear la organizaciÃ³n" };
   }
 }
+export async function deleteOrganizacionAction(id: string) {
+  try {
+    await db.delete(organizaciones).where(eq(organizaciones.id, id));
+    revalidatePath("/configuracion/organizaciones");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error eliminando organización:", error);
+    return { success: false, error: "No se pudo eliminar la organización." };
+  }
+}
