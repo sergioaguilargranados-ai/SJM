@@ -41,13 +41,22 @@ export async function eliminarUsuarioAction(id: string) {
 
 export async function registrarUsuarioPublicoAction(data: { nombre: string, correo: string, telefono: string, password: string }) {
   try {
-    // Verificar si el correo ya existe
+    // Verificar si el correo o celular ya existe
     const existente = await db.query.usuarios.findFirst({
-      where: eq(usuarios.correo, data.correo.toLowerCase())
+      where: or(
+        eq(usuarios.correo, data.correo.toLowerCase()),
+        eq(usuarios.celular, data.telefono)
+      )
     });
 
     if (existente) {
-      return { success: false, error: "El correo electrónico ya está registrado." };
+      if (existente.correo === data.correo.toLowerCase()) {
+        return { success: false, error: "El correo electrónico ya está registrado." };
+      }
+      if (existente.celular === data.telefono) {
+        return { success: false, error: "El número de celular ya está registrado." };
+      }
+      return { success: false, error: "El usuario ya existe." };
     }
 
     // Hash de la contraseña
