@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Lock, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { Lock, ArrowRight, ShieldCheck, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -15,6 +15,7 @@ export function RegistroPublicoClient({ evento, children, bypassPassword }: Regi
   const [password, setPassword] = useState("");
   const [autorizado, setAutorizado] = useState(!evento.contrasena_inscripcion || bypassPassword);
   const [error, setError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleValidar = () => {
     if (password === evento.contrasena_inscripcion) {
@@ -43,13 +44,20 @@ export function RegistroPublicoClient({ evento, children, bypassPassword }: Regi
       <div className="mt-8 space-y-4">
         <div className="relative">
           <Input 
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Introduce la contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleValidar()}
-            className={`h-14 rounded-2xl text-center font-bold tracking-widest ${error ? 'border-red-500 ring-red-500' : ''}`}
+            className={`h-14 rounded-2xl text-center font-bold tracking-widest pr-12 ${error ? 'border-red-500 ring-red-500' : ''}`}
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors"
+          >
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
           {error && (
             <p className="text-red-500 text-[10px] font-bold uppercase mt-2 flex items-center justify-center gap-1">
               <AlertCircle className="w-3 h-3" /> Contraseña incorrecta
