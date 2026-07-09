@@ -418,7 +418,7 @@ export async function registrarRenaseAction(datos: any) {
             celular = ${datos.celular}, 
             correo = ${datos.correo?.trim() ? datos.correo : null}, 
             fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
-            rol_id = COALESCE(rol_id, ${rolServidorId}),
+            rol_id = COALESCE(rol_id, ${rolServidorId}::uuid),
             es_servidor = true
            WHERE id = ${usuarioId}
          `);
@@ -449,7 +449,7 @@ export async function registrarRenaseAction(datos: any) {
       if (servidorId) {
          await db.execute(sql`
            UPDATE servidores SET 
-              sede_id = ${datos.sede_id || null}, 
+              sede_id = COALESCE(${datos.sede_id?.trim() ? datos.sede_id : null}::uuid, sede_id), 
               ministerio_id = ${datos.ministerio_id || null}, 
               cargo_id = ${datos.cargo_id || null},
               estado_civil = ${datos.estado_civil || null},
