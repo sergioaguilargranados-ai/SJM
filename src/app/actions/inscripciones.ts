@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos, equipo_evento, evaluaciones_evento } from "@/lib/schema";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { validarAccesoPlan } from "@/lib/permisos";
 
@@ -394,6 +394,23 @@ export async function registrarRenaseAction(datos: any) {
       const rolServidorId = (resRol.rows[0] as any)?.id || null;
 
       // 2. Crear o Actualizar usuario
+      if (!usuarioId) {
+         let existingUser;
+         const conditions = [];
+         if (datos.correo?.trim()) conditions.push(eq(usuarios.correo, datos.correo.trim().toLowerCase()));
+         if (datos.celular) conditions.push(eq(usuarios.celular, datos.celular));
+         
+         if (conditions.length > 0) {
+            existingUser = await db.query.usuarios.findFirst({
+               where: or(...conditions)
+            });
+         }
+         
+         if (existingUser) {
+            usuarioId = existingUser.id;
+         }
+      }
+
       if (usuarioId) {
          await db.execute(sql`
            UPDATE usuarios SET 
@@ -401,7 +418,8 @@ export async function registrarRenaseAction(datos: any) {
             celular = ${datos.celular}, 
             correo = ${datos.correo?.trim() ? datos.correo : null}, 
             fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
-            rol_id = COALESCE(rol_id, ${rolServidorId})
+            rol_id = COALESCE(rol_id, ${rolServidorId}),
+            es_servidor = true
            WHERE id = ${usuarioId}
          `);
       } else {
@@ -417,7 +435,17 @@ export async function registrarRenaseAction(datos: any) {
          usuarioId = nuevoUsu.id;
       }
       
-      // 2. Crear o Actualizar servidor
+      // 3. Crear o Actualizar servidor
+      if (!servidorId && usuarioId) {
+         const existingServidor = await db.query.servidores.findFirst({
+            where: eq(servidores.usuario_id, usuarioId)
+         });
+         if (existingServidor) {
+            servidorId = existingServidor.id;
+         }
+      }
+      
+      // 4. Crear o Actualizar servidor
       if (servidorId) {
          await db.execute(sql`
            UPDATE servidores SET 
