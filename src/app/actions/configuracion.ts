@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { db } from "@/lib/db";
 import { organizaciones } from "@/lib/schema";
@@ -31,8 +31,8 @@ export async function updateOrganizacionAction(id: string, data: any) {
     
     return { success: true };
   } catch (error) {
-    console.error("Error actualizando organización:", error);
-    return { success: false, error: "No se pudo guardar la configuración" };
+    console.error("Error actualizando organizaciÃ³n:", error);
+    return { success: false, error: "No se pudo guardar la configuraciÃ³n" };
   }
 }
 
@@ -63,8 +63,8 @@ export async function crearOrganizacionAction(data: any) {
     revalidatePath("/configuracion/organizaciones");
     return { success: true };
   } catch (error: any) {
-    console.error("Error creando organización:", error);
-    return { success: false, error: error.message || "Error al crear la organización" };
+    console.error("Error creando organizaciÃ³n:", error);
+    return { success: false, error: error.message || "Error al crear la organizaciÃ³n" };
   }
 }
 export async function deleteOrganizacionAction(id: string) {
@@ -73,7 +73,7 @@ export async function deleteOrganizacionAction(id: string) {
     revalidatePath("/configuracion/organizaciones");
     return { success: true };
   } catch (error: any) {
-    console.error("Error eliminando organizaci�n:", error);
-    return { success: false, error: "No se pudo eliminar la organizaci�n." };
+    console.error("Error eliminando organización:", error);
+    return { success: false, error: "No se pudo eliminar la organización." };
   }
 }
