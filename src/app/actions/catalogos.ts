@@ -271,7 +271,19 @@ export async function getInscripcionesCompleto() {
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
       .leftJoin(sedes, eq(eventos.sede_id, sedes.id))
       .orderBy(desc(solicitudes_inscripcion.creado_en));
-    return { success: true, data: resultados };
+      
+    // Eliminar duplicados por usuario_id + evento_id (en caso de que hayan hecho doble clic al registrar)
+    const vistos = new Set();
+    const unicos = resultados.filter((r) => {
+      // Necesitamos el evento_id y usuario_id en la selección para agrupar
+      // Como no está usuario_id expuesto, usaremos correo o nombre
+      const key = `${r.evento_nombre}_${r.correo || r.telefono_celular || r.nombre_asistente}`;
+      if (vistos.has(key)) return false;
+      vistos.add(key);
+      return true;
+    });
+
+    return { success: true, data: unicos };
   } catch (error) {
     console.error("Error al consultar inscripciones completas:", error);
     return { success: false, data: [] };

@@ -320,7 +320,17 @@ export async function getInscripcionesByEvento(eventoId: string) {
         eq(solicitudes_inscripcion.organizacion_id, orgId)
       ))
       .orderBy(desc(solicitudes_inscripcion.creado_en));
-    return { success: true, data: resultados };
+      
+    // Eliminar duplicados por usuario_id (en caso de que hayan hecho doble clic al registrar)
+    const vistos = new Set();
+    const unicos = resultados.filter((r) => {
+      const key = r.usuario_id || r.correo || r.telefono_celular || r.nombre_asistente;
+      if (vistos.has(key)) return false;
+      vistos.add(key);
+      return true;
+    });
+      
+    return { success: true, data: unicos };
   } catch (error) {
     console.error("Error al consultar inscritos por evento:", error);
     return { success: false, data: [] };
