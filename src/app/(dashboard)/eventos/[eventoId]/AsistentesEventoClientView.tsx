@@ -45,8 +45,8 @@ export default function AsistentesEventoClientView({
 
   const inscritosFiltrados = useMemo(() => {
     return inscritos.filter(i => {
-      if (filtroSede !== "TODAS" && i.pais_ciudad !== filtroSede) return false;
-      if (filtroMinisterio !== "TODOS" && i.ministerio_actual !== filtroMinisterio) return false;
+      if (filtroSede !== "TODAS" && i.pais_ciudad?.toLowerCase() !== filtroSede.toLowerCase()) return false;
+      if (filtroMinisterio !== "TODOS" && i.ministerio_actual?.toLowerCase() !== filtroMinisterio.toLowerCase()) return false;
       return true;
     });
   }, [inscritos, filtroSede, filtroMinisterio]);

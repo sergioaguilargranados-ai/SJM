@@ -26,7 +26,7 @@ export default function InscripcionesClientView({
 
   const sedesList = useMemo(() => {
     if (catalogoSedes.length > 0) return catalogoSedes.map(s => s.nombre).sort();
-    const sedes = new Set(datos.map(d => d.sede_nombre).filter(Boolean));
+    const sedes = new Set(datos.map(d => d.pais_ciudad).filter(Boolean));
     return Array.from(sedes).sort();
   }, [datos, catalogoSedes]);
 
@@ -53,8 +53,8 @@ export default function InscripcionesClientView({
 
   const datosFiltrados = useMemo(() => {
     return datos.filter((row) => {
-      if (filtroSede !== "TODAS" && row.sede_nombre !== filtroSede) return false;
-      if (filtroMinisterio !== "TODOS" && row.ministerio_actual !== filtroMinisterio) return false;
+      if (filtroSede !== "TODAS" && row.pais_ciudad?.toLowerCase() !== filtroSede.toLowerCase()) return false;
+      if (filtroMinisterio !== "TODOS" && row.ministerio_actual?.toLowerCase() !== filtroMinisterio.toLowerCase()) return false;
       if (filtroEvento !== "TODOS" && row.evento_tipo !== filtroEvento) return false;
       if (filtroRetiro !== "TODOS" && row.evento_nombre !== filtroRetiro) return false;
       
@@ -199,7 +199,8 @@ export default function InscripcionesClientView({
               </span>
             ),
           },
-          { header: "Sede", accessorKey: "sede_nombre" },
+          { header: "Sede (Participante)", accessorKey: "pais_ciudad" },
+          { header: "Ministerio", accessorKey: "ministerio_actual" },
           { header: "Edad", accessorKey: "edad", halign: "center", cell: (val: any) => val ? `${val} años` : "—" },
           { header: "Sexo", accessorKey: "sexo", halign: "center", cell: (val: any) => {
             if (!val) return "—";
