@@ -51,10 +51,15 @@ export default function InscripcionesClientView({
     return Array.from(ret).sort();
   }, [datos, filtroEstatusRetiro]);
 
+  const normalizeString = (str: string | undefined | null) => {
+    if (!str) return "";
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
   const datosFiltrados = useMemo(() => {
     return datos.filter((row) => {
-      if (filtroSede !== "TODAS" && row.pais_ciudad?.toLowerCase() !== filtroSede.toLowerCase()) return false;
-      if (filtroMinisterio !== "TODOS" && row.ministerio_actual?.toLowerCase() !== filtroMinisterio.toLowerCase()) return false;
+      if (filtroSede !== "TODAS" && normalizeString(row.pais_ciudad) !== normalizeString(filtroSede)) return false;
+      if (filtroMinisterio !== "TODOS" && normalizeString(row.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
       if (filtroEvento !== "TODOS" && row.evento_tipo !== filtroEvento) return false;
       if (filtroRetiro !== "TODOS" && row.evento_nombre !== filtroRetiro) return false;
       

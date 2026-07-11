@@ -43,10 +43,15 @@ export default function AsistentesEventoClientView({
     return Array.from(m).sort();
   }, [inscritos, catalogoMinisterios]);
 
+  const normalizeString = (str: string | undefined | null) => {
+    if (!str) return "";
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
   const inscritosFiltrados = useMemo(() => {
     return inscritos.filter(i => {
-      if (filtroSede !== "TODAS" && i.pais_ciudad?.toLowerCase() !== filtroSede.toLowerCase()) return false;
-      if (filtroMinisterio !== "TODOS" && i.ministerio_actual?.toLowerCase() !== filtroMinisterio.toLowerCase()) return false;
+      if (filtroSede !== "TODAS" && normalizeString(i.pais_ciudad) !== normalizeString(filtroSede)) return false;
+      if (filtroMinisterio !== "TODOS" && normalizeString(i.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
       return true;
     });
   }, [inscritos, filtroSede, filtroMinisterio]);
