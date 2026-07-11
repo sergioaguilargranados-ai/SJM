@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos, equipo_evento, evaluaciones_evento } from "@/lib/schema";
+import { solicitudes_inscripcion, usuarios, servidores, eventos, tipos_eventos, equipo_evento, evaluaciones_evento, sedes, ministerios } from "@/lib/schema";
 import { eq, desc, sql, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { validarAccesoPlan } from "@/lib/permisos";
@@ -520,6 +520,30 @@ export async function registrarRenaseAction(datos: any) {
         )
       });
       
+      // Obtener nombres de sede y ministerio
+      let sedeNombre = null;
+      if (datos.sede_id) {
+        const resSede = await db.query.sedes.findFirst({ where: (s, { eq }) => eq(s.id, datos.sede_id) });
+        sedeNombre = resSede?.nombre;
+      }
+      let minNombre = null;
+      if (datos.ministerio_id) {
+        const resMin = await db.query.ministerios.findFirst({ where: (m, { eq }) => eq(m.id, datos.ministerio_id) });
+        minNombre = resMin?.nombre;
+      }
+      
+      // Calcular edad
+      let edadNum = null;
+      if (datos.fecha_nacimiento?.trim()) {
+        const birthDate = new Date(datos.fecha_nacimiento);
+        const today = new Date();
+        edadNum = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          edadNum--;
+        }
+      }
+
       const inscData = {
         evento_id: datos.evento_id,
         usuario_id: usuarioId,
@@ -528,6 +552,13 @@ export async function registrarRenaseAction(datos: any) {
         telefono_celular: datos.celular || null,
         correo: datos.correo || null,
         fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
+        
+        // Datos extraídos para la tabla de asistentes
+        edad: edadNum,
+        sexo: datos.sexo || null,
+        estado_civil: datos.estado_civil || null,
+        pais_ciudad: sedeNombre,
+        ministerio_actual: minNombre,
         
         // Itinerario y Logística
         fecha_hora_llegada: datos.fecha_hora_llegada ? new Date(datos.fecha_hora_llegada) : null,
