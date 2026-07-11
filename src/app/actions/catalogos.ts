@@ -262,6 +262,8 @@ export async function getInscripcionesCompleto() {
         ministerio_actual: solicitudes_inscripcion.ministerio_actual,
         creado_en: solicitudes_inscripcion.creado_en,
         evento_tipo: tipos_eventos.nombre,
+        evento_nombre: eventos.nombre_evento,
+        evento_estatus: eventos.estatus,
         sede_nombre: sedes.nombre,
       })
       .from(solicitudes_inscripcion)

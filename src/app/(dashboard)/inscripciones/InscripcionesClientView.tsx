@@ -10,7 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export default function InscripcionesClientView({ datos }: { datos: any[] }) {
   const [filtroSede, setFiltroSede] = useState("TODAS");
+  const [filtroMinisterio, setFiltroMinisterio] = useState("TODOS");
   const [filtroEvento, setFiltroEvento] = useState("TODOS");
+  const [filtroRetiro, setFiltroRetiro] = useState("TODOS");
+  const [filtroEstatusRetiro, setFiltroEstatusRetiro] = useState("ACTIVOS");
   const [filtroEdad, setFiltroEdad] = useState("TODAS");
 
   const sedesUnicas = useMemo(() => {
@@ -18,15 +21,30 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
     return Array.from(sedes).sort();
   }, [datos]);
 
+  const ministeriosUnicos = useMemo(() => {
+    const min = new Set(datos.map(d => d.ministerio_actual).filter(Boolean));
+    return Array.from(min).sort();
+  }, [datos]);
+
   const eventosUnicos = useMemo(() => {
     const eventos = new Set(datos.map(d => d.evento_tipo).filter(Boolean));
     return Array.from(eventos).sort();
   }, [datos]);
 
+  const retirosUnicos = useMemo(() => {
+    // Solo mostrar los retiros (eventos específicos) que cumplan con el filtro de estatus si está activo
+    const filtrados = datos.filter(d => filtroEstatusRetiro === "TODOS" || (filtroEstatusRetiro === "ACTIVOS" && d.evento_estatus === true));
+    const ret = new Set(filtrados.map(d => d.evento_nombre).filter(Boolean));
+    return Array.from(ret).sort();
+  }, [datos, filtroEstatusRetiro]);
+
   const datosFiltrados = useMemo(() => {
     return datos.filter((row) => {
       if (filtroSede !== "TODAS" && row.sede_nombre !== filtroSede) return false;
+      if (filtroMinisterio !== "TODOS" && row.ministerio_actual !== filtroMinisterio) return false;
       if (filtroEvento !== "TODOS" && row.evento_tipo !== filtroEvento) return false;
+      if (filtroRetiro !== "TODOS" && row.evento_nombre !== filtroRetiro) return false;
+      if (filtroEstatusRetiro === "ACTIVOS" && row.evento_estatus !== true) return false;
       
       if (filtroEdad !== "TODAS") {
         const edad = row.edad;
@@ -38,16 +56,22 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
       
       return true;
     });
-  }, [datos, filtroSede, filtroEvento, filtroEdad]);
+  }, [datos, filtroSede, filtroMinisterio, filtroEvento, filtroRetiro, filtroEstatusRetiro, filtroEdad]);
+
+  // Si cambia el filtro de estatus, limpiar el filtro de retiro si ya no aplica
+  const onEstatusRetiroChange = (val: string) => {
+    setFiltroEstatusRetiro(val);
+    setFiltroRetiro("TODOS");
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-4 max-w-7xl mx-auto p-4 bg-white dark:bg-[#1a1b26] rounded-xl border border-slate-200 dark:border-[#2a2b3d] shadow-sm">
-        <div className="space-y-1.5 flex-1 min-w-[200px]">
-          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Filtrar por Sede</label>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 max-w-full mx-auto p-4 bg-white dark:bg-[#1a1b26] rounded-xl border border-slate-200 dark:border-[#2a2b3d] shadow-sm">
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Sede</label>
           <Select value={filtroSede} onValueChange={setFiltroSede}>
             <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
-              <SelectValue placeholder="Todas las sedes" />
+              <SelectValue placeholder="Todas" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="TODAS">Todas las sedes</SelectItem>
@@ -57,22 +81,62 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 flex-1 min-w-[200px]">
-          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Filtrar por Evento</label>
-          <Select value={filtroEvento} onValueChange={setFiltroEvento}>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Ministerio</label>
+          <Select value={filtroMinisterio} onValueChange={setFiltroMinisterio}>
             <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
-              <SelectValue placeholder="Todos los eventos" />
+              <SelectValue placeholder="Todos" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="TODOS">Todos los eventos</SelectItem>
+              <SelectItem value="TODOS">Todos los ministerios</SelectItem>
+              {ministeriosUnicos.map((m: string) => (
+                <SelectItem key={m} value={m}>{m}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Evento (Tipo)</label>
+          <Select value={filtroEvento} onValueChange={setFiltroEvento}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos</SelectItem>
               {eventosUnicos.map((e: string) => (
                 <SelectItem key={e} value={e}>{e}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 flex-1 min-w-[150px]">
-          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Rango de Edad</label>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Retiros</label>
+          <Select value={filtroRetiro} onValueChange={setFiltroRetiro}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos</SelectItem>
+              {retirosUnicos.map((e: string) => (
+                <SelectItem key={e} value={e}>{e}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Estatus Retiro</label>
+          <Select value={filtroEstatusRetiro} onValueChange={onEstatusRetiroChange}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ACTIVOS">Solo Activos</SelectItem>
+              <SelectItem value="TODOS">Todos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Rango de Edad</label>
           <Select value={filtroEdad} onValueChange={setFiltroEdad}>
             <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
               <SelectValue placeholder="Todas" />

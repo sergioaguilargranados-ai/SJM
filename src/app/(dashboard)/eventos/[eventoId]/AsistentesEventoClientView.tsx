@@ -4,7 +4,12 @@ import { TablaConsulta } from "@/components/TablaConsulta";
 import { Users, Trash2, Pencil } from "lucide-react";
 import { eliminarInscripcionAction } from "@/app/actions/inscripciones";
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useMemo } from "react";
+
 export default function AsistentesEventoClientView({ inscritos, eventoNombre, isAdmin }: { inscritos: any[], eventoNombre: string, isAdmin?: boolean }) {
+  const [filtroSede, setFiltroSede] = useState("TODAS");
+  const [filtroMinisterio, setFiltroMinisterio] = useState("TODOS");
 
   const handleEliminar = async (id: string) => {
     if (!confirm("¿Eliminar este registro de inscripción?")) return;
@@ -13,6 +18,24 @@ export default function AsistentesEventoClientView({ inscritos, eventoNombre, is
       alert("Error: " + res.error);
     }
   };
+
+  const sedesUnicas = useMemo(() => {
+    const s = new Set(inscritos.map(i => i.pais_ciudad).filter(Boolean));
+    return Array.from(s).sort();
+  }, [inscritos]);
+
+  const ministeriosUnicos = useMemo(() => {
+    const m = new Set(inscritos.map(i => i.ministerio_actual).filter(Boolean));
+    return Array.from(m).sort();
+  }, [inscritos]);
+
+  const inscritosFiltrados = useMemo(() => {
+    return inscritos.filter(i => {
+      if (filtroSede !== "TODAS" && i.pais_ciudad !== filtroSede) return false;
+      if (filtroMinisterio !== "TODOS" && i.ministerio_actual !== filtroMinisterio) return false;
+      return true;
+    });
+  }, [inscritos, filtroSede, filtroMinisterio]);
 
   const columnasBase: any[] = [
     {
@@ -69,17 +92,50 @@ export default function AsistentesEventoClientView({ inscritos, eventoNombre, is
   }
 
   return (
-    <TablaConsulta
-      datos={inscritos}
-      titulo="Asistentes Registrados"
-      subtitulo={`Control de participantes inscritos a ${eventoNombre}`}
-      icono={<Users className="w-5 h-5 text-blue-600 dark:text-[#e11d48]" />}
-      camposFiltro={["nombre_asistente", "telefono_celular", "pais_ciudad", "ministerio_actual", "sexo"]}
-      totalLabel="Asistentes"
-      nombrePDF={`Asistentes_${eventoNombre.replace(/\s+/g, "_")}`}
-      // @ts-ignore - The structure is correct but typescript might complain about the dynamic push
-      columnas={columnasBase}
-    />
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-4 max-w-7xl mx-auto p-4 bg-white dark:bg-[#1a1b26] rounded-xl border border-slate-200 dark:border-[#2a2b3d] shadow-sm">
+        <div className="space-y-1.5 flex-1 min-w-[200px]">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Filtrar por Sede (Localidad)</label>
+          <Select value={filtroSede} onValueChange={setFiltroSede}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Todas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODAS">Todas las sedes</SelectItem>
+              {sedesUnicas.map((s: string) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 flex-1 min-w-[200px]">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Filtrar por Ministerio</label>
+          <Select value={filtroMinisterio} onValueChange={setFiltroMinisterio}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos los ministerios</SelectItem>
+              {ministeriosUnicos.map((m: string) => (
+                <SelectItem key={m} value={m}>{m}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <TablaConsulta
+        datos={inscritosFiltrados}
+        titulo="Asistentes Registrados"
+        subtitulo={`Control de participantes inscritos a ${eventoNombre}`}
+        icono={<Users className="w-5 h-5 text-blue-600 dark:text-[#e11d48]" />}
+        camposFiltro={["nombre_asistente", "telefono_celular", "pais_ciudad", "ministerio_actual", "sexo"]}
+        totalLabel="Asistentes"
+        nombrePDF={`Asistentes_${eventoNombre.replace(/\s+/g, "_")}`}
+        // @ts-ignore - The structure is correct but typescript might complain about the dynamic push
+        columnas={columnasBase}
+      />
+    </div>
   );
 }
 
