@@ -212,7 +212,6 @@ export default function InscripcionesClientView({
             return <span className="uppercase text-[10px] font-bold tracking-wider px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-300">{val}</span>;
           } },
           { header: "Celular", accessorKey: "telefono_celular" },
-          { header: "Localidad", accessorKey: "pais_ciudad" },
           {
             header: "Estatus",
             accessorKey: "estatus_solicitud",
