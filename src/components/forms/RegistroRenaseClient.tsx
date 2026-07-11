@@ -254,9 +254,19 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
       servidor_id: servidorSeleccionado?.servidor_id
     });
     setCargando(false);
-    if (res.success) setPaso("EXITO");
+    if (res.success) {
+      if (initialData && returnTo) {
+        window.location.href = returnTo;
+      } else {
+        setPaso("EXITO");
+      }
+    }
     else alert("Error: " + res.error);
   }
+
+  const onError = (errors: any) => {
+    alert("Hay errores en el formulario. Revisa los campos marcados en rojo:\n" + Object.keys(errors).join(", "));
+  };
 
   if (paso === "EXITO") {
     return (
@@ -330,7 +340,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
       )}
 
       {paso === "CAPTURA" && (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-6">
            
            {/* SECCION 1: ITINERARIO */}
            <div className="bg-white dark:bg-[#1a1b26] p-8 rounded-[30px] shadow-xl border border-blue-100 dark:border-blue-900/30">
