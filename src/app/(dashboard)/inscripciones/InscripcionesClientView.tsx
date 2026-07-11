@@ -8,7 +8,15 @@ import { SelectorEstatus } from "./SelectorEstatus";
 import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function InscripcionesClientView({ datos }: { datos: any[] }) {
+export default function InscripcionesClientView({ 
+  datos,
+  catalogoSedes = [],
+  catalogoMinisterios = []
+}: { 
+  datos: any[],
+  catalogoSedes?: any[],
+  catalogoMinisterios?: any[]
+}) {
   const [filtroSede, setFiltroSede] = useState("TODAS");
   const [filtroMinisterio, setFiltroMinisterio] = useState("TODOS");
   const [filtroEvento, setFiltroEvento] = useState("TODOS");
@@ -16,15 +24,17 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
   const [filtroEstatusRetiro, setFiltroEstatusRetiro] = useState("ACTIVOS");
   const [filtroEdad, setFiltroEdad] = useState("TODAS");
 
-  const sedesUnicas = useMemo(() => {
+  const sedesList = useMemo(() => {
+    if (catalogoSedes.length > 0) return catalogoSedes.map(s => s.nombre).sort();
     const sedes = new Set(datos.map(d => d.sede_nombre).filter(Boolean));
     return Array.from(sedes).sort();
-  }, [datos]);
+  }, [datos, catalogoSedes]);
 
-  const ministeriosUnicos = useMemo(() => {
+  const ministeriosList = useMemo(() => {
+    if (catalogoMinisterios.length > 0) return catalogoMinisterios.map(m => m.nombre).sort();
     const min = new Set(datos.map(d => d.ministerio_actual).filter(Boolean));
     return Array.from(min).sort();
-  }, [datos]);
+  }, [datos, catalogoMinisterios]);
 
   const eventosUnicos = useMemo(() => {
     const eventos = new Set(datos.map(d => d.evento_tipo).filter(Boolean));
@@ -75,7 +85,7 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="TODAS">Todas las sedes</SelectItem>
-              {sedesUnicas.map((s: string) => (
+              {sedesList.map((s: string) => (
                 <SelectItem key={s} value={s}>{s}</SelectItem>
               ))}
             </SelectContent>
@@ -89,7 +99,7 @@ export default function InscripcionesClientView({ datos }: { datos: any[] }) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="TODOS">Todos los ministerios</SelectItem>
-              {ministeriosUnicos.map((m: string) => (
+              {ministeriosList.map((m: string) => (
                 <SelectItem key={m} value={m}>{m}</SelectItem>
               ))}
             </SelectContent>

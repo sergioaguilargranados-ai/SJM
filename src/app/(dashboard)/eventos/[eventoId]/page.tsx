@@ -1,4 +1,4 @@
-import { getEventoById, getInscripcionesByEvento } from "@/app/actions/consultas";
+import { getEventoById, getInscripcionesByEvento, getSedes, getMinisterios } from "@/app/actions/consultas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ChevronLeft, Calendar, MapPin, Users, Heart } from "lucide-react";
@@ -12,8 +12,17 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
   const sesion = await getUsuarioSesion();
   const isAdmin = sesion?.rol_nombre?.toLowerCase().includes("admin") || false;
 
-  const { data: evento } = await getEventoById(eventoId);
-  const { data: inscritos = [] } = await getInscripcionesByEvento(eventoId);
+  const [eventoRes, inscritosRes, sedesRes, ministeriosRes] = await Promise.all([
+    getEventoById(eventoId),
+    getInscripcionesByEvento(eventoId),
+    getSedes(),
+    getMinisterios()
+  ]);
+
+  const { data: evento } = eventoRes;
+  const inscritos = inscritosRes.data || [];
+  const sedes = sedesRes.data || [];
+  const ministerios = ministeriosRes.data || [];
 
   if (!evento) {
     return (
@@ -102,7 +111,13 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
           </div>
           {/* LISTA DE INSCRITOS */}
           <div className="pt-4 border-t border-slate-100 dark:border-[#2a2b3d]">
-            <AsistentesEventoClientView inscritos={inscritos} eventoNombre={evento.nombre_evento || evento.tipo || "Evento"} isAdmin={isAdmin} />
+            <AsistentesEventoClientView 
+              inscritos={inscritos} 
+              eventoNombre={evento.nombre_evento || evento.tipo || ""} 
+              isAdmin={isAdmin} 
+              catalogoSedes={sedes}
+              catalogoMinisterios={ministerios}
+            />
           </div>
         </div>
       </div>
