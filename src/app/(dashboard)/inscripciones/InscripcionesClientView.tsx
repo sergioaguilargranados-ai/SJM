@@ -43,7 +43,10 @@ export default function InscripcionesClientView({
 
   const retirosUnicos = useMemo(() => {
     // Solo mostrar los retiros (eventos específicos) que cumplan con el filtro de estatus si está activo
-    const filtrados = datos.filter(d => filtroEstatusRetiro === "TODOS" || (filtroEstatusRetiro === "ACTIVOS" && d.evento_estatus === true));
+    const filtrados = datos.filter(d => {
+      if (filtroEstatusRetiro === "TODOS") return true;
+      return ["PLANEACION", "PROXIMA", "EN_CURSO"].includes(d.evento_estatus);
+    });
     const ret = new Set(filtrados.map(d => d.evento_nombre).filter(Boolean));
     return Array.from(ret).sort();
   }, [datos, filtroEstatusRetiro]);
@@ -54,7 +57,10 @@ export default function InscripcionesClientView({
       if (filtroMinisterio !== "TODOS" && row.ministerio_actual !== filtroMinisterio) return false;
       if (filtroEvento !== "TODOS" && row.evento_tipo !== filtroEvento) return false;
       if (filtroRetiro !== "TODOS" && row.evento_nombre !== filtroRetiro) return false;
-      if (filtroEstatusRetiro === "ACTIVOS" && row.evento_estatus !== true) return false;
+      
+      if (filtroEstatusRetiro === "ACTIVOS") {
+        if (!["PLANEACION", "PROXIMA", "EN_CURSO"].includes(row.evento_estatus)) return false;
+      }
       
       if (filtroEdad !== "TODAS") {
         const edad = row.edad;
