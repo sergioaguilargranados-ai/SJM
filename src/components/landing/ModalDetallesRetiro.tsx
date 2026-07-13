@@ -41,7 +41,7 @@ export function ModalDetallesRetiro({ retiro, onClose }: ModalDetallesRetiroProp
       try {
         await navigator.share({
           title: shareTitle,
-          text: retiro.descripcion || "No te pierdas este evento.",
+          text: "Hola, quiero compartir contigo esta invitación, a ver que te parece, en la liga más información.\\n\\n" + (retiro.descripcion || "No te pierdas este evento."),
           url: shareUrl,
         });
       } catch (err) {

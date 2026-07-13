@@ -9,13 +9,14 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Generar Open Graph tags para que al compartir salga la imagen grande
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const { id } = params;
   
   const [evento] = await db
@@ -54,7 +55,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function DetalleRetiroPage({ params }: PageProps) {
+export default async function DetalleRetiroPage(props: PageProps) {
+  const params = await props.params;
   const { id } = params;
   
   const [eventoData] = await db
