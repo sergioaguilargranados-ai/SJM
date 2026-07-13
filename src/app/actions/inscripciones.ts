@@ -185,7 +185,7 @@ export async function crearEventoAction(datos: any) {
 
     revalidatePath("/retiros-eventos", "page");
     revalidatePath("/");
-    revalidateTag("agenda_retiros");
+    revalidateTag("agenda_retiros", "max");
     return { success: true, id: nuevoEvento.id };
   } catch (error: any) {
     console.error("Error al crear evento:", error);
@@ -304,7 +304,7 @@ export async function actualizarEventoAction(id: string, datos: any) {
       .where(eq(eventos.id, id));
     revalidatePath("/retiros-eventos", "page");
     revalidatePath("/");
-    revalidateTag("agenda_retiros");
+    revalidateTag("agenda_retiros", "max");
     return { success: true };
   } catch (error: any) {
     console.error("Error al actualizar evento:", error);
