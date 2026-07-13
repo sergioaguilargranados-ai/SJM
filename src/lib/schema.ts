@@ -242,6 +242,8 @@ export const eventos = pgTable("eventos", {
   
   nombre_evento: varchar("nombre_evento", { length: 255 }).notNull().default('Evento General'),
   descripcion: text("descripcion"),
+  imagen_cartel_url: text("imagen_cartel_url"),
+  requisitos: text("requisitos"),
   fecha_inicio_promocion: timestamp("fecha_inicio_promocion"),
   
   fecha_inicio: timestamp("fecha_inicio"),

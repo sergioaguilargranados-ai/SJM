@@ -11,7 +11,9 @@ import { Label } from "@/components/ui/label";
 import { crearEventoAction } from "@/app/actions/inscripciones";
 import { actualizarEventoAction } from "@/app/actions/inscripciones";
 import { CalendarDays, Home, MapPin, DollarSign, Users, ChevronLeft, Save, Info } from "lucide-react";
+import { CalendarDays, Home, MapPin, DollarSign, Users, ChevronLeft, Save, Info } from "lucide-react";
 import Link from "next/link";
+import { BotonSubirCartel } from "./BotonSubirCartel";
 
 const formSchema = z.object({
   tipo_evento_id: z.string().uuid("Selecciona el tipo de retiro").optional(),
@@ -29,6 +31,8 @@ const formSchema = z.object({
   descripcion: z.string().optional(),
   fecha_inicio_promocion: z.string().optional(),
   estatus: z.string().optional(),
+  imagen_cartel_url: z.string().optional(),
+  requisitos: z.string().optional(),
 });
 
 
@@ -54,6 +58,8 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       descripcion: eventoToEdit?.descripcion || "",
       fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(eventoToEdit.fecha_inicio_promocion).toISOString().slice(0, 16) : "",
       estatus: eventoToEdit?.estatus || "PLANEACION",
+      imagen_cartel_url: eventoToEdit?.imagen_cartel_url || "",
+      requisitos: eventoToEdit?.requisitos || "",
     },
   });
 
@@ -151,6 +157,14 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 placeholder="Breve descripción que se mostrará al público..."
               />
             </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label className="dark:text-slate-300">Cartel del Evento</Label>
+              <BotonSubirCartel 
+                 imagenActual={form.getValues("imagen_cartel_url")} 
+                 onUploadSuccess={(url) => form.setValue("imagen_cartel_url", url, { shouldDirty: true })} 
+              />
+            </div>
           </div>
         </div>
 
@@ -218,6 +232,15 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 className="w-full min-h-[100px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
                 {...form.register("recomendaciones")}
                 placeholder="Ej. Llevar Biblia, artículos de aseo personal, ropa cómoda..."
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-4">
+              <Label className="dark:text-slate-300">Requisitos para Asistentes</Label>
+              <textarea 
+                className="w-full min-h-[100px] rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]"
+                {...form.register("requisitos")}
+                placeholder="Ej. Ser mayor de 18 años, haber tomado retiro de iniciación..."
               />
             </div>
 
