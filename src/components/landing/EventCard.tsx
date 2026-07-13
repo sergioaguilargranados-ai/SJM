@@ -74,7 +74,7 @@ export function EventCard({ r }: EventCardProps) {
             
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mt-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold px-4 py-2 flex items-center justify-center gap-2 transition-colors uppercase tracking-wider w-full md:w-auto"
+              className="mt-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold px-4 py-2 flex items-center justify-center gap-2 transition-colors uppercase tracking-wider w-full md:w-auto cursor-pointer"
             >
               <Info className="w-5 h-5" />
               Ver Detalles
