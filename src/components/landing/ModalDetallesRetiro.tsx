@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Calendar, MapPin, Users, DollarSign, Clock, Share2, Info, Facebook, MessageCircle } from "lucide-react";
+import { X, Calendar, MapPin, Users, DollarSign, Clock, Share2, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
