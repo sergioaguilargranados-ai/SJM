@@ -109,7 +109,7 @@ export default async function DetalleRetiroPage(props: PageProps) {
                 src={eventoData.imagen_cartel_url}
                 alt={eventoData.nombre_evento}
                 fill
-                className="object-cover"
+                className="object-contain p-4 md:p-8"
               />
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
