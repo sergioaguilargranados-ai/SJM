@@ -19,13 +19,7 @@ export default async function RetirosEventosPage() {
     retiros = await obtenerAgendaRetiros(orgId);
   }
 
-  const formatFechaHora = (fecha: any) => {
-    if (!fecha) return "Por confirmar";
-    const d = new Date(fecha);
-    const datePart = d.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
-    const timePart = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "UTC" });
-    return `${datePart} - ${timePart}`;
-  };
+
 
   return (
     <div className="min-h-screen">
@@ -54,7 +48,7 @@ export default async function RetirosEventosPage() {
         ) : (
           <div className="space-y-6">
             {retiros.map((r, idx) => (
-              <EventCard key={r.id} r={r} formatFechaHora={formatFechaHora} />
+              <EventCard key={r.id} r={r} />
             ))}
           </div>
         )}

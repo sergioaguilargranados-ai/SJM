@@ -8,10 +8,16 @@ import Image from "next/image";
 
 interface EventCardProps {
   r: any;
-  formatFechaHora: (fecha: any) => string;
 }
 
-export function EventCard({ r, formatFechaHora }: EventCardProps) {
+export function EventCard({ r }: EventCardProps) {
+  const formatFechaHora = (fecha: any) => {
+    if (!fecha) return "Por confirmar";
+    const d = new Date(fecha);
+    const datePart = d.toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
+    const timePart = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "UTC" });
+    return `${datePart} - ${timePart}`;
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
