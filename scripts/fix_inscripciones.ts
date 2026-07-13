@@ -12,8 +12,8 @@ async function run() {
   for (const record of records) {
     if (!record.usuario_id) continue;
     
-    const user = await db.query.usuarios.findFirst({ where: eq(usuarios.id, record.usuario_id) });
-    const serv = await db.query.servidores.findFirst({ where: eq(servidores.usuario_id, record.usuario_id) });
+    const user: any = await db.query.usuarios.findFirst({ where: eq(usuarios.id, record.usuario_id) });
+    const serv: any = await db.query.servidores.findFirst({ where: eq(servidores.usuario_id, record.usuario_id) });
     
     if (user || serv) {
       const fechaNacimiento = serv?.fecha_nacimiento || user?.fecha_nacimiento || record.fecha_nacimiento;
