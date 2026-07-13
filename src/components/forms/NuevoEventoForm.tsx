@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { crearEventoAction } from "@/app/actions/inscripciones";
 import { actualizarEventoAction } from "@/app/actions/inscripciones";
 import { CalendarDays, Home, MapPin, DollarSign, Users, ChevronLeft, Save, Info } from "lucide-react";
-import { CalendarDays, Home, MapPin, DollarSign, Users, ChevronLeft, Save, Info } from "lucide-react";
 import Link from "next/link";
 import { BotonSubirCartel } from "./BotonSubirCartel";
 
