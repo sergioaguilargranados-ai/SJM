@@ -48,8 +48,8 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
   const [cargando, setCargando] = useState(false);
 
   const usuariosFiltrados = usuarios.filter(u => 
-    u.nombre_completo.toLowerCase().includes(filtro.toLowerCase()) || 
-    u.correo.toLowerCase().includes(filtro.toLowerCase())
+    (u.nombre_completo || "").toLowerCase().includes(filtro.toLowerCase()) || 
+    (u.correo || "").toLowerCase().includes(filtro.toLowerCase())
   );
 
   const handleUpdateRol = async () => {
@@ -96,6 +96,8 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
           className="pl-11 h-12 bg-white dark:bg-[#1a1b26] border-slate-200 dark:border-[#2a2b3d] rounded-xl shadow-sm focus:ring-[#00B4AA]"
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
+          autoComplete="new-password"
+          name="search_usuarios_field"
         />
       </div>
 
