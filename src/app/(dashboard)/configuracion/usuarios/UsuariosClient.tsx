@@ -73,6 +73,21 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
     }
   };
 
+  const handleEliminarUsuario = async (id: string, nombre: string) => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente al usuario ${nombre}? Esta acción no se puede deshacer.`)) return;
+    
+    setCargando(true);
+    const res = await eliminarUsuarioAction(id);
+    setCargando(false);
+
+    if (res.success) {
+      sjmToast("Usuario Eliminado", `${nombre} ha sido eliminado correctamente.`, "success");
+      setUsuarios(prev => prev.filter(u => u.id !== id));
+    } else {
+      sjmToast("Error", res.error || "No se pudo eliminar el usuario.", "error");
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-20">
       {/* Header */}
@@ -149,11 +164,13 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
                 <UserCog className="w-3.5 h-3.5 mr-2" /> Gestionar
               </Button>
               <Button 
+                onClick={() => handleEliminarUsuario(u.id, u.nombre_completo)}
+                disabled={cargando}
                 variant="outline" 
                 size="sm" 
                 className="w-9 h-9 p-0 rounded-lg border-slate-200 dark:border-[#2a2b3d] text-slate-400 hover:text-red-500 hover:bg-red-50"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                {cargando && usuarioEditar?.id === u.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               </Button>
             </div>
           </div>
