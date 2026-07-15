@@ -597,7 +597,13 @@ export async function registrarRenaseAction(datos: any) {
     return { success: true };
   } catch (error: any) {
     console.error("Error en registrarRenaseAction:", error);
-    return { success: false, error: error.message || "Error al procesar inscripción RENASE" };
+    let errorMsg = error.message;
+    if (errorMsg?.includes("usuarios_correo_key")) {
+      errorMsg = "El correo electrónico proporcionado ya está vinculado a otra cuenta. Por favor verifica tus datos.";
+    } else if (errorMsg?.includes("usuarios_celular_key") || errorMsg?.includes("duplicate key")) {
+      errorMsg = "El correo o celular proporcionado ya está vinculado a otra cuenta. Por favor verifica tus datos.";
+    }
+    return { success: false, error: errorMsg };
   }
 }
 
