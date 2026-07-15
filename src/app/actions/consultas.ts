@@ -175,7 +175,8 @@ export async function getEventosRecientes() {
          fecha_inicio_promocion: eventos.fecha_inicio_promocion,
          es_evento_servidores: eventos.es_evento_servidores,
          imagen_cartel_url: eventos.imagen_cartel_url,
-         requisitos: eventos.requisitos
+         requisitos: eventos.requisitos,
+         modalidad_evento: eventos.modalidad_evento
       })
       .from(eventos)
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
@@ -311,7 +312,8 @@ export async function getEventoById(id: string) {
         politica_cancelacion: eventos.politica_cancelacion,
         es_evento_servidores: eventos.es_evento_servidores,
         imagen_cartel_url: eventos.imagen_cartel_url,
-        requisitos: eventos.requisitos
+        requisitos: eventos.requisitos,
+        modalidad_evento: eventos.modalidad_evento
       })
       .from(eventos)
       .leftJoin(tipos_eventos, eq(eventos.tipo_evento_id, tipos_eventos.id))
