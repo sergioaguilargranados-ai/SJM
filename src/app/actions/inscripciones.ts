@@ -159,7 +159,7 @@ export async function crearEventoAction(datos: any) {
   try {
     const { 
        sede_id, tipo_evento_id, casa_retiro_id, fecha_inicio, fecha_fin, 
-       costo_publico, cupo_maximo, recomendaciones, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores, imagen_cartel_url, requisitos
+       costo_publico, cupo_maximo, recomendaciones, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores, imagen_cartel_url, requisitos, modalidad_evento
     } = datos;
 
     const [nuevoEvento] = await db.insert(eventos).values({
@@ -179,7 +179,8 @@ export async function crearEventoAction(datos: any) {
       politica_cancelacion,
       contrasena_inscripcion: datos.contrasena_inscripcion || null,
       es_evento_servidores: es_evento_servidores === true,
-      estatus: 'PLANEACION'
+      estatus: 'PLANEACION',
+      modalidad_evento: modalidad_evento || 'PRESENCIAL'
     }).returning();
 
 
@@ -282,7 +283,7 @@ export async function eliminarEventoAction(id: string) {
 
 export async function actualizarEventoAction(id: string, datos: any) {
   try {
-    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores, estatus, imagen_cartel_url, requisitos } = datos;
+    const { fecha_inicio, fecha_fin, costo_publico, cupo_maximo, recomendaciones, contrasena_inscripcion, nombre_evento, descripcion, fecha_inicio_promocion, politica_cancelacion, es_evento_servidores, estatus, imagen_cartel_url, requisitos, modalidad_evento } = datos;
     
     await db.update(eventos)
       .set({
@@ -299,6 +300,7 @@ export async function actualizarEventoAction(id: string, datos: any) {
         politica_cancelacion,
         contrasena_inscripcion: contrasena_inscripcion || null,
         es_evento_servidores: es_evento_servidores === true,
+        modalidad_evento: modalidad_evento || 'PRESENCIAL',
         ...(estatus ? { estatus } : {})
       })
       .where(eq(eventos.id, id));

@@ -252,6 +252,7 @@ export const eventos = pgTable("eventos", {
   costo_casa_por_persona: decimal("costo_casa_por_persona"),
   cupo_maximo: integer("cupo_maximo"),
   estatus: varchar("estatus", { length: 50 }).default('PLANEACION'),
+  modalidad_evento: varchar("modalidad_evento", { length: 50 }).default('PRESENCIAL'),
   
   recomendaciones: text("recomendaciones"),
   politica_cancelacion: text("politica_cancelacion"),

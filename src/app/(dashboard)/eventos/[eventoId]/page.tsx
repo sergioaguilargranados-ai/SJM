@@ -89,7 +89,7 @@ export default async function DetalleEventoPage({ params }: { params: Promise<{ 
                       </div>
                       <div>
                          <p className="text-[10px] font-bold text-slate-400 uppercase">Modalidad del Evento</p>
-                         <p className="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-tight">On-line / SJM Virtual</p>
+                         <p className="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-tight">{evento.modalidad_evento || "PRESENCIAL"}</p>
                       </div>
                    </div>
                 </div>

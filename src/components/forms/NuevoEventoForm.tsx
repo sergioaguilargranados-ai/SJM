@@ -32,6 +32,7 @@ const formSchema = z.object({
   estatus: z.string().optional(),
   imagen_cartel_url: z.string().optional(),
   requisitos: z.string().optional(),
+  modalidad_evento: z.string().optional(),
 });
 
 
@@ -57,6 +58,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
       descripcion: eventoToEdit?.descripcion || "",
       fecha_inicio_promocion: eventoToEdit?.fecha_inicio_promocion ? new Date(eventoToEdit.fecha_inicio_promocion).toISOString().slice(0, 16) : "",
       estatus: eventoToEdit?.estatus || "PLANEACION",
+      modalidad_evento: eventoToEdit?.modalidad_evento || "PRESENCIAL",
       imagen_cartel_url: eventoToEdit?.imagen_cartel_url || "",
       requisitos: eventoToEdit?.requisitos || "",
     },
@@ -121,7 +123,7 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
               </select>
             </div>
 
-            <div className="space-y-2 md:col-span-2">
+            <div className="space-y-2 md:col-span-1">
               <Label className="dark:text-slate-300">Estatus del Evento</Label>
               <select {...form.register("estatus")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
                 <option value="PLANEACION">En Planeación</option>
@@ -130,6 +132,15 @@ export default function NuevoEventoForm({ sedes, casas, tipos, onSuccess, isModa
                 <option value="EN_CURSO">En Curso</option>
                 <option value="CERRADO">Cerrado / Finalizado</option>
                 <option value="CANCELADO">Cancelado</option>
+              </select>
+            </div>
+
+            <div className="space-y-2 md:col-span-1">
+              <Label className="dark:text-slate-300">Modalidad del Evento</Label>
+              <select {...form.register("modalidad_evento")} className="w-full h-10 rounded-md border border-slate-300 dark:border-[#2a2b3d] bg-white dark:bg-[#0f1015] px-3 py-2 text-sm dark:text-white outline-none focus:ring-1 focus:ring-blue-600 dark:focus:ring-[#e11d48]">
+                <option value="PRESENCIAL">Presencial</option>
+                <option value="ON-LINE / SJM VIRTUAL">On-line / SJM Virtual</option>
+                <option value="HIBRIDO">Híbrido (Mixto)</option>
               </select>
             </div>
 
