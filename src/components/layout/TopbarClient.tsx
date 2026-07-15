@@ -34,7 +34,7 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-[#1a1b26] border-b border-slate-200 dark:border-[#2a2b3d] z-[60] flex items-center justify-between px-4 lg:px-6 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-[#1a1b26] border-b border-slate-200 dark:border-[#2a2b3d] z-[60] flex items-center justify-between px-4 lg:px-6 transition-all duration-300">
       
       {/* Logos & Branding */}
       <div className="flex items-center gap-4">
