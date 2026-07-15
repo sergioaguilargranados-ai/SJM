@@ -15,10 +15,11 @@ export async function GET() {
        logs.push("Intentando buscar 'servidores' como clave...");
        // The clave in DB might be "servidores" or something else. Let's list all:
        const allFunc = await db.select().from(funciones_sistema);
-       funcionPadron = allFunc.find(f => f.clave.includes("servidores"));
-       if(!funcionPadron) {
+       const found = allFunc.find(f => f.clave.includes("servidores"));
+       if(!found) {
           return NextResponse.json({ error: "No se encontró función de servidores", logs, allFunc });
        }
+       funcionPadron = found;
     }
     
     logs.push(`Función encontrada: ${funcionPadron.nombre} (ID: ${funcionPadron.id})`);
