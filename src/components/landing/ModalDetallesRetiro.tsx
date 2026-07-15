@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Calendar, MapPin, Users, DollarSign, Clock, Share2, Info } from "lucide-react";
+import { X, Calendar, MapPin, Users, DollarSign, Clock, Share2, Info, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -116,6 +116,7 @@ export function ModalDetallesRetiro({ retiro, onClose }: ModalDetallesRetiroProp
               <div className="flex flex-wrap gap-3 text-sm mb-6">
                 {retiro.tipo_evento && <span className="flex items-center gap-1.5 text-blue-700 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 rounded-md"><Calendar className="w-4 h-4" /> {retiro.tipo_evento}</span>}
                 {retiro.sede_nombre && <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md"><MapPin className="w-4 h-4 text-slate-400" /> {retiro.sede_nombre}</span>}
+                <span className="flex items-center gap-1.5 text-purple-700 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-900/20 px-2.5 py-1 rounded-md"><Globe className="w-4 h-4" /> {retiro.modalidad_evento || "PRESENCIAL"}</span>
                 {retiro.cupo_maximo && <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md"><Users className="w-4 h-4 text-slate-400" /> Cupo: {retiro.cupo_maximo}</span>}
                 {retiro.costo && <span className="flex items-center gap-1.5 text-green-700 dark:text-green-400 font-bold bg-green-50 dark:bg-green-900/20 px-2.5 py-1 rounded-md"><DollarSign className="w-4 h-4" /> ${retiro.costo}</span>}
               </div>

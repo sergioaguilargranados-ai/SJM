@@ -71,6 +71,9 @@ export function EventCard({ r }: EventCardProps) {
             <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase self-start md:self-end ${r.estatus === "PROXIMA" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" : r.estatus === "EN_CURSO" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
               {r.estatus === "PROXIMA" ? "Próximo" : r.estatus === "EN_CURSO" ? "En Curso" : r.estatus}
             </span>
+            <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest self-start md:self-end">
+              {r.modalidad_evento || "PRESENCIAL"}
+            </span>
             
             <button
               onClick={() => setIsModalOpen(true)}
