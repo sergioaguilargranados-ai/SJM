@@ -219,7 +219,7 @@ export default function PermisosClient({ rolesInitial, planesInitial, estructura
                                       className="border-slate-300 dark:border-slate-600 data-[state=checked]:bg-[#00B4AA]"
                                     />
                                     <span className="text-xs text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors capitalize">
-                                      {acc.clave === 'view' ? 'Ver' : acc.clave === 'edit' ? 'Editar' : acc.clave === 'create' ? 'Crear' : 'Eliminar'}
+                                      {acc.clave === 'view' ? 'Ver' : acc.clave === 'edit' ? 'Editar' : acc.clave === 'create' ? 'Crear' : acc.clave === 'delete' ? 'Eliminar' : acc.clave === 'own_only' ? 'Solo Propio' : acc.clave}
                                     </span>
                                   </label>
                                 ))}

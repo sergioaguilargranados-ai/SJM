@@ -26,6 +26,19 @@ export async function getInscripciones() {
 export async function getServidores() {
   try {
     const { orgId } = await validarAccesoPlan("servidores");
+    const usuario = await getUsuarioSesion();
+    const canViewAll = usuario.es_admin_sistema || usuario.permisos.includes('servidores.padron.view');
+    const canViewOwn = usuario.permisos.includes('servidores.padron.own_only');
+
+    if (!canViewAll && !canViewOwn) {
+      return { success: false, data: [], error: "No tienes permiso para ver el padrón de servidores." };
+    }
+
+    const conditions = [eq(servidores.organizacion_id, orgId)];
+    if (!canViewAll && canViewOwn) {
+      conditions.push(eq(servidores.usuario_id, usuario.usuario_id));
+    }
+
     const resultados = await db
       .select({
          id: servidores.id,
@@ -66,7 +79,7 @@ export async function getServidores() {
       .leftJoin(sedes, eq(servidores.sede_id, sedes.id))
       .leftJoin(ministerios, eq(servidores.ministerio_id, ministerios.id))
       .leftJoin(cargos, eq(servidores.cargo_id, cargos.id))
-      .where(eq(servidores.organizacion_id, orgId))
+      .where(and(...conditions))
       .orderBy(desc(servidores.id));
       
     return { success: true, data: resultados };
