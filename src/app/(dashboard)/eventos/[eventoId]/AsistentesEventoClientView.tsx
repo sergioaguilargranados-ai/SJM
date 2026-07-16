@@ -89,6 +89,34 @@ export default function AsistentesEventoClientView({
       header: "Alergias/Salud", 
       accessorKey: "condiciones_salud",
       ocultarEnUI: true 
+    },
+    { header: "Fecha Llegada", accessorKey: "fecha_hora_llegada", ocultarEnUI: true },
+    { header: "Lugar Llegada", accessorKey: "lugar_llegada", ocultarEnUI: true },
+    { header: "Transp. Llegada", accessorKey: "medio_transporte_llegada", ocultarEnUI: true },
+    { header: "Fecha Salida", accessorKey: "fecha_hora_salida", ocultarEnUI: true },
+    { header: "Lugar Salida", accessorKey: "lugar_salida", ocultarEnUI: true },
+    { header: "Transp. Salida", accessorKey: "medio_transporte_salida", ocultarEnUI: true },
+    { header: "Núm. Cuarto", accessorKey: "num_cuarto", ocultarEnUI: true },
+    { header: "Equipo Asignado", accessorKey: "equipo", ocultarEnUI: true },
+    { header: "Comparte Cuarto Con", accessorKey: "comparte_cuarto_con", ocultarEnUI: true },
+    { 
+      header: "Prob. Escaleras", 
+      accessorKey: "dificultad_escaleras", 
+      ocultarEnUI: true,
+      cell: (val: any) => val ? "SÍ" : "NO"
+    },
+    { 
+      header: "Consulta Médica", 
+      accessorKey: "quiere_consulta_medica", 
+      ocultarEnUI: true,
+      cell: (val: any) => val ? "SÍ" : "NO"
+    },
+    { header: "Día Consulta", accessorKey: "dia_consulta_medica", ocultarEnUI: true },
+    { 
+      header: "Sale a Paseo", 
+      accessorKey: "participa_salida_paseo", 
+      ocultarEnUI: true,
+      cell: (val: any) => val ? "SÍ" : "NO"
     }
   ];
 
