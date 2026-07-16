@@ -71,28 +71,6 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
         </Link>
       </div>
 
-      {/* Center Horizontal Menu (Cenefa) */}
-      <div className="hidden xl:flex items-center justify-center gap-1.5 w-full mt-3">
-        {paginasNav.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link
-              key={link.nombre}
-              href={link.href}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5",
-                isActive 
-                  ? "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white" 
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              )}
-            >
-              {link.icono}
-              <span className="hidden xl:inline">{link.nombre}</span>
-            </Link>
-          );
-        })}
-      </div>
-
       {/* Right Actions */}
       <div className="flex items-center gap-4">
         <button 
@@ -147,6 +125,28 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
             <LogOut className="w-5 h-5" />
           </button>
         </div>
+      </div>
+
+      {/* Center Horizontal Menu (Cenefa) */}
+      <div className="hidden xl:flex items-center justify-center gap-1.5 w-full mt-3">
+        {paginasNav.map((link) => {
+          const isActive = pathname === link.href;
+          return (
+            <Link
+              key={link.nombre}
+              href={link.href}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5",
+                isActive 
+                  ? "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white" 
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              )}
+            >
+              {link.icono}
+              <span className="hidden xl:inline">{link.nombre}</span>
+            </Link>
+          );
+        })}
       </div>
     </header>
   );
