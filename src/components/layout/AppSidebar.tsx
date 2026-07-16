@@ -76,7 +76,7 @@ export function AppSidebar({ permisos = [] }: AppSidebarProps) {
 
       {/* Sidebar ERPCubox Style */}
       <aside className={cn(
-        "fixed top-20 left-0 z-[50] w-64 h-[calc(100vh-5rem)] transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
+        "fixed top-20 xl:top-[112px] left-0 z-[50] w-64 h-[calc(100vh-5rem)] xl:h-[calc(100vh-7rem)] transition-transform bg-white dark:bg-[#1a1b26] border-r border-slate-200 dark:border-[#2a2b3d] flex flex-col shadow-2xl lg:shadow-none",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
 

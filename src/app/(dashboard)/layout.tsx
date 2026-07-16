@@ -27,7 +27,7 @@ export default async function DashboardLayout({
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0f1015] transition-colors">
         <AppTopbar />
         
-        <div className="flex flex-1 pt-20">
+        <div className="flex flex-1 pt-20 xl:pt-28">
           <AppSidebar permisos={permisos} />
           
           <div className="lg:pl-64 flex flex-col flex-1 min-w-0">

@@ -34,9 +34,10 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-[#1a1b26] border-b border-slate-200 dark:border-[#2a2b3d] z-[60] flex items-center justify-between px-4 lg:px-6 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 h-20 xl:h-[112px] bg-white dark:bg-[#1a1b26] border-b border-slate-200 dark:border-[#2a2b3d] z-[60] flex flex-col justify-center px-4 lg:px-6 transition-all duration-300">
       
-      {/* Logos & Branding */}
+      <div className="flex items-center justify-between w-full">
+        {/* Logos & Branding */}
       <div className="flex items-center gap-4">
         {/* Botón Hamburger solo visible en móviles/tablets para abrir AppSidebar */}
         <button 
@@ -59,7 +60,7 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
               {tenant.nombre || "SJM Nacional"}
             </span>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[9px] text-slate-500 dark:text-[#8e8ea0] font-medium truncate max-w-[150px]">
+              <span className="text-[9px] text-slate-500 dark:text-[#8e8ea0] font-medium truncate max-w-[300px]">
                 {tenant.lema || "Servidores de Jesús por María"}
               </span>
               <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400">
@@ -71,7 +72,7 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
       </div>
 
       {/* Center Horizontal Menu (Cenefa) */}
-      <div className="hidden xl:flex items-center justify-center gap-1.5 flex-1 mx-4">
+      <div className="hidden xl:flex items-center justify-center gap-1.5 w-full mt-3">
         {paginasNav.map((link) => {
           const isActive = pathname === link.href;
           return (
