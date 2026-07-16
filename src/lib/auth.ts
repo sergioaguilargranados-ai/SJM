@@ -138,6 +138,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  trustHost: true,
   callbacks: {
     async signIn({ user, account }) {
       // Para Google: auto-crear si no existe o vincular si se pide
