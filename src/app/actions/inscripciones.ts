@@ -348,7 +348,7 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
               s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
               s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
               COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
-              ${evento_id ? sql`, si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras` : sql``}
+              ${evento_id ? sql`, si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, si.dia_consulta_medica` : sql``}
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
        ${evento_id ? sql`LEFT JOIN solicitudes_inscripcion si ON si.usuario_id = u.id AND si.evento_id = ${evento_id}` : sql``}
@@ -373,7 +373,7 @@ export async function buscarServidorPorInscripcionIdAction(inscripcion_id: strin
               s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
               s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
               COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
-              , si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras
+              , si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, si.dia_consulta_medica
        FROM solicitudes_inscripcion si
        INNER JOIN usuarios u ON si.usuario_id = u.id
        LEFT JOIN servidores s ON s.usuario_id = u.id
@@ -583,6 +583,10 @@ export async function registrarRenaseAction(datos: any) {
         equipo: datos.equipo || null,
         comparte_cuarto_con: datos.comparte_cuarto_con || null,
         dificultad_escaleras: datos.dificultad_escaleras === true,
+        
+        // Consulta Médica
+        quiere_consulta_medica: datos.quiere_consulta_medica === true,
+        dia_consulta_medica: datos.quiere_consulta_medica === true ? (datos.dia_consulta_medica || null) : null,
       };
 
       if (existingInsc) {

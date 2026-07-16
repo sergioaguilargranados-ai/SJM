@@ -301,6 +301,10 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   esposo_a_nombre: varchar("esposo_a_nombre", { length: 255 }),
   esposo_a_edad: integer("esposo_a_edad"),
   esposo_a_fecha_nacimiento: date("esposo_a_fecha_nacimiento"),
+  
+  // Campos de Consulta Médica (RENASE)
+  quiere_consulta_medica: boolean("quiere_consulta_medica").default(false),
+  dia_consulta_medica: varchar("dia_consulta_medica", { length: 50 }),
   esposo_a_celular: varchar("esposo_a_celular", { length: 50 }),
   fecha_boda: date("fecha_boda"),
   casados_por_iglesia: boolean("casados_por_iglesia").default(false),

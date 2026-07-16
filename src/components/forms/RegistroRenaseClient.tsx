@@ -27,6 +27,8 @@ const itinerarioSchema = z.object({
   equipo: z.string().optional(),
   comparte_cuarto_con: z.string().optional(),
   dificultad_escaleras: z.boolean().default(false),
+  quiere_consulta_medica: z.boolean().default(false),
+  dia_consulta_medica: z.string().optional(),
 });
 
 const servidorSchema = z.object({
@@ -83,6 +85,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
     defaultValues: {
       participa_salida_paseo: false,
       dificultad_escaleras: false,
+      quiere_consulta_medica: false,
     }
   });
 
@@ -104,6 +107,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
          comparte_cuarto_con: initialData.comparte_cuarto_con || "",
          dificultad_escaleras: initialData.dificultad_escaleras === true,
          participa_salida_paseo: initialData.participa_salida_paseo === true,
+         quiere_consulta_medica: initialData.quiere_consulta_medica === true,
+         dia_consulta_medica: initialData.dia_consulta_medica || "",
       });
       if (initialData.pase_abordar_url) setPaseUrl(initialData.pase_abordar_url);
       if (initialData.foto_url) setFotoPerfilUrl(initialData.foto_url);
@@ -175,6 +180,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
        lugar_salida: serv.lugar_salida || "",
        medio_transporte_salida: serv.medio_transporte_salida || "",
        pase_abordar_url: serv.pase_abordar_url || "",
+       quiere_consulta_medica: serv.quiere_consulta_medica || false,
+       dia_consulta_medica: serv.dia_consulta_medica || "",
     });
     setPaso("CAPTURA");
   };
@@ -409,6 +416,38 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
                      </div>
                    </label>
                  </div>
+              </div>
+
+              <div className="bg-slate-50 dark:bg-black/20 p-6 rounded-2xl border border-dashed border-slate-300 dark:border-[#2a2b3d] mb-8">
+                <div className="space-y-4">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      {...form.register("quiere_consulta_medica")}
+                      className="w-5 h-5 rounded text-blue-600 dark:bg-[#0f1015]"
+                    />
+                    <div>
+                      <span className="text-sm font-bold block text-slate-800 dark:text-slate-200">Quiero consulta médica</span>
+                      <span className="text-xs text-slate-500 block">Me comprometo a llevar mis análisis médicos.</span>
+                    </div>
+                  </label>
+                  
+                  {form.watch("quiere_consulta_medica") && (
+                    <div className="pl-8 pt-2">
+                      <Label className="dark:text-slate-300 block mb-2">Selecciona el día de tu consulta</Label>
+                      <div className="flex gap-4">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" value="sábado" {...form.register("dia_consulta_medica")} className="text-blue-600" />
+                          <span className="text-sm text-slate-700 dark:text-slate-300">Sábado</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" value="domingo" {...form.register("dia_consulta_medica")} className="text-blue-600" />
+                          <span className="text-sm text-slate-700 dark:text-slate-300">Domingo</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-50 dark:bg-black/20 p-6 rounded-2xl border border-dashed border-slate-300 dark:border-[#2a2b3d]">
