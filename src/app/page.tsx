@@ -18,7 +18,7 @@ export const metadata = {
   title: "Servidores de Jesús por María | Un Don del Espíritu Santo en nuestro tiempo",
   description: "Evangelización, retiros de sanación interior, formación cristiana y acompañamiento espiritual. Configurados con Cristo compasivo y misericordioso.",
 };
-const appVersion = "v1.198 - SJM Core Engine • Compilación: 16-07-2026 14:32 (CDMX)";
+const appVersion = "v1.199 - SJM Core Engine • Compilación: 16-07-2026 17:23 (CDMX)";
 
 // ============================================================
 // SECCION PROMOCIONAL — Componente reutilizable para la landing

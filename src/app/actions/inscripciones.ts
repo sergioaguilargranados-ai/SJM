@@ -403,44 +403,64 @@ export async function registrarRenaseAction(datos: any) {
 
       // 2. Crear o Actualizar usuario
       if (!usuarioId) {
-         let existingUser;
-         const conditions = [];
-         if (datos.correo?.trim()) conditions.push(eq(usuarios.correo, datos.correo.trim().toLowerCase()));
-         if (datos.celular) conditions.push(eq(usuarios.celular, datos.celular));
-         
-         if (conditions.length > 0) {
-            existingUser = await db.query.usuarios.findFirst({
-               where: or(...conditions)
+         let userByEmail = null;
+         let userByPhone = null;
+
+         if (datos.correo?.trim()) {
+            userByEmail = await db.query.usuarios.findFirst({
+               where: eq(usuarios.correo, datos.correo.trim().toLowerCase())
             });
          }
          
-         if (existingUser) {
-            usuarioId = existingUser.id;
+         if (datos.celular) {
+            userByPhone = await db.query.usuarios.findFirst({
+               where: eq(usuarios.celular, datos.celular)
+            });
          }
+         
+         if (userByEmail && userByPhone && userByEmail.id !== userByPhone.id) {
+            throw new Error("El correo y el celular proporcionados pertenecen a cuentas diferentes. Por favor usa datos únicos para tu cuenta.");
+         }
+         
+         usuarioId = userByEmail?.id || userByPhone?.id;
       }
 
       if (usuarioId) {
-         await db.execute(sql`
-           UPDATE usuarios SET 
-            nombre_completo = ${datos.nombre_completo}, 
-            celular = ${datos.celular}, 
-            correo = ${datos.correo?.trim() ? datos.correo : null}, 
-            fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
-            rol_id = COALESCE(rol_id, ${rolServidorId}::uuid),
-            es_servidor = true
-           WHERE id = ${usuarioId}
-         `);
+         try {
+           await db.execute(sql`
+             UPDATE usuarios SET 
+              nombre_completo = ${datos.nombre_completo}, 
+              celular = ${datos.celular}, 
+              correo = ${datos.correo?.trim() ? datos.correo : null}, 
+              fecha_nacimiento = ${datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null}::date,
+              rol_id = COALESCE(rol_id, ${rolServidorId}::uuid),
+              es_servidor = true
+             WHERE id = ${usuarioId}
+           `);
+         } catch (e: any) {
+           if (e.code === '23505' || e.message?.includes('duplicate key') || e.message?.includes('unique constraint')) {
+              throw new Error("El correo o celular ingresado ya está siendo usado por otra persona. Verifica tus datos.");
+           }
+           throw e;
+         }
       } else {
-         const [nuevoUsu] = await db.insert(usuarios).values({
-           organizacion_id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
-           nombre_completo: datos.nombre_completo,
-           celular: datos.celular,
-           correo: datos.correo?.trim() ? datos.correo : null,
-           fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
-           es_servidor: true,
-           rol_id: rolServidorId as string | null
-         }).returning({ id: usuarios.id });
-         usuarioId = nuevoUsu.id;
+         try {
+           const [nuevoUsu] = await db.insert(usuarios).values({
+             organizacion_id: "6fb191cc-a477-4632-9cb1-c30c33a9f9bd",
+             nombre_completo: datos.nombre_completo,
+             celular: datos.celular,
+             correo: datos.correo?.trim() ? datos.correo : null,
+             fecha_nacimiento: datos.fecha_nacimiento?.trim() ? datos.fecha_nacimiento : null,
+             es_servidor: true,
+             rol_id: rolServidorId as string | null
+           }).returning({ id: usuarios.id });
+           usuarioId = nuevoUsu.id;
+         } catch (e: any) {
+           if (e.code === '23505' || e.message?.includes('duplicate key') || e.message?.includes('unique constraint')) {
+              throw new Error("El correo o celular ingresado ya está siendo usado por otra persona. Verifica tus datos.");
+           }
+           throw e;
+         }
       }
       
       // 3. Crear o Actualizar servidor

@@ -1,6 +1,15 @@
-# 📜 Histórico SJM PLATFORM — v1.198 — COMPILACIÓN: 16-07-2026 14:32 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.199 — COMPILACIÓN: 16-07-2026 17:23 (CDMX)
 
-**Última actualización:** 16 de Julio de 2026 - 14:32 (CDMX)
+**Última actualización:** 16 de Julio de 2026 - 17:23 (CDMX)
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.199 - 16 de Julio de 2026 - 17:23 (CDMX)
+
+#### 🚀 Corrección en Flujo RENASE
+- **Detección Cruzada (Inteligente):** Se modificó la heurística de registro para atrapar y bloquear cruces de datos (cuando un usuario inscribe un celular de una cuenta y correo de otra).
+- **Manejo de Errores (Unique Constraints):** Se añadieron bloques `try/catch` para interceptar violaciones de llave única (`23505`) provenientes de la base de datos (Neon/Postgres) y regresar al front-end un mensaje amigable indicando que el correo o celular ya le pertenecen a otra persona.
 **Responsable:** AntiGravity AI Assistant
 
 ---
