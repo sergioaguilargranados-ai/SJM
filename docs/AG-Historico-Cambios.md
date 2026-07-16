@@ -1,9 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.197 — COMPILACIÓN: 07-07-2026 14:35 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.198 — COMPILACIÓN: 16-07-2026 14:32 (CDMX)
 
-**Última actualización:** 07 de Julio de 2026 - 14:35 (CDMX)
+**Última actualización:** 16 de Julio de 2026 - 14:32 (CDMX)
 **Responsable:** AntiGravity AI Assistant
 
 ---
+
+### v1.198 - 16 de Julio de 2026 - 14:32 (CDMX)
+
+#### 🚀 Módulo Operación de Evento (Asistentes)
+- **Columnas de Logística y Médico:** Integración de campos detallados (itinerario de llegada, salida, asignación de cuarto, consideraciones médicas como escaleras y consultas) en la tabla `AsistentesEventoClientView.tsx`.
+- **Exportación Dinámica:** Las nuevas columnas se configuran con `ocultarEnUI: true` para mantener limpio el UI, pudiendo seleccionarse mediante el selector de columnas para exportar un PDF o Excel de logística completo (con valores booleanos parseados a SÍ/NO).
+- **Correcciones UI:** Ajuste de layout CSS en `TopbarClient.tsx` para evitar que el logo, el menú y las acciones se empalmen en modo escritorio.
 
 ### v1.197 - 07 de Julio de 2026 - 14:35 (CDMX)
 
