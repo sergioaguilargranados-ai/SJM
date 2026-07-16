@@ -126,6 +126,7 @@ export function TopbarClient({ nombre, correo, foto, rol }: { nombre: string; co
           </button>
         </div>
       </div>
+      </div>
 
       {/* Center Horizontal Menu (Cenefa) */}
       <div className="hidden xl:flex items-center justify-center gap-1.5 w-full mt-3">
