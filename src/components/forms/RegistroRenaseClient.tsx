@@ -92,8 +92,8 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
          ...initialData,
          nombre_gafete: initialData.nombre_gafete || "",
          fecha_nacimiento: initialData.fecha_nacimiento ? new Date(initialData.fecha_nacimiento).toISOString().split('T')[0] : "",
-         fecha_hora_llegada: initialData.fecha_hora_llegada ? new Date(initialData.fecha_hora_llegada).toISOString().slice(0, 16) : "",
-         fecha_hora_salida: initialData.fecha_hora_salida ? new Date(initialData.fecha_hora_salida).toISOString().slice(0, 16) : "",
+         fecha_hora_llegada: initialData.fecha_hora_llegada || "",
+         fecha_hora_salida: initialData.fecha_hora_salida || "",
          lugar_llegada: initialData.lugar_llegada || "",
          medio_transporte_llegada: initialData.medio_transporte_llegada || "",
          lugar_salida: initialData.lugar_salida || "",
@@ -168,10 +168,10 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
        comparte_cuarto_con: serv.comparte_cuarto_con || "",
        dificultad_escaleras: serv.dificultad_escaleras || false,
        participa_salida_paseo: serv.participa_salida_paseo || false,
-       fecha_hora_llegada: serv.fecha_hora_llegada ? new Date(serv.fecha_hora_llegada).toISOString().slice(0, 16) : "",
+       fecha_hora_llegada: serv.fecha_hora_llegada || "",
        lugar_llegada: serv.lugar_llegada || "",
        medio_transporte_llegada: serv.medio_transporte_llegada || "",
-       fecha_hora_salida: serv.fecha_hora_salida ? new Date(serv.fecha_hora_salida).toISOString().slice(0, 16) : "",
+       fecha_hora_salida: serv.fecha_hora_salida || "",
        lugar_salida: serv.lugar_salida || "",
        medio_transporte_salida: serv.medio_transporte_salida || "",
        pase_abordar_url: serv.pase_abordar_url || "",
@@ -357,7 +357,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Fecha y Hora Llegada</Label>
-                   <Input type="datetime-local" {...form.register("fecha_hora_llegada")} className="dark:bg-[#0f1015]" />
+                   <Input type="text" placeholder="Ej. Jueves 15 a las 10:00 am" {...form.register("fecha_hora_llegada")} className="dark:bg-[#0f1015]" />
                  </div>
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Lugar de Llegada</Label>
@@ -372,7 +372,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Fecha y Hora Salida</Label>
-                   <Input type="datetime-local" {...form.register("fecha_hora_salida")} className="dark:bg-[#0f1015]" />
+                   <Input type="text" placeholder="Ej. Domingo 18 a las 05:00 pm" {...form.register("fecha_hora_salida")} className="dark:bg-[#0f1015]" />
                  </div>
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Lugar de Salida</Label>

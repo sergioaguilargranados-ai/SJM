@@ -569,10 +569,10 @@ export async function registrarRenaseAction(datos: any) {
         ministerio_actual: minNombre,
         
         // Itinerario y Logística
-        fecha_hora_llegada: datos.fecha_hora_llegada ? new Date(datos.fecha_hora_llegada) : null,
+        fecha_hora_llegada: datos.fecha_hora_llegada || null,
         lugar_llegada: datos.lugar_llegada || null,
         medio_transporte_llegada: datos.medio_transporte_llegada || null,
-        fecha_hora_salida: datos.fecha_hora_salida ? new Date(datos.fecha_hora_salida) : null,
+        fecha_hora_salida: datos.fecha_hora_salida || null,
         lugar_salida: datos.lugar_salida || null,
         medio_transporte_salida: datos.medio_transporte_salida || null,
         pase_abordar_url: datos.pase_abordar_url || null,

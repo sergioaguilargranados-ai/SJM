@@ -321,10 +321,10 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   observaciones: text("observaciones"),
   
   // Itinerario y Logística (Especial RENASE)
-  fecha_hora_llegada: timestamp("fecha_hora_llegada"),
+  fecha_hora_llegada: varchar("fecha_hora_llegada", { length: 255 }),
   lugar_llegada: varchar("lugar_llegada", { length: 255 }),
   medio_transporte_llegada: varchar("medio_transporte_llegada", { length: 100 }),
-  fecha_hora_salida: timestamp("fecha_hora_salida"),
+  fecha_hora_salida: varchar("fecha_hora_salida", { length: 255 }),
   lugar_salida: varchar("lugar_salida", { length: 255 }),
   medio_transporte_salida: varchar("medio_transporte_salida", { length: 100 }),
   pase_abordar_url: text("pase_abordar_url"),
