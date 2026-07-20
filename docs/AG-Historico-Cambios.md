@@ -1,6 +1,15 @@
-# 📜 Histórico SJM PLATFORM — v1.199 — COMPILACIÓN: 16-07-2026 17:23 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.200 — COMPILACIÓN: 19-07-2026 23:11 (CDMX)
 
-**Última actualización:** 16 de Julio de 2026 - 17:23 (CDMX)
+**Última actualización:** 19 de Julio de 2026 - 23:11 (CDMX)
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.200 - 19 de Julio de 2026 - 23:11 (CDMX)
+
+#### 🚀 Corrección de Formulario RENASE (Campos no requeridos)
+- **Flexibilidad en Validación Zod:** Se corrigió un error en el que el formulario de edición de Asistentes (`RegistroRenaseClient.tsx`) marcaba campos vacíos u opcionales (que la base de datos devuelve como `null`) como erróneos. 
+- **Solución implementada:** Se cambiaron todas las validaciones de campos no requeridos de `.optional()` a `.nullish()`, permitiendo así inicializar el formulario con datos preexistentes (`null`) sin que Zod bloquee el guardado de la información.
 **Responsable:** AntiGravity AI Assistant
 
 ---
