@@ -304,6 +304,7 @@ export const solicitudes_inscripcion = pgTable("solicitudes_inscripcion", {
   
   // Campos de Consulta Médica (RENASE)
   quiere_consulta_medica: boolean("quiere_consulta_medica").default(false),
+  ya_tengo_estudios_medicos: boolean("ya_tengo_estudios_medicos").default(false),
   dia_consulta_medica: varchar("dia_consulta_medica", { length: 50 }),
   esposo_a_celular: varchar("esposo_a_celular", { length: 50 }),
   fecha_boda: date("fecha_boda"),

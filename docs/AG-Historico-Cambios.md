@@ -1,6 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.200 — COMPILACIÓN: 19-07-2026 23:11 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.201 — COMPILACIÓN: 22-07-2026 13:05 (CDMX)
 
-**Última actualización:** 19 de Julio de 2026 - 23:11 (CDMX)
+**Última actualización:** 22 de Julio de 2026 - 13:05 (CDMX)
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.201 - 22 de Julio de 2026 - 13:05 (CDMX)
+
+#### 🚀 Nuevo Campo en Solicitud Médica
+- **Checkbox: Ya tengo los estudios:** Se agregó la opción de indicar si el servidor ya cuenta con los estudios médicos correspondientes al momento de solicitar consulta médica en su inscripción a eventos (RENASE).
+- **Base de Datos:** Se añadió el campo `ya_tengo_estudios_medicos` en la tabla `solicitudes_inscripcion`.
+- **Panel de Control:** Se agregó la columna "Ya Tiene Estudios" a la exportación/tabla de `Asistentes Registrados`.
 **Responsable:** AntiGravity AI Assistant
 
 ---

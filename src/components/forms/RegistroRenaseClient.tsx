@@ -28,6 +28,7 @@ const itinerarioSchema = z.object({
   comparte_cuarto_con: z.string().nullish(),
   dificultad_escaleras: z.boolean().default(false),
   quiere_consulta_medica: z.boolean().default(false),
+  ya_tengo_estudios_medicos: z.boolean().default(false),
   dia_consulta_medica: z.string().nullish(),
 });
 
@@ -86,6 +87,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
       participa_salida_paseo: false,
       dificultad_escaleras: false,
       quiere_consulta_medica: false,
+      ya_tengo_estudios_medicos: false,
     }
   });
 
@@ -108,6 +110,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
          dificultad_escaleras: initialData.dificultad_escaleras === true,
          participa_salida_paseo: initialData.participa_salida_paseo === true,
          quiere_consulta_medica: initialData.quiere_consulta_medica === true,
+         ya_tengo_estudios_medicos: initialData.ya_tengo_estudios_medicos === true,
          dia_consulta_medica: initialData.dia_consulta_medica || "",
       });
       if (initialData.pase_abordar_url) setPaseUrl(initialData.pase_abordar_url);
@@ -181,6 +184,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
        medio_transporte_salida: serv.medio_transporte_salida || "",
        pase_abordar_url: serv.pase_abordar_url || "",
        quiere_consulta_medica: serv.quiere_consulta_medica || false,
+       ya_tengo_estudios_medicos: serv.ya_tengo_estudios_medicos || false,
        dia_consulta_medica: serv.dia_consulta_medica || "",
     });
     setPaso("CAPTURA");
@@ -446,6 +450,19 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
                         </label>
                       </div>
                     </div>
+                  )}
+
+                  {form.watch("quiere_consulta_medica") && (
+                    <label className="flex items-center gap-3 cursor-pointer mt-4">
+                      <input 
+                        type="checkbox" 
+                        {...form.register("ya_tengo_estudios_medicos")}
+                        className="w-5 h-5 rounded text-blue-600 dark:bg-[#0f1015]"
+                      />
+                      <div>
+                        <span className="text-sm font-bold block text-slate-800 dark:text-slate-200">Ya tengo los estudios</span>
+                      </div>
+                    </label>
                   )}
                 </div>
               </div>

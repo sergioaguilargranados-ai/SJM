@@ -111,6 +111,12 @@ export default function AsistentesEventoClientView({
       ocultarEnUI: true,
       cell: (val: any) => val ? "SÍ" : "NO"
     },
+    { 
+      header: "Ya Tiene Estudios", 
+      accessorKey: "ya_tengo_estudios_medicos", 
+      ocultarEnUI: true,
+      cell: (val: any) => val ? "SÍ" : "NO"
+    },
     { header: "Día Consulta", accessorKey: "dia_consulta_medica", ocultarEnUI: true },
     { 
       header: "Sale a Paseo", 
