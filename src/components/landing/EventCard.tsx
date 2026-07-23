@@ -83,13 +83,15 @@ export function EventCard({ r }: EventCardProps) {
               Ver Detalles
             </button>
 
-            <Link 
-              href={`/registro/${r.id}`}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider w-full md:w-auto"
-            >
-              ¡INSCRIBETE!
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+            {r.estatus !== "CERRADO" && (
+              <Link 
+                href={`/registro/${r.id}`}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider w-full md:w-auto"
+              >
+                ¡INSCRIBETE!
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            )}
           </div>
         </div>
 

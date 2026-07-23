@@ -201,12 +201,14 @@ export function ModalDetallesRetiro({ retiro, onClose }: ModalDetallesRetiroProp
                 Regresar
               </button>
               
-              <Link 
-                href={`/registro/${retiro.id}`}
-                className="px-8 py-2.5 rounded-xl font-black text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
-              >
-                ¡INSCRIBETE!
-              </Link>
+              {retiro.estatus !== "CERRADO" && (
+                <Link 
+                  href={`/registro/${retiro.id}`}
+                  className="px-8 py-2.5 rounded-xl font-black text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+                >
+                  ¡INSCRIBETE!
+                </Link>
+              )}
             </div>
           </div>
         </div>

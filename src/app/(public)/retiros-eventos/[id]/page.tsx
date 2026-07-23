@@ -205,13 +205,15 @@ export default async function DetalleRetiroPage(props: PageProps) {
 
             {/* Footer con acciones */}
             <div className="p-4 md:p-6 border-t border-slate-100 dark:border-[#2a2b3d] bg-slate-50 dark:bg-[#1a1b26] flex flex-wrap gap-3 justify-end items-center mt-auto">
-              <Link 
-                href={`/registro/${eventoData.id}`}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider"
-              >
-                ¡INSCRIBETE AHORA!
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+              {eventoData.estatus !== "CERRADO" && (
+                <Link 
+                  href={`/registro/${eventoData.id}`}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-black shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 transition-transform uppercase tracking-wider"
+                >
+                  ¡INSCRIBETE AHORA!
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,14 @@
-# 📜 Histórico SJM PLATFORM — v1.201 — COMPILACIÓN: 22-07-2026 13:05 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.202 — COMPILACIÓN: 22-07-2026 18:05 (CDMX)
 
-**Última actualización:** 22 de Julio de 2026 - 13:05 (CDMX)
+**Última actualización:** 22 de Julio de 2026 - 18:05 (CDMX)
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.202 - 22 de Julio de 2026 - 18:05 (CDMX)
+
+#### 🚀 Ajuste en Inscripciones
+- **Ocultamiento de botón:** Se oculta el botón "¡INSCRÍBETE!" en las tarjetas de retiros, el modal de detalles y en la página pública si el evento tiene el estatus marcado como `"CERRADO"`.
 **Responsable:** AntiGravity AI Assistant
 
 ---
