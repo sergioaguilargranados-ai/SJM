@@ -1,6 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.202 — COMPILACIÓN: 22-07-2026 18:05 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.203 — COMPILACIÓN: 05-08-2026 21:24 (CDMX)
 
-**Última actualización:** 22 de Julio de 2026 - 18:05 (CDMX)
+**Última actualización:** 05 de Agosto de 2026 - 21:24 (CDMX)
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.203 - 05 de Agosto de 2026 - 21:24 (CDMX)
+
+#### 🚀 Mejoras en Gestión de Usuarios (UX para Dispositivos Móviles / PWA)
+- **Tarjeta clickable**: Ahora se puede hacer clic/tap en cualquier parte de la tarjeta de usuario para abrir el modal de cambio de rol (gestión de usuario).
+- **Control de propagación**: Se previno la propagación del evento `onClick` en los botones internos de "Gestionar" y "Eliminar" (`e.stopPropagation()`) para evitar comportamientos no deseados o activaciones múltiples en cascada.
+- **Visibilidad en móviles**: Se actualizó el contenedor de botones de acción para que sea visible por defecto en pantallas móviles (`opacity-100`) y mantenga su estado oculto con hover en pantallas de escritorio (`md:opacity-0 md:group-hover:opacity-100`).
 **Responsable:** AntiGravity AI Assistant
 
 ---

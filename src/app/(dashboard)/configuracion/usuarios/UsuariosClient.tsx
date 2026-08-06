@@ -119,7 +119,11 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
       {/* Grid de Usuarios */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {usuariosFiltrados.map((u) => (
-          <div key={u.id} className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group">
+          <div 
+            key={u.id} 
+            onClick={() => { setUsuarioEditar(u); setNuevoRolId(u.rol_id || ""); }}
+            className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group cursor-pointer"
+          >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-[#00B4AA]/10 flex items-center justify-center text-[#00B4AA] font-black text-lg border border-[#00B4AA]/20">
@@ -154,9 +158,9 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
               </div>
             </div>
 
-            <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 mt-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
               <Button 
-                onClick={() => { setUsuarioEditar(u); setNuevoRolId(u.rol_id || ""); }}
+                onClick={(e) => { e.stopPropagation(); setUsuarioEditar(u); setNuevoRolId(u.rol_id || ""); }}
                 variant="outline" 
                 size="sm" 
                 className="flex-1 h-9 rounded-lg border-slate-200 dark:border-[#2a2b3d] text-xs font-black uppercase tracking-widest"
@@ -164,7 +168,7 @@ export default function UsuariosClient({ usuariosInitial, roles }: UsuariosClien
                 <UserCog className="w-3.5 h-3.5 mr-2" /> Gestionar
               </Button>
               <Button 
-                onClick={() => handleEliminarUsuario(u.id, u.nombre_completo)}
+                onClick={(e) => { e.stopPropagation(); handleEliminarUsuario(u.id, u.nombre_completo); }}
                 disabled={cargando}
                 variant="outline" 
                 size="sm" 
