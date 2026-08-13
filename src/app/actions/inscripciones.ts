@@ -372,7 +372,7 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
 export async function buscarServidorPorInscripcionIdAction(inscripcion_id: string) {
   try {
     const result = await db.execute(sql`
-      SELECT s.id as servidor_id, si.usuario_id, 
+      SELECT si.id as id, si.id as inscripcion_id, s.id as servidor_id, si.usuario_id, 
               COALESCE(u.nombre_completo, si.nombre_asistente) AS nombre_completo, 
               COALESCE(u.correo, si.correo) AS correo, 
               COALESCE(u.celular, si.telefono_celular) AS celular, 

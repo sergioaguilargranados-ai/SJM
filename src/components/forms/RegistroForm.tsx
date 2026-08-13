@@ -15,23 +15,34 @@ import {
 import { registrarSolicitudAction, buscarAsistentePrevioAction } from "@/app/actions/inscripciones";
 import { cn } from "@/lib/utils";
 
+function formatFechaSegura(val: any): string {
+  if (!val) return "";
+  try {
+    const str = String(val).trim();
+    if (str.length >= 10 && str.includes("-")) return str.slice(0, 10);
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return "";
+    return d.toISOString().slice(0, 10);
+  } catch {
+    return "";
+  }
+}
+
 const formSchema = z.object({
   // Paso 1: Identidad
-  nombre_asistente: z.string().min(3, "Nombre es obligatorio"),
+  nombre_asistente: z.string().min(1, "Nombre es obligatorio"),
   nombre_gafete: z.string().nullish().or(z.literal("")),
   sexo: z.enum(["M", "F"]),
   fecha_nacimiento: z.string().nullish().or(z.literal("")),
   edad: z.coerce.number().min(0).max(120),
-  estado_civil: z.string().min(1, "Selecciona estado civil"),
+  estado_civil: z.string().nullish().or(z.literal("")),
   
   // Paso 2: Contacto y Ubicación
-  telefono_celular: z.string().min(7, "WhatsApp es obligatorio"),
+  telefono_celular: z.string().nullish().or(z.literal("")),
   telefono_alternativo: z.string().nullish().or(z.literal("")),
-  correo: z.string().nullish().or(z.literal("")).refine((val) => !val || z.string().email().safeParse(val).success, {
-    message: "Correo electrónico inválido",
-  }),
+  correo: z.string().nullish().or(z.literal("")),
   direccion_completa: z.string().nullish().or(z.literal("")),
-  pais_ciudad: z.string().min(2, "Ciudad/País es obligatorio"),
+  pais_ciudad: z.string().nullish().or(z.literal("")),
   contacto_emergencia_nombre: z.string().nullish().or(z.literal("")),
   contacto_emergencia_telefono: z.string().nullish().or(z.literal("")),
   parentezco_emergencia: z.string().nullish().or(z.literal("")),
@@ -49,9 +60,7 @@ const formSchema = z.object({
   cantidad_hijos: z.coerce.number().optional(),
   datos_hijos: z.string().nullish().or(z.literal("")),
   // Paso 4/5: Legal / Responsiva
-  acepta_responsiva: z.boolean().refine((val) => val === true, {
-    message: "Debes aceptar la carta responsiva para continuar",
-  }),
+  acepta_responsiva: z.boolean().default(true),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -80,7 +89,7 @@ export function RegistroForm({
       sexo: "M",
       edad: 0,
       dificultad_caminar: false,
-      acepta_responsiva: false,
+      acepta_responsiva: true,
     }
   });
 
@@ -90,7 +99,7 @@ export function RegistroForm({
         nombre_asistente: initialData.nombre_asistente || initialData.nombre_completo || "",
         nombre_gafete: initialData.nombre_gafete || "",
         sexo: (initialData.sexo === "Femenino" || initialData.sexo === "F") ? "F" : "M",
-        fecha_nacimiento: initialData.fecha_nacimiento ? new Date(initialData.fecha_nacimiento).toISOString().slice(0, 10) : "",
+        fecha_nacimiento: formatFechaSegura(initialData.fecha_nacimiento),
         edad: initialData.edad ? Number(initialData.edad) : 0,
         estado_civil: initialData.estado_civil || "",
         telefono_celular: initialData.telefono_celular || initialData.celular || "",
@@ -107,7 +116,7 @@ export function RegistroForm({
         dificultad_caminar: initialData.dificultad_caminar === true || initialData.dificultad_escaleras === true,
         enfermedades_alergias: initialData.enfermedades_alergias || initialData.condiciones_salud || "",
         esposo_a_nombre: initialData.esposo_a_nombre || "",
-        fecha_boda: initialData.fecha_boda || "",
+        fecha_boda: formatFechaSegura(initialData.fecha_boda),
         cantidad_hijos: initialData.cantidad_hijos ? Number(initialData.cantidad_hijos) : 0,
         datos_hijos: initialData.datos_hijos || initialData.nombre_edades_hijos || "",
         acepta_responsiva: true,
@@ -115,27 +124,15 @@ export function RegistroForm({
     }
   }, [initialData, form]);
 
-  const nextStep = async () => {
-    const fields = getFieldsForStep(step);
-    if (fields.length > 0) {
-      const isValid = await form.trigger(fields as any);
-      if (isValid) {
-        setStep(s => Math.min(s + 1, totalSteps));
-      } else {
-        const errors = form.formState.errors;
-        const msgs = fields
-          .map(f => errors[f as keyof FormValues]?.message)
-          .filter(Boolean);
-        if (msgs.length > 0) {
-          alert("Por favor revisa los siguientes datos requeridos: " + msgs.join(". "));
-        }
-      }
-    } else {
-      setStep(s => Math.min(s + 1, totalSteps));
-    }
+  const nextStep = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    setStep(s => Math.min(s + 1, totalSteps));
   };
 
-  const prevStep = () => setStep(s => Math.max(s - 1, 1));
+  const prevStep = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    setStep(s => Math.max(s - 1, 1));
+  };
 
   const getFieldsForStep = (currentStep: number) => {
     if (currentStep === 1) return ["nombre_asistente", "sexo", "estado_civil", "edad"];
@@ -145,10 +142,11 @@ export function RegistroForm({
 
   async function onSubmit(values: FormValues) {
     setCargando(true);
+    const targetEditId = initialData?.id || initialData?.inscripcion_id;
     const res = await registrarSolicitudAction({ 
       ...values, 
       eventoId, 
-      editId: initialData?.id 
+      editId: targetEditId 
     });
     setCargando(false);
     if (res.success) setSuccess(true);
@@ -375,14 +373,14 @@ export function RegistroForm({
                   <textarea {...form.register("expectativas")} className="w-full h-24 rounded-xl border border-slate-200 dark:border-[#2a2b3d] bg-transparent p-4 text-sm" placeholder="Cuéntanos brevemente..."></textarea>
                 </div>
 
-                <div className="p-4 bg-rose-50 dark:bg-rose-900/10 rounded-2xl border border-rose-100 dark:border-rose-900/30 flex items-start gap-4">
-                  <Stethoscope className="w-6 h-6 text-rose-500 shrink-0 mt-1" />
+                <div className="p-4 bg-purple-50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-900/30 flex items-start gap-4">
+                  <Stethoscope className="w-6 h-6 text-purple-600 shrink-0 mt-1" />
                   <div className="flex-1">
-                    <Label className="text-rose-900 dark:text-rose-200">Anotaciones Médicas / Alergias</Label>
-                    <Input placeholder="Medicinas, dietas especiales, etc." {...form.register("enfermedades_alergias")} className="h-10 mt-2 rounded-lg bg-white/50 border-rose-200" />
+                    <Label className="text-purple-900 dark:text-purple-200">Anotaciones Médicas / Alergias</Label>
+                    <Input placeholder="Medicinas, dietas especiales, etc." {...form.register("enfermedades_alergias")} className="h-10 mt-2 rounded-lg bg-white/50 dark:bg-white/5 border-purple-200 dark:border-purple-800" />
                     <div className="flex items-center gap-2 mt-3 cursor-pointer">
-                      <input type="checkbox" id="caminar" {...form.register("dificultad_caminar")} className="w-4 h-4 rounded border-rose-300" />
-                      <label htmlFor="caminar" className="text-xs font-bold text-rose-700 dark:text-rose-300 uppercase">Tengo dificultad para caminar</label>
+                      <input type="checkbox" id="caminar" {...form.register("dificultad_caminar")} className="w-4 h-4 rounded border-purple-300" />
+                      <label htmlFor="caminar" className="text-xs font-bold text-purple-800 dark:text-purple-300 uppercase">Tengo dificultad para caminar</label>
                     </div>
                   </div>
                 </div>

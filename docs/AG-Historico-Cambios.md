@@ -1,7 +1,27 @@
-# 📜 Histórico SJM PLATFORM — v1.210 — COMPILACIÓN: 12-08-2026 21:33 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.212 — COMPILACIÓN: 12-08-2026 21:56 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 21:33 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 21:56 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.212 - 12 de Agosto de 2026 - 21:56 (CDMX)
+
+#### 🚀 Inclusión de ID de Inscripción en SELECT y Eliminación de Duplicados en Edición
+- **Inclusión de `si.id as id` en `buscarServidorPorInscripcionIdAction`**: Se corrigió la consulta SQL en `inscripciones.ts` para retornar explícitamente `si.id as id` y `si.id as inscripcion_id`. Anteriormente no se incluía la clave primaria de la inscripción, provocando que `initialData?.id` fuera `undefined` al enviar la edición en `RegistroForm.tsx`, lo que hacía que `registrarSolicitudAction` ejecutara un `INSERT` (creando copias duplicadas) en lugar de un `UPDATE`.
+- **Garantía de Edición (UPDATE)**: En `RegistroForm.tsx` se aseguró el paso del `targetEditId` (`initialData?.id || initialData?.inscripcion_id`), garantizando que al guardar cualquier edición se actualice el registro existente sin duplicarlo.
+- **Limpieza de Registros Duplicados**: Se ejecutó depuración directa en la base de datos Neon eliminando los registros duplicados antiguos.
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.211 - 12 de Agosto de 2026 - 21:53 (CDMX)
+
+#### 🚀 Protección contra Hydration Mismatch y Rediseño de Bento Médico
+- **Protección de Fechas y Hydration (`formatFechaSegura`)**: Se agregó un formateador seguro de fechas `formatFechaSegura` en `RegistroForm.tsx` que previene excepciones `Invalid time value` y desincronizaciones de SSR/Hydration (React Error #418) en navegadores al precargar la fecha de nacimiento.
+- **Rediseño de Bento de Anotaciones Médicas**: Se actualizaron los estilos visuales de la tarjeta médica del Paso 3 de tonos rosa/rojo a una paleta suave púrpura/violeta (`bg-purple-50 border-purple-100`), eliminando la falsa impresión visual de ser un campo marcado con error de validación.
+- **Navegación Garantizada de Pasos (`nextStep`)**: Se simplificó `nextStep` y `prevStep` con `e.preventDefault()`, garantizando avance inmediato e incondicional entre pasos al editar.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 
