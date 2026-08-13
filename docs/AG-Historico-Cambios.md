@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.212 — COMPILACIÓN: 12-08-2026 21:56 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.213 — COMPILACIÓN: 12-08-2026 22:12 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 21:56 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 22:12 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.213 - 12 de Agosto de 2026 - 22:12 (CDMX)
+
+#### 🚀 Inclusión del Campo de Hospedaje "¿Deseas compartir habitación con alguien en especial?"
+- **Campo de Hospedaje en RegistroForm**: Se añadió el campo `comparte_cuarto_con` en `RegistroForm.tsx` (Paso 3: Vida Espiritual, Salud y Hospedaje) con interfaz gráfica bento destacada e icono `BedDouble`, permitiendo a los participantes o administradores indicar si desean compartir habitación con alguien en particular y el motivo.
+- **Mapeo de Base de Datos y Precarga**: Se actualizó `registrarSolicitudAction` (`inscripciones.ts`) para guardar `comparte_cuarto_con` en la tabla `solicitudes_inscripcion`, y se añadió la precarga automática en `useEffect` al consultar/editar registros.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

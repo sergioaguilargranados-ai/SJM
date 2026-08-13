@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { 
   User, Phone, MapPin, Church, Heart, Baby, 
   ChevronRight, ChevronLeft, CheckCircle2, Info,
-  Stethoscope, Cross, Sparkles, FileText, ShieldCheck, Search, Loader2
+  Stethoscope, Cross, Sparkles, FileText, ShieldCheck, Search, Loader2, BedDouble
 } from "lucide-react";
 import { registrarSolicitudAction, buscarAsistentePrevioAction } from "@/app/actions/inscripciones";
 import { cn } from "@/lib/utils";
@@ -47,12 +47,13 @@ const formSchema = z.object({
   contacto_emergencia_telefono: z.string().nullish().or(z.literal("")),
   parentezco_emergencia: z.string().nullish().or(z.literal("")),
 
-  // Paso 3: Espiritualidad y Salud
+  // Paso 3: Espiritualidad y Salud / Hospedaje
   parroquia_procedencia: z.string().nullish().or(z.literal("")),
   ultimo_sacramento: z.string().nullish().or(z.literal("")),
   expectativas: z.string().nullish().or(z.literal("")),
   dificultad_caminar: z.boolean().default(false),
   enfermedades_alergias: z.string().nullish().or(z.literal("")),
+  comparte_cuarto_con: z.string().nullish().or(z.literal("")),
   
   // Paso 4: Matrimonial (Condicional)
   esposo_a_nombre: z.string().nullish().or(z.literal("")),
@@ -115,6 +116,7 @@ export function RegistroForm({
         expectativas: initialData.expectativas || "",
         dificultad_caminar: initialData.dificultad_caminar === true || initialData.dificultad_escaleras === true,
         enfermedades_alergias: initialData.enfermedades_alergias || initialData.condiciones_salud || "",
+        comparte_cuarto_con: initialData.comparte_cuarto_con || "",
         esposo_a_nombre: initialData.esposo_a_nombre || "",
         fecha_boda: formatFechaSegura(initialData.fecha_boda),
         cantidad_hijos: initialData.cantidad_hijos ? Number(initialData.cantidad_hijos) : 0,
@@ -382,6 +384,20 @@ export function RegistroForm({
                       <input type="checkbox" id="caminar" {...form.register("dificultad_caminar")} className="w-4 h-4 rounded border-purple-300" />
                       <label htmlFor="caminar" className="text-xs font-bold text-purple-800 dark:text-purple-300 uppercase">Tengo dificultad para caminar</label>
                     </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/30 flex items-start gap-4">
+                  <BedDouble className="w-6 h-6 text-blue-600 shrink-0 mt-1" />
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-blue-950 dark:text-blue-200 font-bold">
+                      ¿Deseas compartir habitación con alguien en especial y por qué?
+                    </Label>
+                    <Input 
+                      placeholder="Indica el nombre completo de la persona y/o motivo (opcional)" 
+                      {...form.register("comparte_cuarto_con")} 
+                      className="h-10 rounded-lg bg-white/70 dark:bg-white/5 border-blue-200 dark:border-blue-800" 
+                    />
                   </div>
                 </div>
               </div>

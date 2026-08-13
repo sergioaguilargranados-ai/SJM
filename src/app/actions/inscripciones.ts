@@ -59,6 +59,7 @@ export async function registrarSolicitudAction(datos: any) {
       expectativas: datos.expectativas || null,
       dificultad_escaleras: datos.dificultad_caminar === true,
       enfermedades_alergias: datos.enfermedades_alergias || null,
+      comparte_cuarto_con: datos.comparte_cuarto_con || null,
       
       // Datos de cónyuge y familia
       esposo_a_nombre: datos.esposo_a_nombre || null,
