@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.208 — COMPILACIÓN: 12-08-2026 21:07 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.209 — COMPILACIÓN: 12-08-2026 21:25 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 21:07 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 21:25 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.209 - 12 de Agosto de 2026 - 21:25 (CDMX)
+
+#### 🚀 Flexibilización de Validación en Edición y Fluidez de Navegación de Pasos
+- **Flexibilización de Campos Opcionales (`formSchema`)**: Se actualizaron las reglas de Zod en `RegistroForm.tsx` para permitir que campos opcionales como `contacto_emergencia_telefono`, `contacto_emergencia_nombre`, `correo` y `direccion_completa` acepten valores vacíos (`.nullish().or(z.literal(""))`), evitando que la validación bloquee el botón "Siguiente Paso" cuando un participante preexistente no tenía datos de emergencia capturados.
+- **Alertas de Validación Claras**: Se añadió feedback visual y aviso directo en `nextStep` cuando falta un campo estrictamente obligatorio, informando al usuario la causa exacta si un paso no avanza.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

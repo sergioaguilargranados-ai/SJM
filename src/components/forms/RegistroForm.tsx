@@ -18,34 +18,36 @@ import { cn } from "@/lib/utils";
 const formSchema = z.object({
   // Paso 1: Identidad
   nombre_asistente: z.string().min(3, "Nombre es obligatorio"),
-  nombre_gafete: z.string().optional(),
+  nombre_gafete: z.string().nullish().or(z.literal("")),
   sexo: z.enum(["M", "F"]),
-  fecha_nacimiento: z.string().optional(),
+  fecha_nacimiento: z.string().nullish().or(z.literal("")),
   edad: z.coerce.number().min(0).max(120),
   estado_civil: z.string().min(1, "Selecciona estado civil"),
   
   // Paso 2: Contacto y Ubicación
-  telefono_celular: z.string().min(10, "WhatsApp es obligatorio"),
-  telefono_alternativo: z.string().optional(),
-  correo: z.string().email("Correo inválido"),
-  direccion_completa: z.string().optional(),
+  telefono_celular: z.string().min(7, "WhatsApp es obligatorio"),
+  telefono_alternativo: z.string().nullish().or(z.literal("")),
+  correo: z.string().nullish().or(z.literal("")).refine((val) => !val || z.string().email().safeParse(val).success, {
+    message: "Correo electrónico inválido",
+  }),
+  direccion_completa: z.string().nullish().or(z.literal("")),
   pais_ciudad: z.string().min(2, "Ciudad/País es obligatorio"),
-  contacto_emergencia_nombre: z.string().min(3, "Contacto emergencia es obligatorio"),
-  contacto_emergencia_telefono: z.string().min(10, "Teléfono emergencia es obligatorio"),
-  parentezco_emergencia: z.string().optional(),
+  contacto_emergencia_nombre: z.string().nullish().or(z.literal("")),
+  contacto_emergencia_telefono: z.string().nullish().or(z.literal("")),
+  parentezco_emergencia: z.string().nullish().or(z.literal("")),
 
   // Paso 3: Espiritualidad y Salud
-  parroquia_procedencia: z.string().optional(),
-  ultimo_sacramento: z.string().optional(),
-  expectativas: z.string().optional(),
+  parroquia_procedencia: z.string().nullish().or(z.literal("")),
+  ultimo_sacramento: z.string().nullish().or(z.literal("")),
+  expectativas: z.string().nullish().or(z.literal("")),
   dificultad_caminar: z.boolean().default(false),
-  enfermedades_alergias: z.string().optional(),
+  enfermedades_alergias: z.string().nullish().or(z.literal("")),
   
   // Paso 4: Matrimonial (Condicional)
-  esposo_a_nombre: z.string().optional(),
-  fecha_boda: z.string().optional(),
+  esposo_a_nombre: z.string().nullish().or(z.literal("")),
+  fecha_boda: z.string().nullish().or(z.literal("")),
   cantidad_hijos: z.coerce.number().optional(),
-  datos_hijos: z.string().optional(),
+  datos_hijos: z.string().nullish().or(z.literal("")),
   // Paso 4/5: Legal / Responsiva
   acepta_responsiva: z.boolean().refine((val) => val === true, {
     message: "Debes aceptar la carta responsiva para continuar",
@@ -117,16 +119,25 @@ export function RegistroForm({
     // Validar campos del paso actual antes de avanzar
     const fields = getFieldsForStep(step);
     const isValid = await form.trigger(fields as any);
-    if (isValid) setStep(s => Math.min(s + 1, totalSteps));
+    if (isValid) {
+      setStep(s => Math.min(s + 1, totalSteps));
+    } else {
+      const errors = form.formState.errors;
+      const errorKeys = Object.keys(errors);
+      if (errorKeys.length > 0) {
+        const msgs = errorKeys.map(k => errors[k as keyof FormValues]?.message).filter(Boolean);
+        alert("Por favor revisa los siguientes datos requeridos: " + msgs.join(". "));
+      }
+    }
   };
 
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
   const getFieldsForStep = (currentStep: number) => {
     if (currentStep === 1) return ["nombre_asistente", "sexo", "estado_civil", "edad"];
-    if (currentStep === 2) return ["telefono_celular", "correo", "pais_ciudad", "contacto_emergencia_nombre", "contacto_emergencia_telefono"];
+    if (currentStep === 2) return ["telefono_celular", "pais_ciudad"];
     if (currentStep === 3 && !esMatrimonial) return []; // El paso 3 es espiritualidad
-    if (currentStep === 4 && esMatrimonial) return ["esposo_a_nombre"]; // El paso 4 es matrimonial
+    if (currentStep === 4 && esMatrimonial) return [];
     return [];
   };
 
