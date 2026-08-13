@@ -53,7 +53,7 @@ export default function ServidoresClientView({ servidores, sedes, ministerios = 
       }
       renderCard={(row) => (
         <div key={row.id} className="bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col h-full relative group">
-          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-4 right-4 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
             <BotonSubirFoto usuarioId={row.usuario_id || row.id} />
             <ModalEditarServidor 
               servidorId={row.id} 

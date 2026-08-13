@@ -1,6 +1,20 @@
-# 📜 Histórico SJM PLATFORM — v1.203 — COMPILACIÓN: 05-08-2026 21:24 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.204 — COMPILACIÓN: 12-08-2026 18:35 (CDMX)
 
-**Última actualización:** 05 de Agosto de 2026 - 21:24 (CDMX)
+**Última actualización:** 12 de Agosto de 2026 - 18:35 (CDMX)  
+**Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.204 - 12 de Agosto de 2026 - 18:35 (CDMX)
+
+#### 🚀 Visibilidad Táctil en Móviles (Edición y Eliminación en Retiros/Eventos y Servidores)
+- **Visibilidad Táctil**: Se actualizó la barra de acciones de las tarjetas en `EventosClientView.tsx` y `ServidoresClientView.tsx` (`opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10`), permitiendo editar y eliminar elementos de forma táctil en dispositivos móviles/tablets sin depender del cursor `hover`.
+- **Aislamiento de Clics (`stopPropagation`)**: Se añadió `e.stopPropagation()` en los botones de acción para prevenir la navegación indeseada al tocar con el dedo en pantallas móviles.
+
+#### 🔍 Restauración e Investigación de Registros de Sanaín / Sanación Interior
+- **Causa Raíz Identificada**: Tras consultar la base de datos Neon DB, se confirmó que **ningún registro fue eliminado ni borrado por rollback**. Las solicitudes siempre permanecieron guardadas en Postgres/Neon.
+- **Eliminación de Filtro Destructivo**: Se removió una deduplicación destructiva en JavaScript en `getInscripcionesCompleto` (`catalogos.ts`) y `getInscripcionesByEvento` (`consultas.ts`) que agrupaba e invisibilizaba solicitudes de familiares o personas registradas con el mismo correo/teléfono de contacto.
+- **Restauración Completa**: Ahora la plataforma y los reportes PDF/Excel muestran el 100% de los asistentes inscritos (revelando los 16 asistentes del evento Sanaín que estaban ocultados erróneamente en la vista).
 **Responsable:** AntiGravity AI Assistant
 
 ---

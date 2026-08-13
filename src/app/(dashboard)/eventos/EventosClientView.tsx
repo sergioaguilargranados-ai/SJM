@@ -61,12 +61,26 @@ export default function EventosClientView({ eventos, sedes, casas, tipos, isAdmi
         }
         renderCard={(evt) => (
           <div key={evt.id} className="group bg-white dark:bg-[#1a1b26] border border-slate-200 dark:border-[#2a2b3d] rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col border-b-4 border-b-blue-600 dark:border-b-[#e11d48] h-full relative">
-             <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-               <button onClick={() => setEventoEditando(evt)} className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors" title="Editar">
+             <div className="absolute top-4 right-4 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
+               <button 
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   setEventoEditando(evt);
+                 }} 
+                 className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center hover:bg-blue-100 transition-colors shadow-sm" 
+                 title="Editar"
+               >
                  <Edit className="w-4 h-4" />
                </button>
                {isAdmin && (
-                 <button onClick={() => handleEliminar(evt.id)} className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 transition-colors" title="Eliminar">
+                 <button 
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     handleEliminar(evt.id);
+                   }} 
+                   className="w-8 h-8 rounded-full bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-300 flex items-center justify-center hover:bg-red-100 transition-colors shadow-sm" 
+                   title="Eliminar"
+                 >
                    <Trash2 className="w-4 h-4" />
                  </button>
                )}
