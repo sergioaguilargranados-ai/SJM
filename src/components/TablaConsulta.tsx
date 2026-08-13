@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, Calendar, FileText, Download, X, Table2, Columns } from "lucide-react";
+import { Search, Calendar, FileText, Download, X, Table2, Columns, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { generarReportePDF } from "@/lib/generarPDF";
 import { generarReporteExcel } from "@/lib/generarExcel";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // ============================================================
 // Componente reutilizable TablaConsulta - Patrón ERPCubox
@@ -75,6 +76,11 @@ export function TablaConsulta({
   const [fechaHasta, setFechaHasta] = useState(hoy());
   const [viewMode, setViewMode] = useState<"table" | "grid">(renderCard ? "grid" : "table");
   
+  // Estados de Ordenamiento
+  const [criterioOrden, setCriterioOrden] = useState<string>("DEFAULT");
+  const [columnaOrdenKey, setColumnaOrdenKey] = useState<string | null>(null);
+  const [direccionOrden, setDireccionOrden] = useState<"asc" | "desc">("asc");
+
   // Column Visibility
   const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -113,6 +119,101 @@ export function TablaConsulta({
     });
   }, [datos, busqueda, fechaDesde, fechaHasta, camposFiltro, campoFechaDesde, mostrarFiltroFecha]);
 
+  // Ordenar datos
+  const datosOrdenados = useMemo(() => {
+    const list = [...datosFiltrados];
+
+    // Presets de ordenamiento
+    if (criterioOrden === "SEXO_EDAD_ASC" || criterioOrden === "SEXO_EDAD_DESC") {
+      return list.sort((a, b) => {
+        const sexA = (a.sexo || "Z").toString().trim().toUpperCase();
+        const sexB = (b.sexo || "Z").toString().trim().toUpperCase();
+        const compSex = sexA.localeCompare(sexB, "es", { sensitivity: "base" });
+        if (compSex !== 0) return compSex;
+
+        const edadA = a.edad != null && a.edad !== "" ? Number(a.edad) : 999;
+        const edadB = b.edad != null && b.edad !== "" ? Number(b.edad) : 999;
+        return criterioOrden === "SEXO_EDAD_ASC" ? edadA - edadB : edadB - edadA;
+      });
+    }
+
+    if (criterioOrden === "NOMBRE_ASC") {
+      return list.sort((a, b) => (a.nombre_asistente || a.nombre || "").localeCompare(b.nombre_asistente || b.nombre || "", "es", { sensitivity: "base" }));
+    }
+    if (criterioOrden === "NOMBRE_DESC") {
+      return list.sort((a, b) => (b.nombre_asistente || b.nombre || "").localeCompare(a.nombre_asistente || a.nombre || "", "es", { sensitivity: "base" }));
+    }
+
+    if (criterioOrden === "EDAD_ASC") {
+      return list.sort((a, b) => {
+        const eA = a.edad != null && a.edad !== "" ? Number(a.edad) : 999;
+        const eB = b.edad != null && b.edad !== "" ? Number(b.edad) : 999;
+        return eA - eB;
+      });
+    }
+    if (criterioOrden === "EDAD_DESC") {
+      return list.sort((a, b) => {
+        const eA = a.edad != null && a.edad !== "" ? Number(a.edad) : -1;
+        const eB = b.edad != null && b.edad !== "" ? Number(b.edad) : -1;
+        return eB - eA;
+      });
+    }
+
+    if (criterioOrden === "FECHA_DESC") {
+      return list.sort((a, b) => {
+        const fA = a.creado_en || a.fecha_inicio || a.fecha_creacion || 0;
+        const fB = b.creado_en || b.fecha_inicio || b.fecha_creacion || 0;
+        return new Date(fB).getTime() - new Date(fA).getTime();
+      });
+    }
+    if (criterioOrden === "FECHA_ASC") {
+      return list.sort((a, b) => {
+        const fA = a.creado_en || a.fecha_inicio || a.fecha_creacion || 0;
+        const fB = b.creado_en || b.fecha_inicio || b.fecha_creacion || 0;
+        return new Date(fA).getTime() - new Date(fB).getTime();
+      });
+    }
+
+    // Clic en encabezado de columna
+    if (columnaOrdenKey) {
+      return list.sort((a, b) => {
+        const valA = a[columnaOrdenKey];
+        const valB = b[columnaOrdenKey];
+
+        if (valA == null && valB == null) return 0;
+        if (valA == null) return 1;
+        if (valB == null) return -1;
+
+        if (typeof valA === "number" && typeof valB === "number") {
+          return direccionOrden === "asc" ? valA - valB : valB - valA;
+        }
+
+        const strA = String(valA).toLowerCase();
+        const strB = String(valB).toLowerCase();
+        return direccionOrden === "asc" 
+          ? strA.localeCompare(strB, "es", { sensitivity: "base" })
+          : strB.localeCompare(strA, "es", { sensitivity: "base" });
+      });
+    }
+
+    return list;
+  }, [datosFiltrados, criterioOrden, columnaOrdenKey, direccionOrden]);
+
+  const toggleOrdenColumna = (key: string) => {
+    setCriterioOrden("CUSTOM");
+    if (columnaOrdenKey === key) {
+      if (direccionOrden === "asc") {
+        setDireccionOrden("desc");
+      } else {
+        setColumnaOrdenKey(null);
+        setCriterioOrden("DEFAULT");
+      }
+    } else {
+      setColumnaOrdenKey(key);
+      setDireccionOrden("asc");
+    }
+  };
+
   // Exportar PDF
   const exportarPDF = () => {
     const columnasReporte = columnasVisibles.map((col) => ({
@@ -121,7 +222,7 @@ export function TablaConsulta({
       halign: col.halign,
     }));
 
-    const datosReporte = datosFiltrados.map((row) => {
+    const datosReporte = datosOrdenados.map((row) => {
       const fila: Record<string, any> = {};
       columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
@@ -148,7 +249,7 @@ export function TablaConsulta({
       dataKey: col.pdfKey || col.accessorKey,
     }));
 
-    const datosReporte = datosFiltrados.map((row) => {
+    const datosReporte = datosOrdenados.map((row) => {
       const fila: Record<string, any> = {};
       columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
@@ -169,6 +270,8 @@ export function TablaConsulta({
     setBusqueda("");
     setFechaDesde(inicioMes());
     setFechaHasta(hoy());
+    setCriterioOrden("DEFAULT");
+    setColumnaOrdenKey(null);
   };
 
   return (
@@ -190,7 +293,7 @@ export function TablaConsulta({
               <p className="text-xs text-slate-500 dark:text-[#8e8ea0] font-medium uppercase tracking-wider">
                 {totalLabel || "Total Registros"}
               </p>
-              <p className="text-xl font-bold text-slate-900 dark:text-white">{datosFiltrados.length}</p>
+              <p className="text-xl font-bold text-slate-900 dark:text-white">{datosOrdenados.length}</p>
             </div>
           </div>
         </div>
@@ -234,7 +337,7 @@ export function TablaConsulta({
           )}
 
           {/* Búsqueda por palabra */}
-          <div className="space-y-1.5 flex-1 min-w-[200px]">
+          <div className="space-y-1.5 flex-1 min-w-[180px]">
             <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">
               Buscar
             </label>
@@ -250,8 +353,37 @@ export function TablaConsulta({
             </div>
           </div>
 
+          {/* Ordenar Por */}
+          <div className="space-y-1.5 min-w-[210px]">
+            <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider flex items-center gap-1">
+              <ArrowUpDown className="w-3 h-3" /> Ordenar por
+            </label>
+            <Select 
+              value={criterioOrden} 
+              onValueChange={(val) => { 
+                setCriterioOrden(val); 
+                setColumnaOrdenKey(null); 
+              }}
+            >
+              <SelectTrigger className="h-9 text-xs bg-white dark:bg-[#0f1015] border-slate-300 dark:border-[#3b3c54]">
+                <SelectValue placeholder="Orden predeterminado" />
+              </SelectTrigger>
+              <SelectContent className="dark:bg-[#1a1b26] dark:border-[#2a2b3d]">
+                <SelectItem value="DEFAULT">📌 Predeterminado</SelectItem>
+                <SelectItem value="SEXO_EDAD_ASC">🛏️ Sexo ➔ Edad (Menor a Mayor)</SelectItem>
+                <SelectItem value="SEXO_EDAD_DESC">🛏️ Sexo ➔ Edad (Mayor a Menor)</SelectItem>
+                <SelectItem value="NOMBRE_ASC">👤 Nombre (A ➔ Z)</SelectItem>
+                <SelectItem value="NOMBRE_DESC">👤 Nombre (Z ➔ A)</SelectItem>
+                <SelectItem value="EDAD_ASC">🎂 Edad (Menor a Mayor)</SelectItem>
+                <SelectItem value="EDAD_DESC">🎂 Edad (Mayor a Menor)</SelectItem>
+                <SelectItem value="FECHA_DESC">📅 Registro (Más Recientes)</SelectItem>
+                <SelectItem value="FECHA_ASC">📅 Registro (Más Antiguos)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Limpiar */}
-          {(busqueda || fechaDesde !== inicioMes() || fechaHasta !== hoy()) && (
+          {(busqueda || fechaDesde !== inicioMes() || fechaHasta !== hoy() || criterioOrden !== "DEFAULT" || columnaOrdenKey !== null) && (
             <button
               onClick={limpiarFiltros}
               className="h-9 px-3 flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-[#3b3c54] rounded-md hover:bg-slate-50 dark:hover:bg-[#2a2b3d] transition-colors"
@@ -337,18 +469,35 @@ export function TablaConsulta({
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
               <thead className="bg-slate-50 dark:bg-[#151621] text-slate-800 dark:text-slate-200 font-semibold text-xs border-b border-slate-200 dark:border-[#2a2b3d]">
                 <tr>
-                  {columnasVisibles.map((col) => (
-                    <th
-                      key={col.accessorKey}
-                      className={`px-5 py-3.5 font-semibold ${col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""}`}
-                    >
-                      {col.header}
-                    </th>
-                  ))}
+                  {columnasVisibles.map((col) => {
+                    const esColumnaActiva = columnaOrdenKey === col.accessorKey;
+                    return (
+                      <th
+                        key={col.accessorKey}
+                        onClick={() => toggleOrdenColumna(col.accessorKey)}
+                        className={`px-5 py-3.5 font-semibold cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#2a2b3d] transition-colors ${
+                          col.halign === "center" ? "text-center" : col.halign === "right" ? "text-right" : ""
+                        }`}
+                      >
+                        <div className={`inline-flex items-center gap-1.5 ${col.halign === "center" ? "justify-center" : col.halign === "right" ? "justify-end" : ""}`}>
+                          {col.header}
+                          {esColumnaActiva ? (
+                            direccionOrden === "asc" ? (
+                              <ArrowUp className="w-3.5 h-3.5 text-blue-600 dark:text-[#e11d48]" />
+                            ) : (
+                              <ArrowDown className="w-3.5 h-3.5 text-blue-600 dark:text-[#e11d48]" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3 h-3 text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100" />
+                          )}
+                        </div>
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-[#2a2b3d]">
-                {datosFiltrados.length === 0 ? (
+                {datosOrdenados.length === 0 ? (
                   <tr>
                     <td colSpan={columnasVisibles.length} className="px-6 py-16 text-center">
                       {filaVacia || (
@@ -365,7 +514,7 @@ export function TablaConsulta({
                     </td>
                   </tr>
                 ) : (
-                  datosFiltrados.map((row, idx) => (
+                  datosOrdenados.map((row, idx) => (
                     <tr
                       key={row.id || idx}
                       className="hover:bg-slate-50 dark:hover:bg-[#2a2b3d]/30 transition-colors"
@@ -386,7 +535,7 @@ export function TablaConsulta({
           </div>
         ) : (
           <div className="p-6">
-            {datosFiltrados.length === 0 ? (
+            {datosOrdenados.length === 0 ? (
               <div className="py-16 text-center">
                 {filaVacia || (
                   <div className="space-y-2">
@@ -399,17 +548,17 @@ export function TablaConsulta({
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {renderCard && datosFiltrados.map((row, idx) => renderCard(row))}
+                {renderCard && datosOrdenados.map((row, idx) => renderCard(row))}
               </div>
             )}
           </div>
         )}
 
         {/* Footer: Resumen */}
-        {datosFiltrados.length > 0 && (
+        {datosOrdenados.length > 0 && (
           <div className="px-5 py-3 bg-slate-50 dark:bg-[#151621] border-t border-slate-200 dark:border-[#2a2b3d] text-xs text-slate-500 dark:text-[#8e8ea0] flex justify-between items-center">
             <span>
-              Mostrando <span className="font-bold text-slate-700 dark:text-white">{datosFiltrados.length}</span> de{" "}
+              Mostrando <span className="font-bold text-slate-700 dark:text-white">{datosOrdenados.length}</span> de{" "}
               <span className="font-bold text-slate-700 dark:text-white">{datos.length}</span> registros
             </span>
             <span className="text-[10px] font-mono">SJM Platform</span>

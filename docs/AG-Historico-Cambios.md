@@ -1,7 +1,18 @@
-# 📜 Histórico SJM PLATFORM — v1.204 — COMPILACIÓN: 12-08-2026 18:35 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.205 — COMPILACIÓN: 12-08-2026 20:45 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 18:35 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 20:45 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.205 - 12 de Agosto de 2026 - 20:45 (CDMX)
+
+#### 🔀 Ordenamiento Dinámico de Consultas y Asistentes (Asignación de Cuartos)
+- **Preset Asignación de Cuartos (`Sexo + Edad`)**: Se agregó un selector desplegable "Ordenar por" en `TablaConsulta.tsx` que permite agrupar por Sexo (Femenino / Masculino) e incrementar progresivamente por Edad (Menor a Mayor o Mayor a Menor), facilitando la distribución de habitaciones en retiros.
+- **Múltiples Criterios de Ordenamiento**: Soporte inmediato para ordenar por **Nombre** (A-Z y Z-A), **Fecha y Hora de Registro** (Más recientes / Más antiguos) y **Edad** (Menor a Mayor / Mayor a Menor).
+- **Encabezados Interactivos (`<th>`)**: Ahora se puede hacer clic sobre cualquier encabezado de columna para alternar el orden ascendente/descendente con indicador de flechita visual (`▲` / `▼`).
+- **Respeto de Orden en Exportaciones**: Las descargas e impresiones en **PDF y Excel** se generan respetando el orden seleccionado en pantalla.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 
