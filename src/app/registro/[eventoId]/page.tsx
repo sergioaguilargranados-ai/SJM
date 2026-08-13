@@ -64,7 +64,12 @@ export default async function RegistroPage(props: { params: Promise<{ eventoId: 
         {eventoData.es_evento_servidores ? (
           <RegistroRenaseClient evento={eventoData} sedes={sedesList} ministerios={ministeriosList} cargos={cargosList} initialData={initialData} returnTo={returnTo} />
         ) : (
-          <RegistroForm eventoId={eventoId} esMatrimonial={eventoData.es_matrimonial ?? false} />
+          <RegistroForm 
+            eventoId={eventoId} 
+            esMatrimonial={eventoData.es_matrimonial ?? false} 
+            initialData={initialData} 
+            returnTo={returnTo} 
+          />
         )}
       </RegistroPublicoClient>
     </div>

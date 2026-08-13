@@ -1,7 +1,17 @@
-# 📜 Histórico SJM PLATFORM — v1.207 — COMPILACIÓN: 12-08-2026 20:56 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.208 — COMPILACIÓN: 12-08-2026 21:07 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 20:56 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 21:07 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.208 - 12 de Agosto de 2026 - 21:07 (CDMX)
+
+#### 🚀 Precarga Completa y Edición (UPDATE) de Asistentes en RegistroForm
+- **Precarga de Datos en RegistroForm**: Se incorporó soporte de props `initialData` y `returnTo` en `RegistroForm.tsx`, con un `useEffect` que precarga automáticamente el nombre, WhatsApp, correo, edad, fecha de nacimiento, sexo, contacto de emergencia, etc. al editar un registro desde la Intranet.
+- **Acción UPDATE en registrarSolicitudAction**: Se actualizó `registrarSolicitudAction` (`inscripciones.ts`) para realizar un `UPDATE` en la tabla `solicitudes_inscripcion` cuando traiga `editId`, evitando crear altas duplicadas al guardar la edición.
+- **Redirección de Retorno**: Al completar la edición, se habilita el botón "Volver a Asistentes Registrados" que regresa directamente a la gestión del evento en la Intranet.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

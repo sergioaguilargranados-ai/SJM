@@ -77,6 +77,13 @@ export async function registrarSolicitudAction(datos: any) {
     };
 
 
+    if (datos.editId) {
+      await db.update(solicitudes_inscripcion)
+        .set(inscData)
+        .where(eq(solicitudes_inscripcion.id, datos.editId));
+      return { success: true, id: datos.editId };
+    }
+
     const nuevaInscripcion = await db.insert(solicitudes_inscripcion)
       .values(inscData)
       .returning(); 

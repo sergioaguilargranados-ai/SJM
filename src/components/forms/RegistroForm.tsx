@@ -54,7 +54,17 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: string, esMatrimonial?: boolean }) {
+export function RegistroForm({ 
+  eventoId, 
+  esMatrimonial = false, 
+  initialData, 
+  returnTo 
+}: { 
+  eventoId: string; 
+  esMatrimonial?: boolean; 
+  initialData?: any; 
+  returnTo?: string; 
+}) {
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -71,6 +81,37 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
       acepta_responsiva: false,
     }
   });
+
+  React.useEffect(() => {
+    if (initialData) {
+      form.reset({
+        nombre_asistente: initialData.nombre_asistente || initialData.nombre_completo || "",
+        nombre_gafete: initialData.nombre_gafete || "",
+        sexo: (initialData.sexo === "Femenino" || initialData.sexo === "F") ? "F" : "M",
+        fecha_nacimiento: initialData.fecha_nacimiento ? new Date(initialData.fecha_nacimiento).toISOString().slice(0, 10) : "",
+        edad: initialData.edad ? Number(initialData.edad) : 0,
+        estado_civil: initialData.estado_civil || "",
+        telefono_celular: initialData.telefono_celular || initialData.celular || "",
+        telefono_alternativo: initialData.telefono_alternativo || "",
+        correo: initialData.correo || "",
+        direccion_completa: initialData.direccion_completa || "",
+        pais_ciudad: initialData.pais_ciudad || "",
+        contacto_emergencia_nombre: initialData.contacto_emergencia_nombre || initialData.contacto_emergencia || "",
+        contacto_emergencia_telefono: initialData.contacto_emergencia_telefono || initialData.tels_emergencia || "",
+        parentezco_emergencia: initialData.parentezco_emergencia || "",
+        parroquia_procedencia: initialData.parroquia_procedencia || "",
+        ultimo_sacramento: initialData.ultimo_sacramento || "",
+        expectativas: initialData.expectativas || "",
+        dificultad_caminar: initialData.dificultad_caminar === true || initialData.dificultad_escaleras === true,
+        enfermedades_alergias: initialData.enfermedades_alergias || initialData.condiciones_salud || "",
+        esposo_a_nombre: initialData.esposo_a_nombre || "",
+        fecha_boda: initialData.fecha_boda || "",
+        cantidad_hijos: initialData.cantidad_hijos ? Number(initialData.cantidad_hijos) : 0,
+        datos_hijos: initialData.datos_hijos || initialData.nombre_edades_hijos || "",
+        acepta_responsiva: true,
+      });
+    }
+  }, [initialData, form]);
 
   const nextStep = async () => {
     // Validar campos del paso actual antes de avanzar
@@ -91,7 +132,11 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
 
   async function onSubmit(values: FormValues) {
     setCargando(true);
-    const res = await registrarSolicitudAction({ ...values, eventoId });
+    const res = await registrarSolicitudAction({ 
+      ...values, 
+      eventoId, 
+      editId: initialData?.id 
+    });
     setCargando(false);
     if (res.success) setSuccess(true);
     else alert("Error: " + res.error);
@@ -122,10 +167,11 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
          parentezco_emergencia: data.parentezco_emergencia || "",
          parroquia_procedencia: data.parroquia_procedencia || "",
          ultimo_sacramento: data.ultimo_sacramento || "",
-         dificultad_caminar: data.dificultad_escaleras || false,
-         enfermedades_alergias: data.enfermedades_alergias || "",
+         expectativas: data.expectativas || "",
+         dificultad_caminar: data.dificultad_escaleras === true,
+         enfermedades_alergias: data.condiciones_salud || "",
          esposo_a_nombre: data.esposo_a_nombre || "",
-         fecha_boda: data.fecha_boda ? data.fecha_boda.toString().slice(0, 10) : "",
+         fecha_boda: data.fecha_boda || "",
          cantidad_hijos: data.cantidad_hijos || 0,
          datos_hijos: data.nombre_edades_hijos || "",
        });
@@ -142,13 +188,24 @@ export function RegistroForm({ eventoId, esMatrimonial = false }: { eventoId: st
         <div className="w-24 h-24 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-8">
           <CheckCircle2 className="w-12 h-12 text-emerald-500" />
         </div>
-        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">¡Registro Recibido!</h2>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          {initialData ? "¡Registro Actualizado!" : "¡Registro Recibido!"}
+        </h2>
         <p className="text-slate-500 dark:text-[#8e8ea0] mt-4 text-lg leading-relaxed">
-          Gloria a Dios por tu sí. Un servidor de la comunidad de **SJM** se pondrá en contacto contigo muy pronto por WhatsApp.
+          {initialData 
+            ? "Los datos del participante se han guardado e integrado correctamente en la base de datos de SJM."
+            : "Gloria a Dios por tu sí. Un servidor de la comunidad de SJM se pondrá en contacto contigo muy pronto por WhatsApp."
+          }
         </p>
-        <Button onClick={() => window.location.reload()} className="mt-10 h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
-          Registrar a alguien más
-        </Button>
+        {returnTo ? (
+          <Button onClick={() => window.location.href = returnTo} className="mt-10 h-14 px-10 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold">
+            Volver a Asistentes Registrados
+          </Button>
+        ) : (
+          <Button onClick={() => window.location.reload()} className="mt-10 h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+            Registrar a alguien más
+          </Button>
+        )}
       </div>
     );
   }
