@@ -41,11 +41,18 @@ export default function InscripcionesClientView({
     return Array.from(eventos).sort();
   }, [datos]);
 
+  const esEstatusActivo = (estatus: string | undefined | null) => {
+    if (!estatus) return true;
+    const est = estatus.toUpperCase();
+    if (["FINALIZADO", "CANCELADO", "COMPLETADO"].includes(est)) return false;
+    return true;
+  };
+
   const retirosUnicos = useMemo(() => {
     // Solo mostrar los retiros (eventos específicos) que cumplan con el filtro de estatus si está activo
     const filtrados = datos.filter(d => {
       if (filtroEstatusRetiro === "TODOS") return true;
-      return ["PLANEACION", "PROXIMA", "EN_CURSO"].includes(d.evento_estatus);
+      return esEstatusActivo(d.evento_estatus);
     });
     const ret = new Set(filtrados.map(d => d.evento_nombre).filter(Boolean));
     return Array.from(ret).sort();
@@ -53,18 +60,18 @@ export default function InscripcionesClientView({
 
   const normalizeString = (str: string | undefined | null) => {
     if (!str) return "";
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   };
 
   const datosFiltrados = useMemo(() => {
     return datos.filter((row) => {
       if (filtroSede !== "TODAS" && normalizeString(row.pais_ciudad) !== normalizeString(filtroSede)) return false;
       if (filtroMinisterio !== "TODOS" && normalizeString(row.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
-      if (filtroEvento !== "TODOS" && row.evento_tipo !== filtroEvento) return false;
-      if (filtroRetiro !== "TODOS" && row.evento_nombre !== filtroRetiro) return false;
+      if (filtroEvento !== "TODOS" && normalizeString(row.evento_tipo) !== normalizeString(filtroEvento)) return false;
+      if (filtroRetiro !== "TODOS" && normalizeString(row.evento_nombre) !== normalizeString(filtroRetiro)) return false;
       
       if (filtroEstatusRetiro === "ACTIVOS") {
-        if (!["PLANEACION", "PROXIMA", "EN_CURSO"].includes(row.evento_estatus)) return false;
+        if (!esEstatusActivo(row.evento_estatus)) return false;
       }
       
       if (filtroEdad !== "TODAS") {

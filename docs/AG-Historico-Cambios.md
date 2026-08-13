@@ -1,7 +1,25 @@
-# 📜 Histórico SJM PLATFORM — v1.205 — COMPILACIÓN: 12-08-2026 20:45 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.207 — COMPILACIÓN: 12-08-2026 20:56 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 20:45 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 20:56 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.207 - 12 de Agosto de 2026 - 20:56 (CDMX)
+
+#### 🚀 Acceso Directo a Edición de Asistentes para Administradores (Omisión de Contraseña)
+- **Bypass Automático de Contraseña en Edición**: Se actualizó la vista de registro (`registro/[eventoId]/page.tsx`) para omitir la solicitud de contraseña del evento (`bypassPassword`) cuando se ingresa con un parámetro de edición (`editId`) desde la Intranet/Gestión de Asistentes, permitiendo a los administradores entrar **directamente a editar el formulario**.
+- **Soporte Completo de Asistentes Directos (`solicitudes_inscripcion`)**: Se actualizó la Server Action `buscarServidorPorInscripcionIdAction` (`inscripciones.ts`) cambiando `INNER JOIN` por `LEFT JOIN` con la tabla `usuarios` y aplicando `COALESCE`. Esto permite precargar los datos de cualquier asistente registrado directamente en `solicitudes_inscripcion` sin requerir que tenga una cuenta de usuario vinculada previamente.
+**Responsable:** AntiGravity AI Assistant
+
+---
+
+### v1.206 - 12 de Agosto de 2026 - 20:52 (CDMX)
+
+#### 🚀 Corrección de Filtro de Estatus Activo en Consulta de Inscripciones
+- **Soporte de Estatus ABIERTO y ACTIVO**: Se corrigió el filtro por defecto `Solo Activos` (`InscripcionesClientView.tsx`) para incluir eventos con estatus `'ABIERTO'`, `'ACTIVO'`, `'PUBLICADO'`, etc. (como el caso de *Renacer Adolescente* que tenía estatus `'ABIERTO'`), resolviendo el problema donde la vista mostraba "0 Inscripciones".
+- **Normalización de Texto de Eventos**: Se añadió normalización Unicode/Trim a las comparaciones de `evento_tipo` y `evento_nombre` para prevenir inconsistencias por mayúsculas, minúsculas o espacios.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

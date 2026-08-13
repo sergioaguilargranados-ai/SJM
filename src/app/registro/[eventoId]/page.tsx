@@ -60,7 +60,7 @@ export default async function RegistroPage(props: { params: Promise<{ eventoId: 
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1015] py-12 px-4 sm:px-6 lg:px-8 transition-colors">
-      <RegistroPublicoClient evento={eventoData} bypassPassword={!!initialData}>
+      <RegistroPublicoClient evento={eventoData} bypassPassword={!!editId || !!initialData}>
         {eventoData.es_evento_servidores ? (
           <RegistroRenaseClient evento={eventoData} sedes={sedesList} ministerios={ministeriosList} cargos={cargosList} initialData={initialData} returnTo={returnTo} />
         ) : (

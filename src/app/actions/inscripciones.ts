@@ -365,17 +365,29 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
 export async function buscarServidorPorInscripcionIdAction(inscripcion_id: string) {
   try {
     const result = await db.execute(sql`
-      SELECT s.id as servidor_id, u.id as usuario_id, u.nombre_completo, u.correo, u.celular, u.foto_perfil_url, 
-              s.sexo, s.fecha_nacimiento, s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, 
-              s.estado_civil, s.fecha_ingreso, s.fecha_baja, s.retiros_tomados, s.observaciones, s.foto_url,
+      SELECT s.id as servidor_id, si.usuario_id, 
+              COALESCE(u.nombre_completo, si.nombre_asistente) AS nombre_completo, 
+              COALESCE(u.correo, si.correo) AS correo, 
+              COALESCE(u.celular, si.telefono_celular) AS celular, 
+              u.foto_perfil_url, 
+              COALESCE(s.sexo, si.sexo) AS sexo, 
+              COALESCE(s.fecha_nacimiento, si.fecha_nacimiento) AS fecha_nacimiento, 
+              s.sede_id, s.ministerio_id, s.cargo_id, s.avance_servidor, 
+              COALESCE(s.estado_civil, si.estado_civil) AS estado_civil, 
+              s.fecha_ingreso, s.fecha_baja, s.retiros_tomados, s.observaciones, s.foto_url,
               s.domicilio_calle, s.domicilio_colonia, s.domicilio_cp, s.estado_id,
               s.contacto_emergencia, s.tels_emergencia, s.telefono_casa_trabajo,
               s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
               s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
-              COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
-              , si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, si.ya_tengo_estudios_medicos, si.dia_consulta_medica
+              COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete,
+              si.edad, si.pais_ciudad, si.ministerio_actual,
+              si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, 
+              si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, 
+              si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, 
+              si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, 
+              si.ya_tengo_estudios_medicos, si.dia_consulta_medica
        FROM solicitudes_inscripcion si
-       INNER JOIN usuarios u ON si.usuario_id = u.id
+       LEFT JOIN usuarios u ON si.usuario_id = u.id
        LEFT JOIN servidores s ON s.usuario_id = u.id
        WHERE si.id = ${inscripcion_id}
        LIMIT 1
