@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.209 — COMPILACIÓN: 12-08-2026 21:25 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.210 — COMPILACIÓN: 12-08-2026 21:33 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 21:25 (CDMX)  
+**Última actualización:** 12 de Agosto de 2026 - 21:33 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.210 - 12 de Agosto de 2026 - 21:33 (CDMX)
+
+#### 🚀 Corrección de Validación de Pasos Libres (Paso 3 Espiritualidad y Salud)
+- **Corrección de `form.trigger()` en Pasos Libres**: Se corrigió `nextStep` en `RegistroForm.tsx` para que no ejecute `form.trigger()` cuando un paso no contiene campos requeridos (como el Paso 3 de Vida Espiritual y Salud). Anteriormente, al pasar un arreglo vacío, React Hook Form ejecutaba la validación global de todo el esquema (incluyendo la Carta Responsiva del paso final), atascando el avance al Paso 4.
+- **Transición Fluida entre Pasos**: Al hacer clic en "Siguiente Paso" en el Paso 3, se avanza inmediatamente sin bloqueos.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

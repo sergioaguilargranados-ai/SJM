@@ -116,18 +116,22 @@ export function RegistroForm({
   }, [initialData, form]);
 
   const nextStep = async () => {
-    // Validar campos del paso actual antes de avanzar
     const fields = getFieldsForStep(step);
-    const isValid = await form.trigger(fields as any);
-    if (isValid) {
-      setStep(s => Math.min(s + 1, totalSteps));
-    } else {
-      const errors = form.formState.errors;
-      const errorKeys = Object.keys(errors);
-      if (errorKeys.length > 0) {
-        const msgs = errorKeys.map(k => errors[k as keyof FormValues]?.message).filter(Boolean);
-        alert("Por favor revisa los siguientes datos requeridos: " + msgs.join(". "));
+    if (fields.length > 0) {
+      const isValid = await form.trigger(fields as any);
+      if (isValid) {
+        setStep(s => Math.min(s + 1, totalSteps));
+      } else {
+        const errors = form.formState.errors;
+        const msgs = fields
+          .map(f => errors[f as keyof FormValues]?.message)
+          .filter(Boolean);
+        if (msgs.length > 0) {
+          alert("Por favor revisa los siguientes datos requeridos: " + msgs.join(". "));
+        }
       }
+    } else {
+      setStep(s => Math.min(s + 1, totalSteps));
     }
   };
 
@@ -136,8 +140,6 @@ export function RegistroForm({
   const getFieldsForStep = (currentStep: number) => {
     if (currentStep === 1) return ["nombre_asistente", "sexo", "estado_civil", "edad"];
     if (currentStep === 2) return ["telefono_celular", "pais_ciudad"];
-    if (currentStep === 3 && !esMatrimonial) return []; // El paso 3 es espiritualidad
-    if (currentStep === 4 && esMatrimonial) return [];
     return [];
   };
 
