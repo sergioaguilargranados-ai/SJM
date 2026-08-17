@@ -72,21 +72,21 @@ export async function registrarSolicitudAction(datos: any) {
 
       ministerio_actual: datos.ministerio_actual || null,
       compromiso_pago_99usd: datos.compromiso_pago_99usd === true,
-      
-      // Control por defecto
-      estatus_solicitud: "PENDIENTE_PAGO",
     };
 
-
     if (datos.editId) {
+      const updateData: any = { ...inscData };
+      if (datos.estatus_solicitud) {
+        updateData.estatus_solicitud = datos.estatus_solicitud;
+      }
       await db.update(solicitudes_inscripcion)
-        .set(inscData)
+        .set(updateData)
         .where(eq(solicitudes_inscripcion.id, datos.editId));
       return { success: true, id: datos.editId };
     }
 
     const nuevaInscripcion = await db.insert(solicitudes_inscripcion)
-      .values(inscData)
+      .values({ ...inscData, estatus_solicitud: datos.estatus_solicitud || "PENDIENTE_PAGO" })
       .returning(); 
 
     return { success: true, id: nuevaInscripcion[0].id };
@@ -356,7 +356,7 @@ export async function buscarServidorPorNombreAction(nombre: string, evento_id?: 
               s.facebook_url, s.instagram_url, s.tiktok_url, s.youtube_url,
               s.retiros_tomados_detalle, s.retiros_externos_detalle, s.servicios_sjm, s.estatus,
               COALESCE(si.nombre_gafete, s.nombre_gafete) AS nombre_gafete
-              ${evento_id ? sql`, si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, si.ya_tengo_estudios_medicos, si.dia_consulta_medica` : sql``}
+              ${evento_id ? sql`, si.fecha_hora_llegada, si.lugar_llegada, si.medio_transporte_llegada, si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, si.ya_tengo_estudios_medicos, si.dia_consulta_medica, si.estatus_solicitud` : sql``}
        FROM servidores s
        INNER JOIN usuarios u ON s.usuario_id = u.id
        ${evento_id ? sql`LEFT JOIN solicitudes_inscripcion si ON si.usuario_id = u.id AND si.evento_id = ${evento_id}` : sql``}
@@ -393,7 +393,7 @@ export async function buscarServidorPorInscripcionIdAction(inscripcion_id: strin
               si.fecha_hora_salida, si.lugar_salida, si.medio_transporte_salida, 
               si.pase_abordar_url, si.participa_salida_paseo, si.num_cuarto, si.equipo, 
               si.comparte_cuarto_con, si.dificultad_escaleras, si.quiere_consulta_medica, 
-              si.ya_tengo_estudios_medicos, si.dia_consulta_medica
+              si.ya_tengo_estudios_medicos, si.dia_consulta_medica, si.estatus_solicitud
        FROM solicitudes_inscripcion si
        LEFT JOIN usuarios u ON si.usuario_id = u.id
        LEFT JOIN servidores s ON s.usuario_id = u.id
@@ -632,12 +632,15 @@ export async function registrarRenaseAction(datos: any) {
 
       if (existingInsc) {
         await db.update(solicitudes_inscripcion)
-          .set(inscData)
+          .set({
+            ...inscData,
+            estatus_solicitud: datos.estatus_solicitud || existingInsc.estatus_solicitud
+          })
           .where(eq(solicitudes_inscripcion.id, existingInsc.id));
       } else {
         await db.insert(solicitudes_inscripcion).values({
           ...inscData,
-          estatus_solicitud: "PENDIENTE_PAGO"
+          estatus_solicitud: datos.estatus_solicitud || "PENDIENTE_PAGO"
         });
       }
 

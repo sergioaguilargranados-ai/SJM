@@ -30,6 +30,7 @@ const itinerarioSchema = z.object({
   quiere_consulta_medica: z.boolean().default(false),
   ya_tengo_estudios_medicos: z.boolean().default(false),
   dia_consulta_medica: z.string().nullish(),
+  estatus_solicitud: z.string().nullish(),
 });
 
 const servidorSchema = z.object({
@@ -88,6 +89,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
       dificultad_escaleras: false,
       quiere_consulta_medica: false,
       ya_tengo_estudios_medicos: false,
+      estatus_solicitud: "PENDIENTE_PAGO",
     }
   });
 
@@ -112,6 +114,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
          quiere_consulta_medica: initialData.quiere_consulta_medica === true,
          ya_tengo_estudios_medicos: initialData.ya_tengo_estudios_medicos === true,
          dia_consulta_medica: initialData.dia_consulta_medica || "",
+         estatus_solicitud: initialData.estatus_solicitud || "PENDIENTE_PAGO",
       });
       if (initialData.pase_abordar_url) setPaseUrl(initialData.pase_abordar_url);
       if (initialData.foto_url) setFotoPerfilUrl(initialData.foto_url);
@@ -186,6 +189,7 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
        quiere_consulta_medica: serv.quiere_consulta_medica || false,
        ya_tengo_estudios_medicos: serv.ya_tengo_estudios_medicos || false,
        dia_consulta_medica: serv.dia_consulta_medica || "",
+       estatus_solicitud: serv.estatus_solicitud || "PENDIENTE_PAGO",
     });
     setPaso("CAPTURA");
   };
@@ -353,7 +357,30 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
       {paso === "CAPTURA" && (
         <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-6">
            
-           {/* SECCION 1: ITINERARIO */}
+           {/* SECCION 1: ESTATUS DE SOLICITUD (Solo visible si es edición) */}
+           {initialData && (
+             <div className="bg-white dark:bg-[#1a1b26] p-8 rounded-[30px] shadow-xl border border-blue-100 dark:border-blue-900/30">
+                <div className="flex items-center gap-4 mb-6">
+                   <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+                      <Activity className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                   </div>
+                   <div>
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white">Estatus de Solicitud</h3>
+                      <p className="text-slate-500 text-sm">Cambia a cancelado si la persona no asistirá.</p>
+                   </div>
+                </div>
+                <div className="space-y-2">
+                   <select {...form.register("estatus_solicitud")} className="w-full md:w-1/3 bg-slate-50 dark:bg-[#0f1015] border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-600 outline-none">
+                     <option value="PENDIENTE_PAGO">Activo (Pendiente de Pago)</option>
+                     <option value="CONFIRMADO">Activo (Confirmado)</option>
+                     <option value="ASISTIO">Activo (Asistió)</option>
+                     <option value="CANCELADO">Cancelado</option>
+                   </select>
+                </div>
+             </div>
+           )}
+
+           {/* SECCION 2: ITINERARIO */}
            <div className="bg-white dark:bg-[#1a1b26] p-8 rounded-[30px] shadow-xl border border-blue-100 dark:border-blue-900/30">
               <div className="flex items-center gap-4 mb-8">
                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">

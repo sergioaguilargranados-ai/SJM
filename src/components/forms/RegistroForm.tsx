@@ -62,6 +62,9 @@ const formSchema = z.object({
   datos_hijos: z.string().nullish().or(z.literal("")),
   // Paso 4/5: Legal / Responsiva
   acepta_responsiva: z.boolean().default(true),
+  
+  // Opcional para Estatus
+  estatus_solicitud: z.string().nullish(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -91,6 +94,7 @@ export function RegistroForm({
       edad: 0,
       dificultad_caminar: false,
       acepta_responsiva: true,
+      estatus_solicitud: "PENDIENTE_PAGO",
     }
   });
 
@@ -122,6 +126,7 @@ export function RegistroForm({
         cantidad_hijos: initialData.cantidad_hijos ? Number(initialData.cantidad_hijos) : 0,
         datos_hijos: initialData.datos_hijos || initialData.nombre_edades_hijos || "",
         acepta_responsiva: true,
+        estatus_solicitud: initialData.estatus_solicitud || "PENDIENTE_PAGO",
       });
     }
   }, [initialData, form]);
@@ -251,6 +256,25 @@ export function RegistroForm({
           
           {step === 1 && (
             <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+              
+              {/* Estatus de Solicitud (Solo Edición) */}
+              {initialData && (
+                 <div className="bg-slate-50 dark:bg-[#202130] border border-slate-200 dark:border-slate-800 p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center gap-4">
+                    <div className="flex-1 space-y-1">
+                       <h4 className="font-bold text-slate-900 dark:text-white">Estatus de Solicitud</h4>
+                       <p className="text-sm text-slate-600 dark:text-slate-400">Selecciona "Cancelado" si la persona no asistirá.</p>
+                    </div>
+                    <div className="w-full md:w-1/3">
+                       <select {...form.register("estatus_solicitud")} className="w-full border rounded-lg px-3 py-2.5 bg-white dark:bg-[#0f1015] dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-600">
+                          <option value="PENDIENTE_PAGO">Activo (Pendiente de Pago)</option>
+                          <option value="CONFIRMADO">Activo (Confirmado)</option>
+                          <option value="ASISTIO">Activo (Asistió)</option>
+                          <option value="CANCELADO">Cancelado</option>
+                       </select>
+                    </div>
+                 </div>
+              )}
+
               {/* Buscador Inteligente */}
               <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center gap-4">
                  <div className="flex-1 space-y-1">
