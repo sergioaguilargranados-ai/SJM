@@ -1,9 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.213 — COMPILACIÓN: 12-08-2026 22:12 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.214 — COMPILACIÓN: 17-08-2026 17:48 (CDMX)
 
-**Última actualización:** 12 de Agosto de 2026 - 22:12 (CDMX)  
+**Última actualización:** 17 de Agosto de 2026 - 17:48 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
 
 ---
+
+### v1.214 - 17 de Agosto de 2026 - 17:48 (CDMX)
+
+#### 📝 Adición de Estatus de Solicitud en Formularios de Edición
+- **Actualización de Actions**: Se ajustaron las acciones de backend (`registrarSolicitudAction` y `registrarRenaseAction` en `inscripciones.ts`) para soportar la actualización manual de `estatus_solicitud`, resolviendo un bug en el que siempre se sobreescribía con "PENDIENTE_PAGO" al guardar.
+- **Actualización de Formularios (`RegistroForm.tsx` y `RegistroRenaseClient.tsx`)**: Se agregó un selector desplegable visible únicamente durante la edición (cuando existe `initialData`) en el primer paso de captura, permitiendo a los administradores y responsables cancelar o modificar el estatus de la inscripción directamente desde el formulario principal.
+**Responsable:** AntiGravity AI Assistant
 
 ### v1.213 - 12 de Agosto de 2026 - 22:12 (CDMX)
 
