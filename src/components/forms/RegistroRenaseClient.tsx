@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { 
   User, CheckCircle2, Search, Plane, ShieldCheck, Upload,
-  MapPin, Activity, Share2, ScrollText, Camera, Loader2, Trash2, UserCircle
+  MapPin, Activity, Share2, ScrollText, Camera, Loader2, Trash2, UserCircle,
+  ChevronLeft, Save
 } from "lucide-react";
 import { registrarRenaseAction, buscarServidorPorNombreAction } from "@/app/actions/inscripciones";
 import { uploadArchivoAction } from "@/app/actions/upload-foto";
@@ -305,6 +306,37 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       
+      {/* Botón de Regresar si es Edición */}
+      {(returnTo || initialData) && (
+        <div className="flex items-center justify-between">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => {
+              if (returnTo) {
+                window.location.href = returnTo;
+              } else {
+                window.history.back();
+              }
+            }} 
+            className="gap-2 rounded-2xl border-slate-200 dark:border-[#2a2b3d] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#202130] font-bold text-xs uppercase tracking-wider h-11 px-5 shadow-sm"
+          >
+            <ChevronLeft className="w-4 h-4" /> Regresar al listado
+          </Button>
+
+          {initialData && (
+            <Button
+              type="button"
+              disabled={cargando || subiendoArchivo}
+              onClick={form.handleSubmit(onSubmit, onError)}
+              className="gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider h-11 px-5 shadow-md"
+            >
+              <Save className="w-4 h-4" /> {cargando ? "Guardando..." : "Guardar Cambios"}
+            </Button>
+          )}
+        </div>
+      )}
+      
       {paso === "BUSCADOR" && (
         <div className="bg-white dark:bg-[#1a1b26] p-8 md:p-12 rounded-[50px] shadow-2xl border border-slate-100 dark:border-[#2a2b3d] text-center">
           <ShieldCheck className="w-16 h-16 text-blue-600 mx-auto mb-6" />
@@ -369,13 +401,20 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
                       <p className="text-slate-500 text-sm">Cambia a cancelado si la persona no asistirá.</p>
                    </div>
                 </div>
-                <div className="space-y-2">
-                   <select {...form.register("estatus_solicitud")} className="w-full md:w-1/3 bg-slate-50 dark:bg-[#0f1015] border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-600 outline-none">
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                   <select {...form.register("estatus_solicitud")} className="w-full sm:w-auto flex-1 bg-slate-50 dark:bg-[#0f1015] border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-600 outline-none font-semibold">
                      <option value="PENDIENTE_PAGO">Activo (Pendiente de Pago)</option>
                      <option value="CONFIRMADO">Activo (Confirmado)</option>
                      <option value="ASISTIO">Activo (Asistió)</option>
                      <option value="CANCELADO">Cancelado</option>
                    </select>
+                   <Button 
+                     type="submit" 
+                     disabled={cargando || subiendoArchivo}
+                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider px-6 py-3.5 h-auto shadow-md"
+                   >
+                     <Save className="w-4 h-4 mr-2" /> {cargando ? "Guardando..." : "Guardar Estatus / Cambios"}
+                   </Button>
                 </div>
              </div>
            )}

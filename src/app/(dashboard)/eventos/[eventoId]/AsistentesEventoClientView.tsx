@@ -22,6 +22,7 @@ export default function AsistentesEventoClientView({
 }) {
   const [filtroSede, setFiltroSede] = useState("TODAS");
   const [filtroMinisterio, setFiltroMinisterio] = useState("TODOS");
+  const [filtroEstatus, setFiltroEstatus] = useState("ACTIVOS");
 
   const handleEliminar = async (id: string) => {
     if (!confirm("¿Eliminar este registro de inscripción?")) return;
@@ -52,15 +53,40 @@ export default function AsistentesEventoClientView({
     return inscritos.filter(i => {
       if (filtroSede !== "TODAS" && normalizeString(i.pais_ciudad) !== normalizeString(filtroSede)) return false;
       if (filtroMinisterio !== "TODOS" && normalizeString(i.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
+      if (filtroEstatus === "ACTIVOS" && i.estatus_solicitud === "CANCELADO") return false;
+      if (filtroEstatus === "CANCELADOS" && i.estatus_solicitud !== "CANCELADO") return false;
       return true;
     });
-  }, [inscritos, filtroSede, filtroMinisterio]);
+  }, [inscritos, filtroSede, filtroMinisterio, filtroEstatus]);
 
   const columnasBase: any[] = [
     {
       header: "Nombre",
       accessorKey: "nombre_asistente",
       cell: (val: any) => <span className="font-bold text-slate-700 dark:text-slate-200">{val}</span>
+    },
+    {
+      header: "Estatus",
+      accessorKey: "estatus_solicitud",
+      halign: "center",
+      cell: (val: any) => {
+        const isCancelado = val === "CANCELADO";
+        const isConfirmado = val === "CONFIRMADO";
+        const isAsistio = val === "ASISTIO";
+        return (
+          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${
+            isCancelado 
+              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800" 
+              : isConfirmado
+              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+              : isAsistio
+              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800"
+              : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+          }`}>
+            {val || "PENDIENTE_PAGO"}
+          </span>
+        );
+      }
     },
     { header: "WhatsApp", accessorKey: "telefono_celular" },
     { header: "Localidad", accessorKey: "pais_ciudad" },
@@ -172,6 +198,19 @@ export default function AsistentesEventoClientView({
               {ministeriosList.map((m: string) => (
                 <SelectItem key={m} value={m}>{m}</SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 flex-1 min-w-[200px]">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider">Filtrar por Estatus</label>
+          <Select value={filtroEstatus} onValueChange={setFiltroEstatus}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Solo Activos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ACTIVOS">Solo Activos (Ocultar Cancelados)</SelectItem>
+              <SelectItem value="TODOS">Ver Todos (Incluir Cancelados)</SelectItem>
+              <SelectItem value="CANCELADOS">Solo Cancelados</SelectItem>
             </SelectContent>
           </Select>
         </div>

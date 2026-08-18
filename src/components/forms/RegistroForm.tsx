@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { 
   User, Phone, MapPin, Church, Heart, Baby, 
   ChevronRight, ChevronLeft, CheckCircle2, Info,
-  Stethoscope, Cross, Sparkles, FileText, ShieldCheck, Search, Loader2, BedDouble
+  Stethoscope, Cross, Sparkles, FileText, ShieldCheck, Search, Loader2, BedDouble, Save
 } from "lucide-react";
 import { registrarSolicitudAction, buscarAsistentePrevioAction } from "@/app/actions/inscripciones";
 import { cn } from "@/lib/utils";
@@ -230,6 +230,37 @@ export function RegistroForm({
 
   return (
     <div className="max-w-3xl mx-auto">
+      {/* Botón de Regresar si es Edición */}
+      {(returnTo || initialData) && (
+        <div className="mb-6 flex items-center justify-between">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => {
+              if (returnTo) {
+                window.location.href = returnTo;
+              } else {
+                window.history.back();
+              }
+            }} 
+            className="gap-2 rounded-2xl border-slate-200 dark:border-[#2a2b3d] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#202130] font-bold text-xs uppercase tracking-wider h-11 px-5 shadow-sm"
+          >
+            <ChevronLeft className="w-4 h-4" /> Regresar al listado
+          </Button>
+
+          {initialData && (
+            <Button
+              type="button"
+              disabled={cargando}
+              onClick={form.handleSubmit(onSubmit)}
+              className="gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider h-11 px-5 shadow-md"
+            >
+              <Save className="w-4 h-4" /> {cargando ? "Guardando..." : "Guardar Cambios"}
+            </Button>
+          )}
+        </div>
+      )}
+
       {/* Indicador de Pasos */}
       <div className="flex justify-between mb-12 relative px-4">
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-100 dark:bg-[#2a2b3d] -translate-y-1/2 z-0"></div>
@@ -259,18 +290,25 @@ export function RegistroForm({
               
               {/* Estatus de Solicitud (Solo Edición) */}
               {initialData && (
-                 <div className="bg-slate-50 dark:bg-[#202130] border border-slate-200 dark:border-slate-800 p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center gap-4">
+                 <div className="bg-slate-50 dark:bg-[#202130] border border-slate-200 dark:border-slate-800 p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
                     <div className="flex-1 space-y-1">
                        <h4 className="font-bold text-slate-900 dark:text-white">Estatus de Solicitud</h4>
                        <p className="text-sm text-slate-600 dark:text-slate-400">Selecciona "Cancelado" si la persona no asistirá.</p>
                     </div>
-                    <div className="w-full md:w-1/3">
-                       <select {...form.register("estatus_solicitud")} className="w-full border rounded-lg px-3 py-2.5 bg-white dark:bg-[#0f1015] dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-600">
+                    <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                       <select {...form.register("estatus_solicitud")} className="w-full sm:w-auto border rounded-xl px-3 py-2.5 bg-white dark:bg-[#0f1015] dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-600 font-semibold text-sm">
                           <option value="PENDIENTE_PAGO">Activo (Pendiente de Pago)</option>
                           <option value="CONFIRMADO">Activo (Confirmado)</option>
                           <option value="ASISTIO">Activo (Asistió)</option>
                           <option value="CANCELADO">Cancelado</option>
                        </select>
+                       <Button 
+                         type="submit" 
+                         disabled={cargando}
+                         className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider px-4 py-2.5 h-auto shadow-sm"
+                       >
+                         <Save className="w-4 h-4 mr-1.5" /> {cargando ? "Guardando..." : "Guardar Estatus"}
+                       </Button>
                     </div>
                  </div>
               )}
@@ -533,13 +571,24 @@ export function RegistroForm({
             )}
             
             {step < totalSteps ? (
-              <Button 
-                type="button" 
-                onClick={nextStep} 
-                className="flex-1 h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-none"
-              >
-                Siguiente Paso <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+              <>
+                <Button 
+                  type="button" 
+                  onClick={nextStep} 
+                  className="flex-1 h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-none"
+                >
+                  Siguiente Paso <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+                {initialData && (
+                  <Button 
+                    type="submit" 
+                    disabled={cargando}
+                    className="h-14 px-8 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-200 dark:shadow-none"
+                  >
+                    <Save className="w-4 h-4 mr-2" /> {cargando ? "Guardando..." : "Guardar Todo"}
+                  </Button>
+                )}
+              </>
             ) : (
               <Button 
                 type="submit" 

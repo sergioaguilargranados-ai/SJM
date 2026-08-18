@@ -22,6 +22,7 @@ export default function InscripcionesClientView({
   const [filtroEvento, setFiltroEvento] = useState("TODOS");
   const [filtroRetiro, setFiltroRetiro] = useState("TODOS");
   const [filtroEstatusRetiro, setFiltroEstatusRetiro] = useState("ACTIVOS");
+  const [filtroEstatusSolicitud, setFiltroEstatusSolicitud] = useState("ACTIVOS");
   const [filtroEdad, setFiltroEdad] = useState("TODAS");
 
   const sedesList = useMemo(() => {
@@ -73,6 +74,9 @@ export default function InscripcionesClientView({
       if (filtroEstatusRetiro === "ACTIVOS") {
         if (!esEstatusActivo(row.evento_estatus)) return false;
       }
+
+      if (filtroEstatusSolicitud === "ACTIVOS" && row.estatus_solicitud === "CANCELADO") return false;
+      if (filtroEstatusSolicitud === "CANCELADOS" && row.estatus_solicitud !== "CANCELADO") return false;
       
       if (filtroEdad !== "TODAS") {
         const edad = row.edad;
@@ -84,7 +88,7 @@ export default function InscripcionesClientView({
       
       return true;
     });
-  }, [datos, filtroSede, filtroMinisterio, filtroEvento, filtroRetiro, filtroEstatusRetiro, filtroEdad]);
+  }, [datos, filtroSede, filtroMinisterio, filtroEvento, filtroRetiro, filtroEstatusRetiro, filtroEstatusSolicitud, filtroEdad]);
 
   // Si cambia el filtro de estatus, limpiar el filtro de retiro si ya no aplica
   const onEstatusRetiroChange = (val: string) => {
@@ -160,6 +164,19 @@ export default function InscripcionesClientView({
             <SelectContent>
               <SelectItem value="ACTIVOS">Solo Activos</SelectItem>
               <SelectItem value="TODOS">Todos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 min-w-0">
+          <label className="text-[10px] text-slate-500 dark:text-[#8e8ea0] font-bold uppercase tracking-wider line-clamp-1">Estatus Inscripción</label>
+          <Select value={filtroEstatusSolicitud} onValueChange={setFiltroEstatusSolicitud}>
+            <SelectTrigger className="w-full bg-slate-50 dark:bg-[#0f1015]">
+              <SelectValue placeholder="Solo Activos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ACTIVOS">Solo Activos</SelectItem>
+              <SelectItem value="TODOS">Ver Todos</SelectItem>
+              <SelectItem value="CANCELADOS">Solo Cancelados</SelectItem>
             </SelectContent>
           </Select>
         </div>

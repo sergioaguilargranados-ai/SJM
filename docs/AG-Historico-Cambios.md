@@ -1,7 +1,22 @@
-# 📜 Histórico SJM PLATFORM — v1.214 — COMPILACIÓN: 17-08-2026 17:48 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.215 — COMPILACIÓN: 17-08-2026 18:04 (CDMX)
 
-**Última actualización:** 17 de Agosto de 2026 - 17:48 (CDMX)  
+**Última actualización:** 17 de Agosto de 2026 - 18:04 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.215 - 17 de Agosto de 2026 - 18:04 (CDMX)
+
+#### 🚀 Mejoras en Edición de Participantes y Filtros de Consulta
+- **Botón de Regresar al Listado**: Se integró un botón "← Regresar al listado" en la cabecera de `RegistroForm.tsx` y `RegistroRenaseClient.tsx` cuando se accede en modo de edición (`returnTo` / `initialData`), permitiendo volver a la tabla de asistentes sin perderse en el navegador.
+- **Botones de Guardado Directo**:
+  - En `RegistroForm.tsx`: Se agregaron botones de "Guardar Cambios" tanto en la tarjeta de Estatus de Solicitud (Paso 1) como en la barra de navegación inferior de cada paso y en la cabecera superior.
+  - En `RegistroRenaseClient.tsx`: Se agregó el botón "Guardar Estatus / Cambios" junto al selector de estatus y en la cabecera superior.
+- **Filtro de Estatus en Consultas (`AsistentesEventoClientView` e `InscripcionesClientView`)**:
+  - Se configuró por defecto la vista en "Solo Activos (Ocultar Cancelados)" para que los participantes cancelados no ensucien la consulta.
+  - Se agregó la opción "Ver Todos (Incluir Cancelados)" y "Solo Cancelados" en el selector de filtros de la tabla.
+  - Se agregó la columna "Estatus" con insignias visuales (Activo, Confirmado, Asistió, Cancelado) en la vista de Asistentes del Evento.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 
