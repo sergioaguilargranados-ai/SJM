@@ -428,12 +428,41 @@ export function TablaConsulta({
                 Columnas
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 dark:bg-[#1a1b26] dark:border-[#2a2b3d]">
+            <DropdownMenuContent align="end" className="w-56 max-h-80 overflow-y-auto dark:bg-[#1a1b26] dark:border-[#2a2b3d] p-1.5 shadow-xl">
+              <div className="flex items-center justify-between px-2 py-1.5 pb-2 border-b border-slate-100 dark:border-[#2a2b3d] mb-1">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const allVis: Record<string, boolean> = {};
+                    columnas.forEach(col => allVis[col.accessorKey] = true);
+                    setColumnVisibility(allVis);
+                  }}
+                  className="text-[10px] font-bold text-blue-600 dark:text-[#e11d48] hover:underline"
+                >
+                  Mostrar todas
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const initial: Record<string, boolean> = {};
+                    columnas.forEach(col => {
+                      initial[col.accessorKey] = !col.ocultarEnUI;
+                    });
+                    setColumnVisibility(initial);
+                  }}
+                  className="text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:underline"
+                >
+                  Restablecer
+                </button>
+              </div>
               {columnas.map((col) => (
                 <DropdownMenuCheckboxItem
                   key={col.accessorKey}
                   className="text-xs font-medium cursor-pointer"
                   checked={columnVisibility[col.accessorKey]}
+                  onSelect={(e) => e.preventDefault()}
                   onCheckedChange={(checked) => 
                     setColumnVisibility(prev => ({ ...prev, [col.accessorKey]: checked }))
                   }

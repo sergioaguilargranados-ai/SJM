@@ -775,8 +775,14 @@ export async function eliminarInscripcionAction(id: string) {
     const { getUsuarioSesion } = await import("@/lib/sesion");
     const session = await getUsuarioSesion();
     
-    if (!session.rol_nombre?.toLowerCase().includes("admin")) {
-       return { success: false, error: "Permisos insuficientes. Sólo administradores pueden eliminar inscripciones." };
+    const rol = session.rol_nombre?.toLowerCase() || "";
+    const esAutorizado = session.es_admin_sistema || 
+                         rol.includes("admin") || 
+                         rol.includes("coordinador") || 
+                         session.permisos?.some((p: string) => p === "*" || p.includes("inscripciones") || p.includes("eventos"));
+
+    if (!esAutorizado) {
+       return { success: false, error: "Permisos insuficientes para eliminar inscripciones." };
     }
     
     await db.delete(solicitudes_inscripcion).where(eq(solicitudes_inscripcion.id, id));

@@ -95,7 +95,22 @@ export default function AsistentesEventoClientView({
       header: "Edad", 
       accessorKey: "edad", 
       halign: "center",
-      cell: (val: any) => val ? `${val} años` : "—"
+      cell: (val: any, row: any) => {
+        if (val) return `${val} años`;
+        if (row?.fecha_nacimiento) {
+          const fn = new Date(row.fecha_nacimiento);
+          if (!isNaN(fn.getTime())) {
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fn.getFullYear();
+            const m = hoy.getMonth() - fn.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) {
+              edad--;
+            }
+            if (edad >= 0 && edad < 130) return `${edad} años`;
+          }
+        }
+        return "—";
+      }
     },
     { 
       header: "Sexo", 
@@ -104,6 +119,25 @@ export default function AsistentesEventoClientView({
       cell: (val: any) => {
         if (!val) return "—";
         return <span className="uppercase text-[10px] font-bold tracking-wider px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-300">{val}</span>;
+      }
+    },
+    { 
+      header: "Estado Civil", 
+      accessorKey: "estado_civil",
+      ocultarEnUI: true,
+      cell: (val: any) => val || "—"
+    },
+    { 
+      header: "Fecha Nacimiento", 
+      accessorKey: "fecha_nacimiento",
+      ocultarEnUI: true,
+      cell: (val: any) => {
+        if (!val) return "—";
+        try {
+          return new Date(val).toISOString().slice(0, 10);
+        } catch {
+          return String(val);
+        }
       }
     },
     { 

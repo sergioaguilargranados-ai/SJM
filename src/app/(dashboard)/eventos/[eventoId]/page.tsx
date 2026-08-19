@@ -10,7 +10,12 @@ import { getUsuarioSesion } from "@/lib/sesion";
 export default async function DetalleEventoPage({ params }: { params: Promise<{ eventoId: string }> }) {
   const { eventoId } = await params;
   const sesion = await getUsuarioSesion();
-  const isAdmin = sesion?.rol_nombre?.toLowerCase().includes("admin") || false;
+  const rol = sesion?.rol_nombre?.toLowerCase() || "";
+  const isAdmin = sesion?.es_admin_sistema || 
+                  rol.includes("admin") || 
+                  rol.includes("coordinador") || 
+                  sesion?.permisos?.some((p: string) => p === "*" || p.includes("inscripciones") || p.includes("eventos")) || 
+                  false;
 
   const [eventoRes, inscritosRes, sedesRes, ministeriosRes] = await Promise.all([
     getEventoById(eventoId),

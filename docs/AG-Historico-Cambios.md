@@ -1,7 +1,23 @@
-# 📜 Histórico SJM PLATFORM — v1.215 — COMPILACIÓN: 17-08-2026 18:04 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.216 — COMPILACIÓN: 19-08-2026 09:48 (CDMX)
 
-**Última actualización:** 17 de Agosto de 2026 - 18:04 (CDMX)  
+**Última actualización:** 19 de Agosto de 2026 - 09:48 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.216 - 19 de Agosto de 2026 - 09:48 (CDMX)
+
+#### 🔐 Corrección de Permisos para Coordinadores y Selección Múltiple de Columnas
+- **Habilitación de Acciones para Coordinadores**:
+  - En `src/app/(dashboard)/eventos/[eventoId]/page.tsx`, se corrigió la validación de `isAdmin` para verificar roles que contengan `"coordinador"`, `"admin"`, `es_admin_sistema` y los permisos del usuario (`"inscripciones.*"`, `"eventos.*"`). Anteriormente solo validaba `"admin"`, impidiendo que los coordinadores vieran las acciones de editar/eliminar participantes.
+  - En `src/app/actions/inscripciones.ts`, se actualizó `eliminarInscripcionAction` para permitir a coordinadores y usuarios con permisos operativos gestionar inscripciones.
+- **Cálculo Dinámico de Edad y Nuevas Columnas Opcionales**:
+  - Se agregó cálculo dinámico de `edad` a partir de `fecha_nacimiento` en caso de que el campo `edad` no venga precalculado en la base de datos (tanto en `AsistentesEventoClientView` como en `InscripcionesClientView`).
+  - Se añadieron las columnas opcionales **"Estado Civil"** y **"Fecha Nacimiento"** al selector de columnas.
+- **Selección Múltiple de Columnas sin Cierre Automático (`TablaConsulta.tsx`)**:
+  - Se añadió `onSelect={(e) => e.preventDefault()}` a los items de columnas para permitir marcar y desmarcar múltiples columnas de forma continua sin que el menú se cierre en cada clic.
+  - Se agregaron botones de acción rápida **"Mostrar todas"** y **"Restablecer"** en la cabecera del selector de columnas con scroll vertical automático.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 
