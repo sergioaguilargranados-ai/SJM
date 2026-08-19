@@ -131,6 +131,24 @@ export function RegistroForm({
     }
   }, [initialData, form]);
 
+  const watchFechaNacimiento = form.watch("fecha_nacimiento");
+  const edadCalculada = React.useMemo(() => {
+    if (!watchFechaNacimiento) return null;
+    const fn = new Date(watchFechaNacimiento);
+    if (isNaN(fn.getTime())) return null;
+    const hoy = new Date();
+    let e = hoy.getFullYear() - fn.getFullYear();
+    const m = hoy.getMonth() - fn.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) e--;
+    return e >= 0 && e <= 120 ? e : null;
+  }, [watchFechaNacimiento]);
+
+  React.useEffect(() => {
+    if (edadCalculada !== null) {
+      form.setValue("edad", edadCalculada);
+    }
+  }, [edadCalculada, form]);
+
   const nextStep = (e?: React.MouseEvent) => {
     e?.preventDefault();
     setStep(s => Math.min(s + 1, totalSteps));
@@ -353,7 +371,14 @@ export function RegistroForm({
                   <Input placeholder="¿Cómo te gusta que te digan?" {...form.register("nombre_gafete")} className="h-12 rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Fecha de Nacimiento</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>Fecha de Nacimiento</Label>
+                    {edadCalculada !== null && (
+                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 rounded-full">
+                        {edadCalculada} años
+                      </span>
+                    )}
+                  </div>
                   <Input type="date" {...form.register("fecha_nacimiento")} className="h-12 rounded-xl" />
                 </div>
                 <div className="space-y-2">

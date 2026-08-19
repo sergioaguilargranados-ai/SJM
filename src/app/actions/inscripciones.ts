@@ -33,13 +33,28 @@ export async function registrarSolicitudAction(datos: any) {
        // Si no es un ID especial y es muy corto, probablemente sea un error, pero dejamos pasar si es UUID o ID especial
     }
 
+    // Calcular edad si no viene explícita pero hay fecha de nacimiento
+    let edadFinal = datos.edad ? Number(datos.edad) : null;
+    if (!edadFinal && datos.fecha_nacimiento?.trim()) {
+      const fn = new Date(datos.fecha_nacimiento);
+      if (!isNaN(fn.getTime())) {
+        const hoy = new Date();
+        let e = hoy.getFullYear() - fn.getFullYear();
+        const m = hoy.getMonth() - fn.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) {
+          e--;
+        }
+        if (e >= 0 && e <= 120) edadFinal = e;
+      }
+    }
+
     // 1. Insertar el registro usando Drizzle ORM
     const inscData = {
       evento_id: finalEventoId,
       nombre_asistente: datos.nombre_asistente,
       nombre_gafete: datos.nombre_gafete || null,
       fecha_nacimiento: datos.fecha_nacimiento || null,
-      edad: datos.edad ? Number(datos.edad) : null,
+      edad: edadFinal,
       sexo: datos.sexo || null,
       estado_civil: datos.estado_civil || null,
       

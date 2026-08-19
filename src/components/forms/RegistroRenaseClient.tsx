@@ -122,6 +122,18 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
     }
   }, [initialData, form]);
 
+  const watchFechaNacimiento = form.watch("fecha_nacimiento");
+  const edadCalculada = React.useMemo(() => {
+    if (!watchFechaNacimiento) return null;
+    const fn = new Date(watchFechaNacimiento);
+    if (isNaN(fn.getTime())) return null;
+    const hoy = new Date();
+    let e = hoy.getFullYear() - fn.getFullYear();
+    const m = hoy.getMonth() - fn.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) e--;
+    return e >= 0 && e <= 120 ? e : null;
+  }, [watchFechaNacimiento]);
+
   const buscarServidor = async () => {
     if (!termBusqueda || termBusqueda.length < 3) return;
     setCargando(true);
@@ -679,10 +691,17 @@ export function RegistroRenaseClient({ evento, sedes, ministerios, cargos, initi
                      <option value="Femenino">Femenino</option>
                    </select>
                  </div>
-                 <div className="space-y-2">
-                   <Label className="dark:text-slate-300">Fecha de Nacimiento</Label>
-                   <Input type="date" {...form.register("fecha_nacimiento")} className="dark:bg-[#0f1015]" />
-                 </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="dark:text-slate-300">Fecha de Nacimiento</Label>
+                      {edadCalculada !== null && (
+                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 rounded-full">
+                          {edadCalculada} años
+                        </span>
+                      )}
+                    </div>
+                    <Input type="date" {...form.register("fecha_nacimiento")} className="dark:bg-[#0f1015]" />
+                  </div>
                  <div className="space-y-2">
                    <Label className="dark:text-slate-300">Fecha de Ingreso SJM</Label>
                    <Input type="date" {...form.register("fecha_ingreso")} className="dark:bg-[#0f1015]" />

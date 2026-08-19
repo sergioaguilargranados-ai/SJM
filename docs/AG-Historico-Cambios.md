@@ -1,7 +1,21 @@
-# 📜 Histórico SJM PLATFORM — v1.216 — COMPILACIÓN: 19-08-2026 09:48 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.217 — COMPILACIÓN: 19-08-2026 10:28 (CDMX)
 
-**Última actualización:** 19 de Agosto de 2026 - 09:48 (CDMX)  
+**Última actualización:** 19 de Agosto de 2026 - 10:28 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.217 - 19 de Agosto de 2026 - 10:28 (CDMX)
+
+#### 🛏️ Cálculo Automático de Edad para Asignación de Cuartos y Formularios
+- **Cálculo Universal de Edad en `TablaConsulta.tsx`**:
+  - Se integró la función `obtenerEdadCalculada` directamente en el motor de ordenamiento (`TablaConsulta.tsx`), asegurando que al ordenar por **"Sexo ➔ Edad"** (criterio de asignación de cuartos) y por **"Edad"**, se calcule la edad en tiempo real a partir de `fecha_nacimiento` aunque el campo `edad` esté vacío en base de datos.
+  - Se garantiza que en exportaciones a PDF y Excel la edad calculada aparezca correctamente en las columnas de reportes.
+- **Cálculo Automático en Backend (`registrarSolicitudAction`)**:
+  - Al registrar o editar participantes en `src/app/actions/inscripciones.ts`, el backend ahora calcula y persiste automáticamente el campo `edad` a partir de `fecha_nacimiento` si no se envía un valor explícito.
+- **Cálculo y Visualización en Formularios (`RegistroForm.tsx` y `RegistroRenaseClient.tsx`)**:
+  - Al ingresar o seleccionar la fecha de nacimiento en el formulario, el sistema calcula de inmediato la edad exacta del participante, mostrándola en una insignia destacada (`XX años`) al lado de la etiqueta y guardándola en el estado del formulario.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

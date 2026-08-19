@@ -55,6 +55,27 @@ function hoy(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+export function obtenerEdadCalculada(row: any): number | null {
+  if (row?.edad != null && row?.edad !== "" && !isNaN(Number(row.edad)) && Number(row.edad) > 0) {
+    return Number(row.edad);
+  }
+  if (row?.fecha_nacimiento) {
+    const fn = new Date(row.fecha_nacimiento);
+    if (!isNaN(fn.getTime())) {
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fn.getFullYear();
+      const m = hoy.getMonth() - fn.getMonth();
+      if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) {
+        edad--;
+      }
+      if (edad >= 0 && edad <= 120) {
+        return edad;
+      }
+    }
+  }
+  return null;
+}
+
 export function TablaConsulta({
   datos,
   columnas,
@@ -131,8 +152,8 @@ export function TablaConsulta({
         const compSex = sexA.localeCompare(sexB, "es", { sensitivity: "base" });
         if (compSex !== 0) return compSex;
 
-        const edadA = a.edad != null && a.edad !== "" ? Number(a.edad) : 999;
-        const edadB = b.edad != null && b.edad !== "" ? Number(b.edad) : 999;
+        const edadA = obtenerEdadCalculada(a) ?? 999;
+        const edadB = obtenerEdadCalculada(b) ?? 999;
         return criterioOrden === "SEXO_EDAD_ASC" ? edadA - edadB : edadB - edadA;
       });
     }
@@ -146,15 +167,15 @@ export function TablaConsulta({
 
     if (criterioOrden === "EDAD_ASC") {
       return list.sort((a, b) => {
-        const eA = a.edad != null && a.edad !== "" ? Number(a.edad) : 999;
-        const eB = b.edad != null && b.edad !== "" ? Number(b.edad) : 999;
+        const eA = obtenerEdadCalculada(a) ?? 999;
+        const eB = obtenerEdadCalculada(b) ?? 999;
         return eA - eB;
       });
     }
     if (criterioOrden === "EDAD_DESC") {
       return list.sort((a, b) => {
-        const eA = a.edad != null && a.edad !== "" ? Number(a.edad) : -1;
-        const eB = b.edad != null && b.edad !== "" ? Number(b.edad) : -1;
+        const eA = obtenerEdadCalculada(a) ?? -1;
+        const eB = obtenerEdadCalculada(b) ?? -1;
         return eB - eA;
       });
     }
@@ -177,6 +198,12 @@ export function TablaConsulta({
     // Clic en encabezado de columna
     if (columnaOrdenKey) {
       return list.sort((a, b) => {
+        if (columnaOrdenKey === "edad") {
+          const valA = obtenerEdadCalculada(a) ?? (direccionOrden === "asc" ? 999 : -1);
+          const valB = obtenerEdadCalculada(b) ?? (direccionOrden === "asc" ? 999 : -1);
+          return direccionOrden === "asc" ? valA - valB : valB - valA;
+        }
+
         const valA = a[columnaOrdenKey];
         const valB = b[columnaOrdenKey];
 
@@ -226,7 +253,12 @@ export function TablaConsulta({
       const fila: Record<string, any> = {};
       columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
-        fila[key] = row[key] ?? row[col.accessorKey] ?? "";
+        if (key === "edad" || col.accessorKey === "edad") {
+          const calc = obtenerEdadCalculada(row);
+          fila[key] = calc != null ? `${calc} años` : (row[key] ?? "");
+        } else {
+          fila[key] = row[key] ?? row[col.accessorKey] ?? "";
+        }
       });
       return fila;
     });
@@ -253,7 +285,12 @@ export function TablaConsulta({
       const fila: Record<string, any> = {};
       columnasVisibles.forEach((col) => {
         const key = col.pdfKey || col.accessorKey;
-        fila[key] = row[key] ?? row[col.accessorKey] ?? "";
+        if (key === "edad" || col.accessorKey === "edad") {
+          const calc = obtenerEdadCalculada(row);
+          fila[key] = calc != null ? `${calc} años` : (row[key] ?? "");
+        } else {
+          fila[key] = row[key] ?? row[col.accessorKey] ?? "";
+        }
       });
       return fila;
     });

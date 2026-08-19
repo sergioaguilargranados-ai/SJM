@@ -49,14 +49,38 @@ export default function AsistentesEventoClientView({
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
+  const calcularEdad = (edadRaw: any, fechaNac: any) => {
+    if (edadRaw != null && edadRaw !== "" && !isNaN(Number(edadRaw)) && Number(edadRaw) > 0) {
+      return Number(edadRaw);
+    }
+    if (fechaNac) {
+      const fn = new Date(fechaNac);
+      if (!isNaN(fn.getTime())) {
+        const hoy = new Date();
+        let e = hoy.getFullYear() - fn.getFullYear();
+        const m = hoy.getMonth() - fn.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < fn.getDate())) {
+          e--;
+        }
+        if (e >= 0 && e <= 120) return e;
+      }
+    }
+    return null;
+  };
+
   const inscritosFiltrados = useMemo(() => {
-    return inscritos.filter(i => {
-      if (filtroSede !== "TODAS" && normalizeString(i.pais_ciudad) !== normalizeString(filtroSede)) return false;
-      if (filtroMinisterio !== "TODOS" && normalizeString(i.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
-      if (filtroEstatus === "ACTIVOS" && i.estatus_solicitud === "CANCELADO") return false;
-      if (filtroEstatus === "CANCELADOS" && i.estatus_solicitud !== "CANCELADO") return false;
-      return true;
-    });
+    return inscritos
+      .map(i => ({
+        ...i,
+        edad: calcularEdad(i.edad, i.fecha_nacimiento) ?? i.edad
+      }))
+      .filter(i => {
+        if (filtroSede !== "TODAS" && normalizeString(i.pais_ciudad) !== normalizeString(filtroSede)) return false;
+        if (filtroMinisterio !== "TODOS" && normalizeString(i.ministerio_actual) !== normalizeString(filtroMinisterio)) return false;
+        if (filtroEstatus === "ACTIVOS" && i.estatus_solicitud === "CANCELADO") return false;
+        if (filtroEstatus === "CANCELADOS" && i.estatus_solicitud !== "CANCELADO") return false;
+        return true;
+      });
   }, [inscritos, filtroSede, filtroMinisterio, filtroEstatus]);
 
   const columnasBase: any[] = [
