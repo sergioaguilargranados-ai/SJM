@@ -1,7 +1,16 @@
-# 📜 Histórico SJM PLATFORM — v1.217 — COMPILACIÓN: 19-08-2026 10:28 (CDMX)
+# 📜 Histórico SJM PLATFORM — v1.218 — COMPILACIÓN: 22-08-2026 13:19 (CDMX)
 
-**Última actualización:** 19 de Agosto de 2026 - 10:28 (CDMX)  
+**Última actualización:** 22 de Agosto de 2026 - 13:19 (CDMX)  
 **Responsable:** AntiGravity AI Assistant  
+
+---
+
+### v1.218 - 22 de Agosto de 2026 - 13:19 (CDMX)
+
+#### 🚀 Inclusión del Campo Expectativas y Detalle Completo en Consulta de Inscripciones
+- **Inclusión de `expectativas` y Campos Completos en `getInscripcionesCompleto()`**: Se actualizó la Server Action en `src/app/actions/catalogos.ts` para extraer explícitamente el campo `expectativas`, `enfermedades_alergias`, `comparte_cuarto_con`, `parroquia_procedencia`, `contacto_emergencia_nombre`, `contacto_emergencia_telefono`, etc. de la tabla `solicitudes_inscripcion`.
+- **Columnas y Filtros en `InscripcionesClientView.tsx`**: Se integraron las columnas de `Expectativas`, `Alergias / Anotaciones Médicas`, `Compartir Habitación Con`, `Parroquia Procedencia` y `Contactos de Emergencia` en la vista `/inscripciones`, habilitando además su búsqueda rápida en el filtro de palabras clave y su inclusión en exportaciones de Excel y PDF.
+**Responsable:** AntiGravity AI Assistant
 
 ---
 

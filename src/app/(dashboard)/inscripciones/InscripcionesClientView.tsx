@@ -202,7 +202,7 @@ export default function InscripcionesClientView({
         titulo="Consulta de Inscripciones"
         subtitulo="Historial completo de todas las solicitudes de inscripción a retiros y eventos."
         icono={<ClipboardList className="w-6 h-6 text-blue-600 dark:text-[#e11d48]" />}
-        camposFiltro={["nombre_asistente", "correo", "telefono_celular", "pais_ciudad", "ministerio_actual", "evento_tipo"]}
+        camposFiltro={["nombre_asistente", "correo", "telefono_celular", "pais_ciudad", "ministerio_actual", "evento_tipo", "expectativas", "comparte_cuarto_con"]}
         campoFechaDesde="creado_en"
         mostrarFiltroFecha={true}
         totalLabel="Total Inscripciones"
@@ -274,6 +274,12 @@ export default function InscripcionesClientView({
               }
             } 
           },
+          { header: "Expectativas", accessorKey: "expectativas", ocultarEnUI: true, cell: (val: any) => val || "—" },
+          { header: "Alergias / Anotaciones Médicas", accessorKey: "enfermedades_alergias", ocultarEnUI: true, cell: (val: any) => val || "—" },
+          { header: "Compartir Habitación Con", accessorKey: "comparte_cuarto_con", ocultarEnUI: true, cell: (val: any) => val || "—" },
+          { header: "Parroquia", accessorKey: "parroquia_procedencia", ocultarEnUI: true, cell: (val: any) => val || "—" },
+          { header: "Contacto Emergencia", accessorKey: "contacto_emergencia_nombre", ocultarEnUI: true, cell: (val: any) => val || "—" },
+          { header: "Tel. Emergencia", accessorKey: "contacto_emergencia_telefono", ocultarEnUI: true, cell: (val: any) => val || "—" },
           { header: "Celular", accessorKey: "telefono_celular" },
           {
             header: "Estatus",
